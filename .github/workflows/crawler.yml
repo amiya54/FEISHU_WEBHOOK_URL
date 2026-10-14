@@ -35,7 +35,8 @@ on:
     #   "15 * * * *"     → 每小时第15分钟 / minute 15 every hour
     #   "30 0-14 * * *"  → 北京时间 8:00-22:00 每小时第30分钟 / Beijing 8am-10pm
     #
-    - cron: "0 0 * * *"
+    - cron: "0 0 * * 5"
+
 
   workflow_dispatch:
 
@@ -48,6 +49,24 @@ permissions:
   actions: write
 
 jobs:
+
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - name: Check biweekly schedule
+        id: check
+        run: |
+          WEEK_INDEX=$(( $(date -u +%s) / 604800 ))
+          if [ $((WEEK_INDEX % 2)) -eq 0 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "✅ 本周为发布周，继续执行双周报"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "⏭ 本周为间隔周，跳过本次运行"
+          fi
+
   crawl:
     runs-on: ubuntu-latest
     timeout-minutes: 15
