@@ -85,7 +85,7 @@ rss:
   freshness_filter:
     enabled: true                     # 是否启用新鲜度过滤（true=启用, false=关闭）
 
-    max_age_days: 1                   # 最大文章年龄（天）
+    max_age_days: 14                  # 最大文章年龄（天）
                                       # - 正整数：只推送 N 天内的文章
                                       # - 0：禁用过滤，推送所有文章
 
@@ -94,9 +94,23 @@ rss:
   # - 正整数：覆盖全局设置，只推送此天数内的文章
   # - 0：禁用此频道的新鲜度过滤，推送所有文章
   feeds:
-    # ── 国际航运 / 绿色能源媒体（均已实测可用）────────────────
+     # ── 技术/动力类专业源（★改动7 本次实测新增，最贴合技术研发）──
+    #    The Motorship 是船舶动力与推进技术类杂志，甲醇/氨发动机、
+    #    燃料系统、能效装置的报道密度高于综合媒体，建议保留。
+    - id: "motorship"
+      name: "The Motorship"
+      url: "https://www.motorship.com/feed"
+
+    #    综合类，但技术栏目质量高、条数多（单次可抓 40+ 条）。
+    #    如果觉得噪音大，把下面 enabled 改成 false 即可单独关掉它。
+    - id: "maritime-executive"
+      name: "The Maritime Executive"
+      url: "https://www.maritime-executive.com/articles.rss"
+      enabled: true
+
+    # ── 国际航运媒体（实测有原生 RSS）──
     - id: "gcaptain"
-      name: "gCaptain 航运新闻"
+      name: "gCaptain"
       url: "https://gcaptain.com/feed/"
 
     - id: "splash247"
@@ -111,23 +125,24 @@ rss:
       name: "Offshore Energy"
       url: "https://www.offshore-energy.biz/feed/"
 
-    - id: "manifold-times"
-      name: "Manifold Times（船用燃料）"
+    - id: "manifold"
+      name: "Manifold Times"
       url: "https://www.manifoldtimes.com/feed/"
 
-    - id: "marinelink"
-      name: "MarineLink"
-      url: "https://www.marinelink.com/rss"
-
     - id: "bunkerspot"
-      name: "Bunkerspot（燃油市场）"
+      name: "Bunkerspot"
       url: "https://www.bunkerspot.com/rss"
 
-    - id: "shipandbunker"
+    - id: "ship-bunker"
       name: "Ship & Bunker"
-      url: "https://shipandbunker.com/rss"
+      url: "https://shipandbunker.com/rss"      # 注意：/rss/news 会 404
 
-    - id: "worldcargonews"
+    # ⚠️ 下面 3 个源实测会返回 403（Cloudflare 拦截非浏览器 UA）。
+    #    程序的 RSS 抓取用的是 "TrendRadar/2.0 RSS Reader" 这个 UA，会被拒。
+    #    两个办法二选一：
+    #      A. 改 UA（推荐，见文末"403 修复补丁"）
+    #      B. 直接删掉 / 设 enabled: false
+    - id: "worldcargo"
       name: "WorldCargo News"
       url: "https://www.worldcargonews.com/feed/"
 
@@ -135,14 +150,62 @@ rss:
       name: "Container News"
       url: "https://container-news.com/feed/"
 
-    - id: "marineinsight"
-      name: "Marine Insight"
-      url: "https://www.marineinsight.com/feed/"
+    - id: "marinelink"
+      name: "MarineLink"
+      url: "https://www.marinelink.com/rss"
 
-    # ── 中文源（已实测可用）──────────────────────────────────
+    - id: "safety4sea"
+      name: "Safety4Sea"
+      url: "https://safety4sea.com/feed/"
+
+    - id: "green4sea"
+      name: "Green4Sea"
+      url: "https://www.green4sea.com/feed/"
+
+    # ── 中文源（行业站里唯一有原生 RSS 的）──
+    #    ⚠️ 同样会 403，见上方说明；修好 UA 后这条很重要，别丢
     - id: "imarine"
       name: "龙de船人"
       url: "https://www.imarine.cn/feed"
+
+    # ── 官方机构（地址可能变动，首次运行后看日志确认）──
+    - id: "imo-news"
+      name: "IMO 官网新闻"
+      url: "https://www.imo.org/en/mediacentre/pressbriefings/pages/rss.aspx"
+
+    # ── 法规规范专题源（★双周报改动2：本次新增，法规情报主力）──
+    #   Google News 搜索源的特点：单次可返回数十条、按相关性排序，
+    #   天然适合"两周攒一批"的双周报场景，且能覆盖到官网无 RSS 的机构
+    #   （船级社、欧盟、海事局等）。
+    #   ⚠️ 需在境外网络下访问（GitHub Actions 运行在境外，没问题；
+    #      本机在国内直连可能不通，属正常现象）。
+    - id: "gnews-imo"
+      name: "GN · IMO与净零框架"
+      url: "https://news.google.com/rss/search?q=IMO+MEPC+%22net-zero+framework%22+OR+%22carbon+intensity%22+OR+decarbonization+shipping&hl=en-US&gl=US&ceid=US:en"
+
+    - id: "gnews-eu"
+      name: "GN · FuelEU与EU ETS"
+      url: "https://news.google.com/rss/search?q=%22FuelEU+Maritime%22+OR+%22EU+ETS%22+shipping+emissions&hl=en-US&gl=US&ceid=US:en"
+
+    - id: "gnews-class"
+      name: "GN · 船级社规范动态"
+      url: "https://news.google.com/rss/search?q=DNV+OR+%22Lloyd%27s+Register%22+OR+ClassNK+OR+%22Bureau+Veritas%22+maritime+decarbonization+rules&hl=en-US&gl=US&ceid=US:en"
+
+    - id: "gnews-port"
+      name: "GN · 排放控制区与PSC"
+      url: "https://news.google.com/rss/search?q=%22port+state+control%22+OR+%22emission+control+area%22+shipping+fuel+regulation&hl=en-US&gl=US&ceid=US:en"
+
+    - id: "gnews-cn"
+      name: "GN · 国内绿色船舶政策"
+      url: "https://news.google.com/rss/search?q=%E7%BB%BF%E8%89%B2%E8%88%B9%E8%88%B6+%E6%B3%95%E8%A7%84+OR+%E8%88%B9%E8%88%B6%E7%A2%B3%E6%8E%92%E6%94%BE+%E8%A7%84%E8%8C%83+OR+%E6%B5%B7%E4%BA%8B%E5%B1%80+%E7%BB%BF%E8%89%B2%E8%88%B9%E8%88%B6+OR+%E8%88%B9%E7%BA%A7%E7%A4%BE+%E8%A7%84%E8%8C%83&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+
+    - id: "gnews-altfuel"
+      name: "GN · 替代燃料技术"
+      url: "https://news.google.com/rss/search?q=methanol+OR+ammonia+OR+hydrogen+marine+fuel+engine+vessel+order&hl=en-US&gl=US&ceid=US:en"
+
+    # ── 无原生 RSS、需自建 RSSHub 才能接入的源（先留空）──
+    # 信德海事 / 国际船舶网 / 中国船级社：官网无 RSS，且对境外 IP 有 TLS 限制
+    # 各船级社（DNV/LR/ABS/ClassNK）通函：只有邮件订阅，无自动化方案
 
     # 自定义源示例
     # - id: "custom-feed"
@@ -248,7 +311,7 @@ display:
   # 独立展示区：将指定平台/RSS 完整展示，不受关键词过滤
   # 推送展示由 regions.standalone 控制，AI 分析由 ai_analysis.include_standalone 控制
   standalone:
-    platforms: ["zhihu", "wallstreetcn-hot"]     # 热榜平台 ID 列表（如 ["zhihu", "weibo"]）
+    platforms: []     # 热榜平台 ID 列表（如 ["zhihu", "weibo"]）
     rss_feeds: []                                # RSS 源 ID 列表（如 ["hacker-news"]）
     max_items: 20                                # 每个源最多展示条数（0=不限制）
 
@@ -391,7 +454,7 @@ ai:
                                     #    这样几乎任何服务商都能接入。
 
 
-  timeout: 180                      # 请求超时（秒）
+  timeout: 600                      # 请求超时（秒）
 
   temperature: 1.0                  # 采样温度 (0.0-2.0)
                                     # 注意：部分模型(如 gpt-5)可能要求必须为 1.0，否则会报错
@@ -424,13 +487,13 @@ ai_analysis:
                                     # follow_report = 跟随 report.mode（默认）
                                     # daily / current / incremental = 强制使用指定模式
 
-  max_news_for_analysis: 150        # 参与分析的新闻数量上限（控制 token 成本的关键项）
+  max_news_for_analysis: 350        # 参与分析的新闻数量上限（控制 token 成本的关键项）
                                     # 热榜优先占用配额，RSS 用剩余配额，独立展示区不受此限制
 
   include_rss: true                # 是否包含 RSS 内容进行分析（true=包含, false=不包含）
   include_standalone: false          # 是否纳入独立展示区数据（true=纳入, false=不纳入）
 
-  include_rank_timeline: true       # 排名时间线详细程度
+  include_rank_timeline: false       # 排名时间线详细程度
                                     # true = 完整轨迹（如 1(09:30)→2(10:00)），AI 分析更准但多耗 0.5~1 倍 token
                                     # false = 简化格式（排名范围+出现次数），更省 token
 
@@ -454,7 +517,7 @@ ai_translation:
   scope:
     hotlist: false                  # 翻译热榜标题（true=翻译, false=不翻译）
     rss: true                       # 翻译 RSS 标题（true=翻译, false=不翻译）
-    standalone: true                # 翻译独立展示区标题（true=翻译, false=不翻译）
+    standalone: false                # 翻译独立展示区标题（true=翻译, false=不翻译）
 
 
 # ===============================================================
