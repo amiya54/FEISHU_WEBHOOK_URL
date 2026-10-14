@@ -79,27 +79,33 @@ platforms:
 # ===============================================================
 rss:
   enabled: true                       # 是否启用 RSS 抓取（true=启用, false=关闭）
-
-  # 文章新鲜度过滤（过滤超龄旧文章，避免重复推送）
-  # 仅在推送阶段过滤，所有文章仍会存入数据库
   freshness_filter:
-    enabled: true                     # 是否启用新鲜度过滤（true=启用, false=关闭）
-
-    max_age_days: 14                  # 最大文章年龄（天）
-                                      # - 正整数：只推送 N 天内的文章
-                                      # - 0：禁用过滤，推送所有文章
-
-  # 单个 feed 可配置 max_age_days 覆盖全局设置：
-  # - 不配置：使用全局 freshness_filter.max_age_days（默认 3 天）
-  # - 正整数：覆盖全局设置，只推送此天数内的文章
-  # - 0：禁用此频道的新鲜度过滤，推送所有文章
+    enabled: true
+    max_age_days: 14         # 双周窗口：保留 14 天内的文章
   feeds:
-     # ── 技术/动力类专业源（★改动7 本次实测新增，最贴合技术研发）──
+ # ── 技术/动力类专业源（★改动7 本次实测新增，最贴合技术研发）──
     #    The Motorship 是船舶动力与推进技术类杂志，甲醇/氨发动机、
     #    燃料系统、能效装置的报道密度高于综合媒体，建议保留。
     - id: "motorship"
       name: "The Motorship"
       url: "https://www.motorship.com/feed"
+
+    # ★ 分页源（★双周报改动9）
+    #   为什么要翻页：RSS 协议只给「最近 N 条」，不翻页的话 12-20 条
+    #   往往只覆盖 1 天，14 天窗口里九成文章永远抓不到。
+    #   实测（2026-10-14，本机直连）：
+    #     The Motorship  单页 10 条/12 天 → 翻 3 页 30 条/29 天
+    #     gCaptain       单页 12 条/ 1 天 → 翻 3 页 36 条/ 4 天
+    #     Manifold Times 单页 10 条/ 1 天 → 翻 3 页 30 条/ 5 天
+    #     Bunkerspot     单页 10 条/ 0 天 → 翻 3 页 30 条/ 4 天
+    #   ⚠️ 只对上面这 4 家翻页。Hellenic / Ship & Bunker / Seatrade 的
+    #      ?paged=N 返回的是与第 1 页完全相同的内容，翻页只会制造重复条目。
+    - id: "motorship-p2"
+      name: "The Motorship · 第2页"
+      url: "https://www.motorship.com/feed?paged=2"
+
+    #   注：不设第 3 页。The Motorship 发稿慢（30 条覆盖 29 天），
+    #   实测第 3 页的文章全部超出 14 天窗口，加了也只会被过滤掉。
 
     #    综合类，但技术栏目质量高、条数多（单次可抓 40+ 条）。
     #    如果觉得噪音大，把下面 enabled 改成 false 即可单独关掉它。
@@ -112,6 +118,14 @@ rss:
     - id: "gcaptain"
       name: "gCaptain"
       url: "https://gcaptain.com/feed/"
+
+    - id: "gcaptain-p2"
+      name: "gCaptain · 第2页"
+      url: "https://gcaptain.com/feed/?paged=2"
+
+    - id: "gcaptain-p3"
+      name: "gCaptain · 第3页"
+      url: "https://gcaptain.com/feed/?paged=3"
 
     - id: "splash247"
       name: "Splash 247"
@@ -129,26 +143,60 @@ rss:
       name: "Manifold Times"
       url: "https://www.manifoldtimes.com/feed/"
 
+    - id: "manifold-p2"
+      name: "Manifold Times · 第2页"
+      url: "https://www.manifoldtimes.com/feed/?paged=2"
+
+    - id: "manifold-p3"
+      name: "Manifold Times · 第3页"
+      url: "https://www.manifoldtimes.com/feed/?paged=3"
+
     - id: "bunkerspot"
       name: "Bunkerspot"
       url: "https://www.bunkerspot.com/rss"
+
+    - id: "bunkerspot-p2"
+      name: "Bunkerspot · 第2页"
+      url: "https://www.bunkerspot.com/rss?paged=2"
+
+    - id: "bunkerspot-p3"
+      name: "Bunkerspot · 第3页"
+      url: "https://www.bunkerspot.com/rss?paged=3"
 
     - id: "ship-bunker"
       name: "Ship & Bunker"
       url: "https://shipandbunker.com/rss"      # 注意：/rss/news 会 404
 
-    # ⚠️ 下面 3 个源实测会返回 403（Cloudflare 拦截非浏览器 UA）。
-    #    程序的 RSS 抓取用的是 "TrendRadar/2.0 RSS Reader" 这个 UA，会被拒。
-    #    两个办法二选一：
-    #      A. 改 UA（推荐，见文末"403 修复补丁"）
-    #      B. 直接删掉 / 设 enabled: false
+    # ── 大容量源（★双周报改动10）──
+    #   Seatrade Maritime：单次 50 条、覆盖 8 天，是本次实测中
+    #   「单位源覆盖天数」最好的一条，法规与合规报道密度也高。
+    - id: "seatrade"
+      name: "Seatrade Maritime"
+      url: "https://www.seatrade-maritime.com/rss.xml"
+
+    #   欧盟委员会交通总司：30 条、1 天前仍在更新。
+    #   它是 EU ETS / FuelEU 立法动态的一手出处，但夹带大量陆路铁路内容，
+    #   命中率不如航运媒体。嫌噪音大就把下面 enabled 改成 false。
+    - id: "ec-transport"
+      name: "欧盟委员会 · 交通"
+      url: "https://transport.ec.europa.eu/node/2/rss_en"
+      enabled: true
+
+    # ⚠️ 以下源经实测已失效，统一关闭（enabled: false）。
+    #    它们此前一直报错、贡献 0 条内容，留着只让日志变脏。
+    #    若日后本站更换反爬策略或 RSS 地址，把 enabled 改回 true 即可复活。
+    #      WorldCargo News / Container News  → 403（浏览器 UA 补丁也无效）
+    #      Safety4Sea  → RSS 格式损坏（syntax error）
+    #      Green4Sea   → 404，地址已变更
     - id: "worldcargo"
       name: "WorldCargo News"
       url: "https://www.worldcargonews.com/feed/"
+      enabled: false
 
     - id: "container-news"
       name: "Container News"
       url: "https://container-news.com/feed/"
+      enabled: false
 
     - id: "marinelink"
       name: "MarineLink"
@@ -157,51 +205,75 @@ rss:
     - id: "safety4sea"
       name: "Safety4Sea"
       url: "https://safety4sea.com/feed/"
+      enabled: false
 
     - id: "green4sea"
       name: "Green4Sea"
       url: "https://www.green4sea.com/feed/"
+      enabled: false
 
     # ── 中文源（行业站里唯一有原生 RSS 的）──
-    #    ⚠️ 同样会 403，见上方说明；修好 UA 后这条很重要，别丢
+    #    ★ 2026-10-14 复测：先前报 403 是临时反爬，现已恢复（10 条 / 当天更新）。
+    #      这是目前唯一可用的中文垂直信源，「国内绿色船舶政策」主要靠它
+    #      和下面的 GN 中文源来覆盖。
     - id: "imarine"
       name: "龙de船人"
       url: "https://www.imarine.cn/feed"
+      enabled: true
 
     # ── 官方机构（地址可能变动，首次运行后看日志确认）──
+    # ⚠️ imo.org 这个 RSS 地址 2026-10-14 实跑返回 500 Server Error，
+    #    属对方站点侧问题，不是配置错误 —— 但也不必再换地址：
+    #    下面的 Google News 源里已有 "GN · IMO与净零框架"，
+    #    对 IMO 新闻的覆盖比官网 RSS 更全（含二手报道与配套解读）。
     - id: "imo-news"
       name: "IMO 官网新闻"
       url: "https://www.imo.org/en/mediacentre/pressbriefings/pages/rss.aspx"
+      enabled: false
 
     # ── 法规规范专题源（★双周报改动2：本次新增，法规情报主力）──
     #   Google News 搜索源的特点：单次可返回数十条、按相关性排序，
     #   天然适合"两周攒一批"的双周报场景，且能覆盖到官网无 RSS 的机构
-    #   （船级社、欧盟、海事局等）。
+    #   （船级社、欧盟、海事局等 —— 实测 DNV/LR/ABS/ClassNK/CCS 官网
+    #    全部无可用 RSS，只有邮件订阅，所以这条线不可替代）。
     #   ⚠️ 需在境外网络下访问（GitHub Actions 运行在境外，没问题；
-    #      本机在国内直连可能不通，属正常现象）。
+    #      本机在国内直连不通，属正常现象，不用当成故障排查）。
+    #
+    #   ★双周报改动11：全部 URL 末尾加 &num=100。
+    #   依据：上次实跑日志里 6 个 GN 源的返回条数是 50/50/46/48/19/50 ——
+    #   恰好卡在 50 的两个明显是被默认上限截断（另几个 46/48/19 是真实的
+    #   匹配总量）。num=100 是 Google News 的取条数参数，加上可让卡在 50
+    #   的源再多拿一倍。此项无法在本机验证（国内直连 Google 不通），
+    #   跑一次看日志里 GN 源的条数是否超过 50 即可确认。
+    #
+    #   ★同时修正两处查询词的坑：
+    #     · gnews-class 原写 "Lloyd's Register" → 直引号在 Google 侧会被
+    #       当成标点切断，改用单词 Lloyd（与本地词库同一处修正）
+    #     · gnews-imo 原写 "net-zero framework" → 带连字符的精确短语太严，
+    #       标题若写 "net zero framework" 就漏，放宽成 "net zero"
     - id: "gnews-imo"
       name: "GN · IMO与净零框架"
-      url: "https://news.google.com/rss/search?q=IMO+MEPC+%22net-zero+framework%22+OR+%22carbon+intensity%22+OR+decarbonization+shipping&hl=en-US&gl=US&ceid=US:en"
+      url: "https://news.google.com/rss/search?q=IMO+MEPC+OR+%22net+zero%22+OR+%22carbon+intensity%22+OR+decarbonization+shipping&hl=en-US&gl=US&ceid=US:en&num=100"
 
     - id: "gnews-eu"
       name: "GN · FuelEU与EU ETS"
-      url: "https://news.google.com/rss/search?q=%22FuelEU+Maritime%22+OR+%22EU+ETS%22+shipping+emissions&hl=en-US&gl=US&ceid=US:en"
+      url: "https://news.google.com/rss/search?q=%22FuelEU+Maritime%22+OR+%22EU+ETS%22+OR+EMSA+shipping+emissions&hl=en-US&gl=US&ceid=US:en&num=100"
 
     - id: "gnews-class"
       name: "GN · 船级社规范动态"
-      url: "https://news.google.com/rss/search?q=DNV+OR+%22Lloyd%27s+Register%22+OR+ClassNK+OR+%22Bureau+Veritas%22+maritime+decarbonization+rules&hl=en-US&gl=US&ceid=US:en"
+      url: "https://news.google.com/rss/search?q=DNV+OR+Lloyd+OR+ClassNK+OR+%22Bureau+Veritas%22+ship+classification+decarbonization+rules&hl=en-US&gl=US&ceid=US:en&num=100"
 
     - id: "gnews-port"
       name: "GN · 排放控制区与PSC"
-      url: "https://news.google.com/rss/search?q=%22port+state+control%22+OR+%22emission+control+area%22+shipping+fuel+regulation&hl=en-US&gl=US&ceid=US:en"
+      url: "https://news.google.com/rss/search?q=%22port+state+control%22+OR+%22emission+control+area%22+OR+%22sulphur+cap%22+shipping+fuel+regulation&hl=en-US&gl=US&ceid=US:en&num=100"
 
     - id: "gnews-cn"
       name: "GN · 国内绿色船舶政策"
-      url: "https://news.google.com/rss/search?q=%E7%BB%BF%E8%89%B2%E8%88%B9%E8%88%B6+%E6%B3%95%E8%A7%84+OR+%E8%88%B9%E8%88%B6%E7%A2%B3%E6%8E%92%E6%94%BE+%E8%A7%84%E8%8C%83+OR+%E6%B5%B7%E4%BA%8B%E5%B1%80+%E7%BB%BF%E8%89%B2%E8%88%B9%E8%88%B6+OR+%E8%88%B9%E7%BA%A7%E7%A4%BE+%E8%A7%84%E8%8C%83&hl=zh-CN&gl=CN&ceid=CN:zh-Hans"
+      url: "https://news.google.com/rss/search?q=%E7%BB%BF%E8%89%B2%E8%88%B9%E8%88%B6+%E6%B3%95%E8%A7%84+OR+%E8%88%B9%E8%88%B6%E7%A2%B3%E6%8E%92%E6%94%BE+%E8%A7%84%E8%8C%83+OR+%E6%B5%B7%E4%BA%8B%E5%B1%80+%E7%BB%BF%E8%89%B2%E8%88%B9%E8%88%B6+OR+%E8%88%B9%E7%BA%A7%E7%A4%BE+%E8%A7%84%E8%8C%83&hl=zh-CN&gl=CN&ceid=CN:zh-Hans&num=100"
 
     - id: "gnews-altfuel"
       name: "GN · 替代燃料技术"
-      url: "https://news.google.com/rss/search?q=methanol+OR+ammonia+OR+hydrogen+marine+fuel+engine+vessel+order&hl=en-US&gl=US&ceid=US:en"
+      url: "https://news.google.com/rss/search?q=methanol+OR+ammonia+OR+hydrogen+marine+fuel+engine+vessel+order&hl=en-US&gl=US&ceid=US:en&num=100"
 
     # ── 无原生 RSS、需自建 RSSHub 才能接入的源（先留空）──
     # 信德海事 / 国际船舶网 / 中国船级社：官网无 RSS，且对境外 IP 有 TLS 限制
