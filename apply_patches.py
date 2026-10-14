@@ -3,26 +3,56 @@
 """
 TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执行）
 
-用法（在 TrendRadar 项目根目录执行）：
-    python apply_patches.py                # 自动定位当前目录
-    python apply_patches.py /path/to/TrendRadar-master
+═══════════════════════════════════════════════════════════════════
+  ★★★ 平时不需要手动运行它 ★★★
+═══════════════════════════════════════════════════════════════════
+本脚本已经被写进 .github/workflows/crawler.yml，GitHub 每次跑爬虫
+之前会自动先执行它、把源码改好，再启动主程序。你要做的只是保证
+下面两个文件都在仓库里：
+
+    patches/apply_patches.py            ← 本文件
+    .github/workflows/crawler.yml       ← 里面含 "Apply low-carbon patches" 那一步
+
+▸ 怎么确认它跑过了：
+    Actions 日志里找到 "Apply low-carbon patches" 这一步 ——
+      绿勾 ✅ = 补丁已生效，可以看到 ✓ 列表和语法检查结果
+      橙勾 ⚠️ = 脚本没传上去、或路径不对（不影响爬虫继续跑）
+
+▸ 什么时候才需要手动运行：
+    ① 在本地调试时；
+    ② 升级程序（重新下载 master）覆盖了源码改动之后。
+    手动用法 —— 先 cd 到 TrendRadar 项目根目录（能看到 trendradar/ 和 config/ 的那层），
+    再执行下面任意一条：
+
+        python patches/apply_patches.py .       # 脚本在 patches/ 子目录里
+        python apply_patches.py                 # 脚本就在根目录时
+        python apply_patches.py D:/TrendRadar-master    # 直接指定项目路径
+
+    ⚠️ 报 "python 不是内部或外部命令" 就改用 python3；
+    ⚠️ 报 "目录不像 TrendRadar 项目" 说明你不在项目根目录，先 cd 过去。
+
+▸ 它是幂等的：重复运行不会重复修改，第二次执行会显示「已打过，跳过」。
+═══════════════════════════════════════════════════════════════════
 
 包含四个补丁：
 
-  [D] AI 分析板块标题改为「船舶低碳技术研发」场景措辞
+  [D] AI 分析板块标题改为「船舶低碳法规双周报」场景措辞
       板块标题（核心热点态势 / 舆论风向争议 / 异动与弱信号 / RSS 深度洞察 /
       研判策略建议）是**硬编码在 trendradar/ai/formatter.py 里的**，
-      config.yaml 没有任何字段可以覆盖。不改代码，推送里就一直是
-      「舆论风向争议」这种对技术研发没有意义的标题。
+      config.yaml 没有任何字段可以覆盖。不改代码，报告里就一直是
+      「舆论风向争议」这种与法规情报无关的标题。
       本补丁把 5 个渲染器（企业微信/飞书共用 markdown、钉钉、纯文本、
       Telegram、HTML 报告）里的标题一并替换为：
-          核心热点态势   → 今日技术主线
-          舆论风向争议   → 技术路线与分歧
-          异动与弱信号   → 弱信号与风向标
+          核心热点态势   → 本期法规要览
+          舆论风向争议   → 法规解读与分歧
+          异动与弱信号   → 前瞻信号与时间表
           RSS 深度洞察   → 关键参数与硬数据
-          研判策略建议   → 研发启示
-          头部 AI 热点分析 → AI 低碳技术情报
-      需配合 config/ai_analysis_prompt.txt（v2.0.0-c）一起使用。
+          研判策略建议   → 研发启示与合规建议
+          头部 AI 热点分析 → ✨ 船舶低碳法规双周报
+      本补丁兼容两种历史状态：原版标题、以及早期 v2.0.0-c「技术日报版」
+      标题（今日技术主线 / 技术路线与分歧 / 弱信号与风向标 / 研发启示），
+      两者都会一步迁移到双周报版，可反复重跑。
+      需配合 config/ai_analysis_prompt.txt（v2.0.0-d 双周报版）一起使用。
 
   [A] AI 客户端支持 ai.extra_params  （解决「AI 返回空响应」的省钱方案）
       原版 config.yaml 里读了 extra_params 但**从未使用**（只在 loader.py 出现一次，
@@ -50,6 +80,7 @@ TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执�
 
 import io
 import os
+import re
 import sys
 
 UA_OLD_1 = '"User-Agent": "TrendRadar/2.0 RSS Reader (https://github.com/trendradar)"'
@@ -65,12 +96,20 @@ MARK_D = "★补丁D"
 #     这些字符串在 formatter.py 中只作为板块标题出现（各 5 处，分别对应
 #     markdown / 钉钉 / 纯文本 / Telegram / HTML 五个渲染器），可安全全量替换。
 TITLE_MAP = [
-    ("✨ AI 热点分析", "✨ AI 低碳技术情报"),
-    ("核心热点态势", "今日技术主线"),
-    ("舆论风向争议", "技术路线与分歧"),
-    ("异动与弱信号", "弱信号与风向标"),
+    # ① 原版标题 → 双周报版（首次打补丁走这一组）
+    ("✨ AI 热点分析", "✨ 船舶低碳法规双周报"),
+    ("核心热点态势", "本期法规要览"),
+    ("舆论风向争议", "法规解读与分歧"),
+    ("异动与弱信号", "前瞻信号与时间表"),
     ("RSS 深度洞察", "关键参数与硬数据"),
-    ("研判策略建议", "研发启示"),
+    ("研判策略建议", "研发启示与合规建议"),
+    # ② 旧版补丁标题（v2.0.0-c 技术日报版）→ 双周报版
+    #    用于「已经打过旧补丁」的文件升级：重跑本脚本即自动迁移，无需手工回退
+    ("✨ AI 低碳技术情报", "✨ 船舶低碳法规双周报"),
+    ("今日技术主线", "本期法规要览"),
+    ("技术路线与分歧", "法规解读与分歧"),
+    ("弱信号与风向标", "前瞻信号与时间表"),
+    ("研发启示", "研发启示与合规建议"),
 ]
 
 
@@ -194,34 +233,36 @@ def patch_section_titles(root, log):
         return
     text = read(path)
 
-    if MARK_D in text:
-        log.append("  = [D] 板块标题改名：已打过，跳过")
-        return
-
-    # 先检查是否已经是新标题（防止用户手工改过或补丁标记被清）
-    if "今日技术主线" in text and "研发启示" in text:
-        log.append("  = [D] 板块标题改名：已是新标题，跳过")
+    # 幂等判据：全部目标标题都已存在 → 说明已是双周报版，直接跳过。
+    #   不用补丁标记判断，是为了兼容「已打过旧版技术日报补丁」的文件：
+    #   那种状态下标记存在、但标题是旧版，必须继续迁移。
+    targets = [new for _, new in TITLE_MAP]
+    if all(t in text for t in targets):
+        log.append("  = [D] 板块标题改名：已是双周报版，跳过")
         return
 
     changed = []
     for old, new in TITLE_MAP:
+        if new in text:
+            # 目标词已存在就跳过，避免「研发启示」把「研发启示与合规建议」
+            # 二次替换成「研发启示与合规建议与合规建议」这类子串灾难
+            continue
         n = text.count(old)
         if n == 0:
-            log.append("    · 「%s」未找到（可能程序版本不同）" % old)
-            continue
-        if new in text:
-            log.append("    · 「%s」→「%s」：目标词已存在，跳过以免重复替换" % (old, new))
-            continue
+            continue          # 当前文件不含这个历史标题，属正常，不必报告
         text = text.replace(old, new)
         changed.append((old, new, n))
 
     if changed:
-        # 插入补丁标记，便于幂等判断
+        # 先清掉可能已存在的旧版补丁标记（含早期版本重复插入的历史遗留），
+        # 再统一写一份新的，保证反复运行不会堆积重复注释。
+        text = re.sub(r"(?m)^# ★补丁D：[^\n]*\n(?:^#   [^\n]*\n)*", "", text)
+
         anchor = "def _escape_html(text: str) -> str:"
         marker = (
-            "# %s：AI 分析板块标题已改为「船舶低碳技术研发」场景措辞\n"
-            "#   配合 config/ai_analysis_prompt.txt 使用；重跑本脚本可幂等跳过。\n"
-            "#   如需改回原版，删除本行并将其下方 TITLE_MAP 中的替换手动回退即可。\n"
+            "# %s：AI 分析板块标题已改为「船舶低碳法规双周报」场景措辞\n"
+            "#   配合 config/ai_analysis_prompt.txt（v2.0.0-d 双周报版）使用；重跑本脚本幂等跳过。\n"
+            "#   如需改回原版，把 TITLE_MAP 里的替换手动回退即可。\n"
         ) % MARK_D
         if anchor in text:
             text = text.replace(anchor, marker + anchor, 1)
@@ -281,3 +322,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
