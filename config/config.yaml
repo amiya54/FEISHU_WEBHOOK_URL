@@ -127,19 +127,55 @@ rss:
   # - 正整数：覆盖全局设置，只推送此天数内的文章
   # - 0：禁用此频道的新鲜度过滤，推送所有文章
   feeds:
-    - id: "hacker-news"
-      name: "Hacker News"
-      url: "https://hnrss.org/frontpage"
+    # ── 国际航运 / 绿色能源媒体（均已实测可用）────────────────
+    - id: "gcaptain"
+      name: "gCaptain 航运新闻"
+      url: "https://gcaptain.com/feed/"
 
-    - id: "ruanyifeng"
-      name: "阮一峰的网络日志"
-      url: "http://www.ruanyifeng.com/blog/atom.xml"
-      enabled: false                  # 禁用
-      # max_age_days: 3               # 示例：推送 3 天内的文章（更新较慢的博客）
-     
-    - id: "yahoo-finance"
-      name: "雅虎财经"
-      url: "https://finance.yahoo.com/news/rssindex"
+    - id: "splash247"
+      name: "Splash 247"
+      url: "https://splash247.com/feed/"
+
+    - id: "hellenic"
+      name: "Hellenic Shipping News"
+      url: "https://www.hellenicshippingnews.com/feed/"
+
+    - id: "offshore-energy"
+      name: "Offshore Energy"
+      url: "https://www.offshore-energy.biz/feed/"
+
+    - id: "manifold-times"
+      name: "Manifold Times（船用燃料）"
+      url: "https://www.manifoldtimes.com/feed/"
+
+    - id: "marinelink"
+      name: "MarineLink"
+      url: "https://www.marinelink.com/rss"
+
+    - id: "bunkerspot"
+      name: "Bunkerspot（燃油市场）"
+      url: "https://www.bunkerspot.com/rss"
+
+    - id: "shipandbunker"
+      name: "Ship & Bunker"
+      url: "https://shipandbunker.com/rss"
+
+    - id: "worldcargonews"
+      name: "WorldCargo News"
+      url: "https://www.worldcargonews.com/feed/"
+
+    - id: "container-news"
+      name: "Container News"
+      url: "https://container-news.com/feed/"
+
+    - id: "marineinsight"
+      name: "Marine Insight"
+      url: "https://www.marineinsight.com/feed/"
+
+    # ── 中文源（已实测可用）──────────────────────────────────
+    - id: "imarine"
+      name: "龙de船人"
+      url: "https://www.imarine.cn/feed"
 
     # 自定义源示例
     # - id: "custom-feed"
