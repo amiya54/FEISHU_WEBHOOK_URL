@@ -37,7 +37,6 @@ on:
     #
     - cron: "0 0 * * 5"
 
-
   workflow_dispatch:
 
 concurrency:
@@ -49,7 +48,7 @@ permissions:
   actions: write
 
 jobs:
-
+  # 隔周门控：只有偶数周的周五才继续，另一周直接跳过
   gate:
     runs-on: ubuntu-latest
     outputs:
@@ -68,8 +67,13 @@ jobs:
           fi
 
   crawl:
+    needs: gate
+    if: needs.gate.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 40
+    outputs:
+      # 供 deploy-pages 判断本次是否真的产出了可发布的网页
+      pages_ready: ${{ steps.pages_prep.outputs.ready }}
 
     steps:
       - name: Checkout repository
@@ -152,6 +156,19 @@ jobs:
             exit 1
           fi
 
+      - name: Apply low-carbon patches
+        if: success()
+        continue-on-error: true
+        run: |
+          # 自动识别补丁脚本位置：patches/ 子目录 或 仓库根目录 均可
+          if [ -f patches/apply_patches.py ]; then
+            python patches/apply_patches.py .
+          elif [ -f apply_patches.py ]; then
+            python apply_patches.py
+          else
+            echo "⚠️ 未找到 apply_patches.py，跳过补丁（不影响爬虫继续运行）"
+          fi
+
       - name: Run crawler
         if: success()
         env:
@@ -166,6 +183,9 @@ jobs:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           EMAIL_SMTP_SERVER: ${{ secrets.EMAIL_SMTP_SERVER }}
           EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+          # SMTP 登录名（仅当登录名 ≠ 发件邮箱时需要，例如 Brevo / Resend / SendGrid）
+          # 留空则回退为使用 EMAIL_FROM 登录，行为与原来一致
+          EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           NTFY_SERVER_URL: ${{ secrets.NTFY_SERVER_URL }}
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
@@ -186,9 +206,76 @@ jobs:
           S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL }}
           S3_REGION: ${{ secrets.S3_REGION }}
           GITHUB_ACTIONS: true
+        run: uv run python -m trendradar
+
+      # --------------------------------------------------------------------------------
+      # 📥 UPLOAD REPORT AS ARTIFACT / 把报告挂到本次运行记录里，可随时下载
+      # --------------------------------------------------------------------------------
+      # 零配置兜底：不需要任何设置，也不需要开启 Pages。
+      # 每次运行结束后，到仓库的 Actions 页面点进本次运行，页面底部「Artifacts」
+      # 区域会出现一个 zip，下载解压后双击 index.html 就能看完整报告。
+      #
+      # 保留 30 天（GitHub 默认上限 90 天，可自行改大）。
+      # --------------------------------------------------------------------------------
+      - name: Upload report as downloadable artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ github.run_number }}
+          path: |
+            index.html
+            output/html/
+          retention-days: 30
+          if-no-files-found: warn
+
+      # --------------------------------------------------------------------------------
+      # 🌐 GITHUB PAGES PUBLISH / 把网页报告发布成一个固定网址（不用邮箱）
+      # --------------------------------------------------------------------------------
+      # 做什么：把爬虫生成的 index.html 发布到 GitHub Pages，得到一个永久网址
+      #         https://<用户名>.github.io/<仓库名>/
+      #         该网址永远显示「最新一期」报告，手机浏览器打开后可「添加到主屏幕」，
+      #         点开就像一个 App，不用下载、不用邮件。
+      #
+      # 为什么能直接放：TrendRadar 生成的 HTML 是「单文件自包含」的
+      #         （CSS/JS 全部内联，无外部依赖），丢到任何静态托管都能正常显示。
+      #
+      # ⚠️ 前置条件（只需在网页上点一次，不用钱）：
+      #     仓库 → Settings → Pages → Build and deployment → Source 选 "GitHub Actions"
+      #
+      # ⚠️ 免费账户的 Pages 只能发布「公开仓库」；私有仓库需要 GitHub Pro。
+      #     如果你不想把仓库设为公开，用下面那个 Cloudflare Pages 方案（私有仓库也免费）。
+      #
+      # 没在 Settings 里开启 Pages 时，最后的 deploy-pages 会报错提示你去做这一步，
+      # 报错不影响爬虫本身，也不影响其它推送渠道。
+      # --------------------------------------------------------------------------------
+      - name: Prepare Pages site
+        if: success()
+        id: pages_prep
         run: |
-          python apply_patches.py
-          uv run python -m trendradar
+          if [ ! -f index.html ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "⚠️ 未找到 index.html（可能是 storage.formats.html 被关掉了），跳过 Pages 发布"
+            exit 0
+          fi
+          rm -rf pages_dist
+          mkdir -p pages_dist
+          cp index.html pages_dist/index.html
+          # 把历史快照一并带上，便于回看上几期
+          if [ -d output/html ]; then
+            cp -r output/html pages_dist/html
+          fi
+          # 关闭 Jekyll 处理，加快发布速度
+          touch pages_dist/.nojekyll
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+          echo "📦 待发布站点内容："
+          du -sh pages_dist
+          find pages_dist -name "*.html" | head -20
+
+      - name: Upload Pages artifact
+        if: success() && steps.pages_prep.outputs.ready == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages_dist
 
       # --------------------------------------------------------------------------------
       # ☁️ CLOUDFLARE PAGES DEPLOY / 部署到 Cloudflare Pages（可选）
@@ -234,3 +321,34 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy cloudflare_dist --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME }}
+
+  # ────────────────────────────────────────────────────────────────────────────────
+  # 🌐 GITHUB PAGES DEPLOY / 发布网页报告
+  # ────────────────────────────────────────────────────────────────────────────────
+  # 为什么单独开一个 job：发布 Pages 需要 pages:write + id-token:write 权限，
+  # 而爬虫 job 本身只需要 contents:read。权限拆开更安全，也符合官方推荐写法。
+  #
+  # 没有在 Settings → Pages 里把 Source 设为 "GitHub Actions" 时，这一步会失败，
+  # 报错信息会直接告诉你缺什么，属于预期内的一次性配置，不影响爬虫运行。
+  # ────────────────────────────────────────────────────────────────────────────────
+  deploy-pages:
+    needs: [gate, crawl]
+    if: needs.crawl.outputs.pages_ready == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Show report URL
+        if: success()
+        run: |
+          echo "✅ 报告已发布，固定网址："
+          echo "   ${{ steps.deployment.outputs.page_url }}"
+          echo "   这个网址永远显示最新一期，手机可「添加到主屏幕」当作 App 使用。"
