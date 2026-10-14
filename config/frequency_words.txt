@@ -1,13 +1,12 @@
 # ══════════════════════════════════════════════════════════════
-#  TrendRadar 关键词配置 —— 船舶低碳技术研发专题
+#  TrendRadar 关键词配置 —— 船舶低碳【法规规范】专题 · 双周报版
 #  放置路径：config/frequency_words.txt
 #
 #  ★ 每组第一行的 [组名] 是「显示名称」，有两个作用：
 #      1) 推送消息里的分组标题
 #      2) AI 分析时喂给模型的分组名
-#    不写它的话，分组名会退化成一长串关键词拼接
-#    （如 "IMO / MEPC / International Maritime Organization / ..."），
-#    既难看，也会让 AI 拿着这串词去瞎联想。所以每组都必须写。
+#    不写它的话，分组名会退化成一长串关键词拼接，既难看，
+#    也会让 AI 拿着这串词去瞎联想。所以每组都必须写。
 #
 #  语法：
 #    普通词  —— 命中即归入本组（同组内多词为「或」关系）
@@ -19,9 +18,13 @@
 #  ⚠️ 关键词同时作用于「热榜」和「RSS」两条数据线。
 #     因为英文 RSS 源占比高，中英文关键词都要写。
 #
-#  📌 组顺序 = 推送里的显示顺序（内容为空的组不显示）。
-#     本次把技术类组（替代燃料 / 节能技术 / 低碳技术前沿）排到最前，
-#     让技术消息优先出现在消息顶部；法规与市场类放在其后。
+#  📌 组顺序 = 推送/报告里的显示顺序（内容为空的组不显示）。
+#     本版为【法规规范优先】版：把法规与国际公约排到第 1 组、
+#     船级社规范排第 2 组，让命中这些词的新闻被优先归档，
+#     在双周报里形成靠前的「法规规范」板块。
+#
+#  ⚠️ 双周报取样窗口是 14 天，命中量约为单日的十倍。
+#     若某组刷屏（例如「企业动态」），在该组标题后加 @25 限制条数。
 #
 #  ⚠️ 另一个坑：程序的「当前区域」状态是跨组持久的。
 #     一旦写了 [GLOBAL_FILTER]，后面所有组都会被当成全局过滤词，
@@ -29,8 +32,99 @@
 # ══════════════════════════════════════════════════════════════
 
 
+[法规规范]
+# ── 第 1 组：国际公约、国家法规、强制标准（双周报的核心板块）──
+#    这一组命中后被优先归档，是报告里最靠前的内容
+IMO
+MEPC
+国际海事组织
+International Maritime Organization
+IMO 2050
+IMO DCS
+Net-Zero Framework
+net-zero framework
+净零框架
+IMO 净零框架
+MARPOL
+防止船舶污染
+附则VI
+Annex VI
+碳强度
+碳强度指标
+CII
+EEXI
+EEDI
+SEEMP
+能效指数
+船舶能效
+温室气体
+GHG
+碳排放
+绿色燃料标准
+温室气体强度
+GHG intensity
+全生命周期
+LCA
+well-to-wake
+碳税
+碳价
+碳排放交易
+EU ETS
+欧盟碳排放
+FuelEU
+FuelEU Maritime
+MRV
+CBAM
+排放控制区
+emission control area
+港口国监督
+port state control
+交通运输部
+工业和信息化部
+海事局
+双碳
+碳达峰
+碳中和
+船舶排放
+Paris Agreement
+巴黎协定
+decarbonization regulation
+emissions regulation
+new regulation
+compliance deadline
+
+
+[船级社规范]
+# ── 第 2 组：入级规范、技术通函、型式认可（设计合规依据）──
+中国船级社
+China Classification Society
+DNV
+劳氏船级社
+Lloyd's Register
+必维
+Bureau Veritas
+ClassNK
+日本海事协会
+美国船级社
+韩国船级社
+入级
+AiP
+原则性认可
+型式认可
+type approval
+技术通函
+规范更新
+统一要求
+IACS
+船级社
+rules and regulations
+class rules
+green ship notation
+船级符号
+
+
 [替代燃料]
-# ── 技术类 ①：燃料本体 ──────────────────────────────────────
+# ── 第 3 组：燃料本体 ──────────────────────────────────────
 甲醇燃料
 绿色甲醇
 绿甲醇
@@ -55,10 +149,43 @@ alternative fuel
 dual fuel
 e-fuel
 电制燃料
+燃料供应
+bunkering
+加注
 
 
-[节能技术]
-# ── 技术类 ②：能效与减排装置 ────────────────────────────────
+[低碳技术前沿]
+# ── 第 4 组：动力系统、排放控制、数字化能效 ────────────────
+燃料电池
+fuel cell
+氢燃料电池
+甲烷逃逸
+methane slip
+氨发动机
+ammonia engine
+甲醇发动机
+methanol engine
+双燃料发动机
+发动机改造
+主机改装
+retrofit
+示范项目
+首航
+数字孪生
+digital twin
+尾气处理
+蒸发气回收
+冷能利用
+减阻涂层
+高效螺旋桨
+技术路线
+technical route
+pilot project
+联合研发
+
+
+[节能减排]
+# ── 第 5 组：能效与减排装置 ────────────────────────────────
 碳捕集
 CCUS
 OCCS
@@ -78,67 +205,13 @@ wind propulsion
 energy efficiency
 节能改造
 脱碳技术
-
-
-[低碳技术前沿]
-# ── 技术类 ③：研发室重点关注的前沿技术（★本次新增）────────
-#    这一组按「船厂研发室会去检索的技术关键词」挑选，
-#    覆盖动力系统、排放控制、数字化能效三条线。
-燃料电池
-fuel cell
-氢燃料电池
-甲烷逃逸
-methane slip
-氨发动机
-ammonia engine
-甲醇发动机
-methanol engine
-双燃料发动机
-发动机改造
-主机改装
-retrofit
-型式认可
-type approval
-示范项目
-首航
-数字孪生
-digital twin
-尾气处理
-蒸发气回收
-冷能利用
-减阻涂层
-高效螺旋桨
-
-
-[法规政策]
-# ── 法规与合规（直接影响设计边界）────────────────────────────
-IMO
-MEPC
-International Maritime Organization
-Net-Zero Framework
-净零框架
-IMO 2050
-温室气体
-GHG
-碳强度
-CII
-EEXI
-EEDI
-SEEMP
-MARPOL
-碳税
-碳价
-碳排放交易
-EU ETS
-FuelEU
-MRV
-CBAM
-绿色燃料标准
-GFI
+减阻
+船体优化
+energy saving device
 
 
 [绿色船舶与市场]
-# ── 市场与技术选型的交叉区 ──────────────────────────────────
+# ── 第 6 组：市场与技术选型的交叉区 ────────────────────────
 绿色船舶
 绿色航运
 green shipping
@@ -155,10 +228,13 @@ Green Corridor
 Poseidon Principles
 甲醇船
 甲醇双燃料
+订单
+orderbook
 
 
 [企业动态]
-# ── 同行与竞争情报 ─────────────────────────────────────────
+# ── 第 7 组：同行与竞争情报（双周取样量大，限 25 条防刷屏）──
+@25
 #    招商局系（本集团）——看到自家与关联单位动态
 招商局重工
 招商局工业集团
@@ -194,20 +270,3 @@ HD Hyundai
 #    数据与研究机构
 克拉克森
 Clarksons
-
-
-[船级社认证]
-# ── 规范与认证（设计合规依据）───────────────────────────────
-中国船级社
-DNV
-劳氏船级社
-Lloyd's Register
-必维
-Bureau Veritas
-ClassNK
-日本海事协会
-美国船级社
-韩国船级社
-入级
-AiP
-原则性认可
