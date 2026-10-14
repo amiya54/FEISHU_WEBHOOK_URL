@@ -45,6 +45,9 @@ Net-Zero Framework
 net-zero framework
 净零框架
 IMO 净零框架
+net zero
+decarbonisation
+sulphur
 MARPOL
 防止船舶污染
 附则VI
@@ -125,6 +128,12 @@ green ship notation
 
 [替代燃料]
 # ── 第 3 组：燃料本体 ──────────────────────────────────────
+#    每种燃料给「英文单词 / 中文名 / 组合词组」三档。
+#    2026-10-14 实跑发现：只配 "green ammonia" 这类词组时匹配率极低，
+#    因为英文媒体标题常只写单个单词（如 "ammonia-fuelled vessels"）。
+ammonia
+methanol
+hydrogen
 甲醇燃料
 绿色甲醇
 绿甲醇
