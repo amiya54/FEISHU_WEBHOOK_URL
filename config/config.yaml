@@ -431,7 +431,7 @@ ai:
 
   model: "deepseek/deepseek-v4-flash"
 
-  api_key: "sk-f5d748bee32d45e1842acee9231990dd"                       # API Key（建议使用环境变量 AI_API_KEY）
+  api_key: "AI_API_KEY"                       # API Key（建议使用环境变量 AI_API_KEY）
   
   api_base: ""                      # 自定义 API 地址（可选，绝大多数情况留空即可）
                                     #
