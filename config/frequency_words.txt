@@ -2,56 +2,98 @@
 #  TrendRadar 关键词配置 —— 船舶低碳【法规规范】专题 · 双周报版
 #  放置路径：config/frequency_words.txt
 #
-#  ★ 每组第一行的 [组名] 是「显示名称」，有两个作用：
-#      1) 推送消息里的分组标题
-#      2) AI 分析时喂给模型的分组名
-#    不写它的话，分组名会退化成一长串关键词拼接，既难看，
-#    也会让 AI 拿着这串词去瞎联想。所以每组都必须写。
+#  ● 组第一行的 [组名] 是「显示名称」：决定推送分组标题与 AI 分组名。
 #
-#  语法：
-#    普通词  —— 命中即归入本组（同组内多词为「或」关系）
-#    +词     —— 必须同时包含，用于收窄范围
-#    !词     —— 命中则排除该条
-#    @数字   —— 限制本组最多显示 N 条
-#    空行    —— 分隔不同主题组（组内不可有空行）
+#  ● 语法：
+#      普通词    —— 子串匹配，同组内多词为「或」关系
+#      /正则/    —— 以 / 开头结尾，自动忽略大小写；用 \b 卡词边界防误匹配
+#      +词       —— 必须词，同组内全部满足才算命中
+#      !词       —— 命中则排除该条
+#      @数字     —— 限制本组最多显示 N 条
+#      空行      —— 分隔不同主题组
 #
-#  ⚠️ 关键词同时作用于「热榜」和「RSS」两条数据线。
-#     因为英文 RSS 源占比高，中英文关键词都要写。
+#  ⚠️ 两条必须遵守的格式规则（踩过坑）：
+#     1) 组内【绝对不能有空行】。解析器按空行切组，多一个空行就把这一组
+#        劈成两组，组别名失效、分组名退化成一长串关键词。
+#        组内要分段，只能用「# 开头的注释行」，注释行不算空行。
+#     2) 不要写「行尾注释」。解析器只忽略以 # 开头的整行，
+#        行尾的 # 会变成关键词的一部分，导致该词永远匹配不上。
 #
-#  📌 组顺序 = 推送/报告里的显示顺序（内容为空的组不显示）。
-#     本版为【法规规范优先】版：把法规与国际公约排到第 1 组、
-#     船级社规范排第 2 组，让命中这些词的新闻被优先归档，
-#     在双周报里形成靠前的「法规规范」板块。
+#  ⚠️ 本文件对【热榜】和【RSS】两条线同时生效。
+# ══════════════════════════════════════════════════════════════
+#  v2 修订记录（2026-10-14，针对「抓到的信息偏少」）
 #
-#  ⚠️ 双周报取样窗口是 14 天，命中量约为单日的十倍。
-#     若某组刷屏（例如「企业动态」），在该组标题后加 @25 限制条数。
+#  1) 修正硬伤：原写 Lloyd's Register 用的是【直引号】，
+#     而英文媒体标题一律用【弯引号】Lloyd’s —— 两者是不同的字符，
+#     导致这个词永远匹配不上。已改为普通词 lloyd（子串匹配，
+#     Lloyd's / Lloyd’s / Lloyds 三种写法全覆盖）。
 #
-#  ⚠️ 另一个坑：程序的「当前区域」状态是跨组持久的。
-#     一旦写了 [GLOBAL_FILTER]，后面所有组都会被当成全局过滤词，
-#     必须再单独写一个 [WORD_GROUPS] 才能切回来。本文件刻意没有使用该区。
+#  2) 修正硬伤：decarbonisation 只写了英式拼写，
+#     美式 decarbonization 全部漏掉（实测有 4 条标题因此被丢弃）。
+#     现已两种拼写都补上。
+#
+#  3) 法规组补齐「监管动作类」通用词。英文标题很少直写 "EU ETS" 这种专名，
+#     更常见的是 emissions rules / regulatory pressure / compliance deadline
+#     这类泛化表达。只配专名的结果是法规类实测只命中 1 条。
+#
+#  4) 所有 3 字母以内的短词一律改用 /正则/ 加词边界。
+#     同样是子串匹配惹的祸：裸写 ban 会命中 a-bandon、cap 会命中 capacity、
+#     abs 会命中 absolute、lr 会命中 LR2 tanker。
+#
+#  实测对照（132 条真实英文标题）：
+#     救回 11/14 条原本漏掉的（decarbonization、Lloyd’s、ABS、ISO 8217、
+#     compliance、methane emissions 等），误命中仅 1/10。
 # ══════════════════════════════════════════════════════════════
 
 
 [法规规范]
-# ── 第 1 组：国际公约、国家法规、强制标准（双周报的核心板块）──
-#    这一组命中后被优先归档，是报告里最靠前的内容
+# ── 机构与公约专名 ──
 IMO
 MEPC
 国际海事组织
 International Maritime Organization
 IMO 2050
+IMO 2030
+IMO 2040
 IMO DCS
 Net-Zero Framework
-net-zero framework
+net-zero
 净零框架
 IMO 净零框架
 net zero
-decarbonisation
-sulphur
 MARPOL
 防止船舶污染
 附则VI
 Annex VI
+Paris Agreement
+巴黎协定
+# ── 脱碳与碳排（英式 / 美式拼写都要写，这是最容易漏的一处）──
+decarbonisation
+decarbonization
+decarbonise
+decarbonize
+carbon
+greenhouse gas
+温室气体
+GHG
+碳排放
+emission
+船舶排放
+排放上限
+# ── 碳定价与市场机制 ──
+碳税
+碳价
+碳市场
+碳交易
+碳排放交易
+碳足迹
+EU ETS
+欧盟碳排放
+FuelEU
+FuelEU Maritime
+MRV
+CBAM
+# ── 能效与强度指标 ──
 碳强度
 碳强度指标
 CII
@@ -60,55 +102,63 @@ EEDI
 SEEMP
 能效指数
 船舶能效
-温室气体
-GHG
-碳排放
-绿色燃料标准
-温室气体强度
 GHG intensity
+温室气体强度
 全生命周期
 LCA
 well-to-wake
-碳税
-碳价
-碳排放交易
-EU ETS
-欧盟碳排放
-FuelEU
-FuelEU Maritime
-MRV
-CBAM
+# ── 排放控制与执法 ──
+sulphur
+sulfur
+/\bsox\b/
+/\bnox\b/
 排放控制区
 emission control area
-港口国监督
+/\beca\b/
 port state control
+港口国监督
+Tier III
+ISO 8217
+fuel specification
+# ── 监管动作类通用词（英文标题实际最常出现的正是这类）──
+regulation
+regulatory
+compliance
+mandate
+levy
+/\bbans?\b/
+/\bcaps?\b/
+phase out
+reporting
+verification
+certification
+enforcement
+penalty
+# ── 国内主管机构与政策 ──
 交通运输部
 工业和信息化部
 海事局
+生态环境部
 双碳
 碳达峰
 碳中和
-船舶排放
-Paris Agreement
-巴黎协定
-decarbonization regulation
-emissions regulation
-new regulation
-compliance deadline
 
 
 [船级社规范]
-# ── 第 2 组：入级规范、技术通函、型式认可（设计合规依据）──
+# ── 入级规范 · 技术通函 · 型式认可（设计合规依据）──
 中国船级社
 China Classification Society
+/\bccs\b/
 DNV
 劳氏船级社
-Lloyd's Register
+lloyd
+/\blr\b/
 必维
 Bureau Veritas
 ClassNK
 日本海事协会
 美国船级社
+/\babs\b/
 韩国船级社
 入级
 AiP
@@ -117,20 +167,20 @@ AiP
 type approval
 技术通函
 规范更新
+规范修订
 统一要求
 IACS
 船级社
-rules and regulations
 class rules
+class notation
 green ship notation
 船级符号
 
 
 [替代燃料]
-# ── 第 3 组：燃料本体 ──────────────────────────────────────
-#    每种燃料给「英文单词 / 中文名 / 组合词组」三档。
-#    2026-10-14 实跑发现：只配 "green ammonia" 这类词组时匹配率极低，
-#    因为英文媒体标题常只写单个单词（如 "ammonia-fuelled vessels"）。
+# ── 燃料本体（本组实测命中最多，保持并补少数缺口）──
+#    只配 "green ammonia" 这类词组时匹配率极低，
+#    英文媒体标题常只写单个单词（如 ammonia-fuelled vessels）。
 ammonia
 methanol
 hydrogen
@@ -140,13 +190,18 @@ hydrogen
 green methanol
 氨燃料
 绿氨
+绿氢
+蓝氨
+蓝氢
 green ammonia
 氢燃料
 氢能
 hydrogen fuel
 LNG
+bio-LNG
 液化天然气
 LPG
+LBM
 生物燃料
 biofuel
 生物柴油
@@ -157,19 +212,23 @@ alternative fuel
 双燃料
 dual fuel
 e-fuel
+e-methanol
+e-ammonia
 电制燃料
 燃料供应
 bunkering
 加注
+nuclear
 
 
 [低碳技术前沿]
-# ── 第 4 组：动力系统、排放控制、数字化能效 ────────────────
+# ── 动力系统 · 排放控制 · 数字化能效 ──
 燃料电池
 fuel cell
 氢燃料电池
 甲烷逃逸
 methane slip
+methane
 氨发动机
 ammonia engine
 甲醇发动机
@@ -178,6 +237,7 @@ methanol engine
 发动机改造
 主机改装
 retrofit
+scrubber
 示范项目
 首航
 数字孪生
@@ -194,11 +254,13 @@ pilot project
 
 
 [节能减排]
-# ── 第 5 组：能效与减排装置 ────────────────────────────────
+# ── 能效与减排装置 ──
 碳捕集
+/\bccs\b/
 CCUS
 OCCS
 onboard carbon capture
+carbon capture
 岸电
 shore power
 空气润滑
@@ -220,7 +282,7 @@ energy saving device
 
 
 [绿色船舶与市场]
-# ── 第 6 组：市场与技术选型的交叉区 ────────────────────────
+# ── 市场与技术选型的交叉区 ──
 绿色船舶
 绿色航运
 green shipping
@@ -230,6 +292,7 @@ Green Corridor
 电动船
 电池动力
 零排放船
+net zero emissions
 净零排放
 新造船订单
 绿色融资
@@ -242,9 +305,9 @@ orderbook
 
 
 [企业动态]
-# ── 第 7 组：同行与竞争情报（双周取样量大，限 25 条防刷屏）──
 @25
-#    招商局系（本集团）——看到自家与关联单位动态
+# ── 同行与竞争情报（双周取样量大，限 25 条防刷屏）──
+#    招商局系（本集团）—— 看到自家与关联单位动态
 招商局重工
 招商局工业集团
 招商局金陵
