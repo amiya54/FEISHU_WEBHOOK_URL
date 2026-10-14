@@ -308,7 +308,7 @@ notification:
       webhook_url: ""                 # 钉钉机器人 webhook URL
 
     wework:
-      webhook_url: ""                 # 企业微信机器人 webhook URL
+      webhook_url: "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=a8aea224-9f32-419d-a44e-2a98a1f36242"                 # 企业微信机器人 webhook URL
       msg_type: "markdown"            # 消息类型：markdown(群机器人) | text(个人微信应用)
 
     telegram:
@@ -401,7 +401,7 @@ ai:
 
   model: "deepseek/deepseek-v4-flash"
 
-  api_key: ""                       # API Key（建议使用环境变量 AI_API_KEY）
+  api_key: "sk-f5d748bee32d45e1842acee9231990dd"                       # API Key（建议使用环境变量 AI_API_KEY）
   
   api_base: ""                      # 自定义 API 地址（可选，绝大多数情况留空即可）
                                     #
