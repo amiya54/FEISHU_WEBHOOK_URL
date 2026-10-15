@@ -108,6 +108,21 @@ TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执�
       对现有 163/QQ/Gmail 配置零影响，可放心常驻。
       注意：EMAIL_FROM 仍用作邮件的 From 头，必须保持是服务商已验证的发件地址。
 
+  [G] 把 RSS 摘要带进 AI 提示词  （解决「法规表的文件号/强制/生效日期三列全是 —」）
+      法规直采源的 <description> 里带着「文件性质 / 文号 / 生效日期 / 强制性」
+      四个字段（由 scripts/fetch_regulations.py 从法规详情页抓取），但原版程序
+      **用户压根看不到**——摘要在两步里被丢掉：
+        ① trendradar/core/analyzer.py 的 count_rss_frequency()：按关键词分组时
+           **重新构造了一个 title_data 字典**，只搬 title/source/time/url 等，
+           summary 不在其中 → 原字典里的 summary 到这里就没了；
+        ② trendradar/ai/analyzer.py 的 _prepare_news_content()：构造 RSS 行时
+           只拼「[来源] 标题 | 时间」，即使摘要还在也不会写进去。
+      本补丁在①②各插一段，把摘要补回来（① 保留字段、② 追加到行尾）。
+
+      ⚠️ ② 处**只对法规直采源追加**（靠摘要里的「文件性质：」标记识别）：
+         若给全部 RSS 条目都加摘要，450 条候选会多出几万字符，白白吃掉提示词
+         预算（还可能把真正需要分析的条目挤出 max_news_for_analysis）。
+
 注意：程序自带版本检查只对 config/ 下的配置文件做「只读」比对，不覆盖源码；
 但**升级程序（重新下载 master）会覆盖以上改动**，届时重跑本脚本即可。
 """
@@ -127,6 +142,7 @@ MARK_B = "★补丁B"
 MARK_D = "★补丁D"
 MARK_E = "★补丁E"
 MARK_F = "★补丁F"
+MARK_G = "★补丁G"
 
 HEAD_TITLE = "✨ 船舶低碳情报双周报"
 
@@ -675,6 +691,74 @@ def patch_smtp_login(root, log):
     write(path, text)
 
 
+# ──────────────────────────────────────────────────────────────────────
+# [G] 把 RSS 摘要带到 AI 提示词（两处注入，缺一不可）
+# ──────────────────────────────────────────────────────────────────────
+
+# ① core/analyzer.py：count_rss_frequency() 里重建 title_data 时丢掉 summary
+G_CORE_ANCHOR = ('                    "source_name": item.get("feed_name", '
+                 'item.get("feed_id", "RSS")),\n')
+G_CORE_NEW = (
+    "                    # ★补丁G：把 summary 留到 AI —— 原版在这里重建字典时\n"
+    "                    #   把它丢掉了，下游拿不到。详见本文件头 [G] 说明。\n"
+    "                    \"summary\": str(item.get(\"summary\") or \"\")[:400],\n"
+    + G_CORE_ANCHOR
+)
+
+# ② ai/analyzer.py：拼 RSS 行时只写「[来源] 标题 | 时间」，摘要没进去
+G_RSS_ANCHOR = '                        rss_lines.append(line)\n'
+G_RSS_NEW = (
+    "                        # ★补丁G：把 RSS 摘要带进提示词（原版只传「来源 + 标题 + 时间」）\n"
+    "                        #   法规直采源的摘要里带着「文件性质 / 文号 / 生效日期 / 强制性」，\n"
+    "                        #   原版把摘要整个丢掉 → AI 建法规表时这三列只能填「—」。\n"
+    "                        #   ⚠️ 只对法规直采源追加：给全部条目都加摘要会白吃提示词预算。\n"
+    "                        _g_sum = \" \".join(str(t.get(\"summary\") or \"\").split())\n"
+    "                        if \"文件性质：\" in _g_sum:\n"
+    "                            line += \" | 摘要:\" + _g_sum[:300]\n"
+    + G_RSS_ANCHOR
+)
+
+
+def patch_rss_summary(root, log):
+    """★补丁G：让 AI 能看到 RSS 摘要（法规表三列全「—」的根治手段）。
+
+    打两处，缺一不可：
+      ① trendradar/core/analyzer.py  count_rss_frequency()
+         —— 分组时**重建了一个字典**，只搬 title/source/time/url，
+            summary 不在其中，所以到这一步就丢了；
+      ② trendradar/ai/analyzer.py    _prepare_news_content()
+         —— 拼 RSS 行时只写「[来源] 标题 | 时间」，
+            即使摘要还在也不会出现在提示词里。
+    """
+    # ① 分组时保住 summary
+    core_path = os.path.join(root, "trendradar", "core", "analyzer.py")
+    if not os.path.exists(core_path):
+        log.append("  ✗ 找不到 trendradar/core/analyzer.py，跳过 [G]①")
+    else:
+        text = read(core_path)
+        if MARK_G in text:
+            log.append("  = [G]① core/analyzer.py 已有标记，跳过")
+        else:
+            new_text, _ = replace_once(
+                text, G_CORE_ANCHOR, G_CORE_NEW,
+                "[G]① core/analyzer.py 分组时保留 summary", log)
+            write(core_path, new_text)
+
+    # ② RSS 行尾追加摘要
+    ai_path = os.path.join(root, "trendradar", "ai", "analyzer.py")
+    if not os.path.exists(ai_path):
+        log.append("  ✗ 找不到 trendradar/ai/analyzer.py，跳过 [G]②")
+        return
+    text = read(ai_path)
+    if MARK_G in text:
+        log.append("  = [G]② ai/analyzer.py 已有标记，跳过")
+        return
+    new_text, _ = replace_once(
+        text, G_RSS_ANCHOR, G_RSS_NEW,
+        "[G]② ai/analyzer.py RSS 行带摘要", log)
+    write(ai_path, new_text)
+
+
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
     root = os.path.abspath(root)
@@ -698,6 +782,8 @@ def main():
     patch_md_rendering(root, log)
     print("\n[E] SMTP 登录名可配置 (trendradar/notification/senders.py)")
     patch_smtp_login(root, log)
+    print("\n[G] RSS 摘要带进 AI 提示词 (trendradar/core/analyzer.py + ai/analyzer.py)")
+    patch_rss_summary(root, log)
 
     print()
     for line in log:
@@ -708,6 +794,8 @@ def main():
     ok = True
     for rel in ("trendradar/ai/client.py",
                 "trendradar/ai/formatter.py",
+                "trendradar/ai/analyzer.py",
+                "trendradar/core/analyzer.py",
                 "trendradar/report/html.py",
                 "trendradar/notification/senders.py",
                 "trendradar/crawler/rss/fetcher.py",
@@ -727,4 +815,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
