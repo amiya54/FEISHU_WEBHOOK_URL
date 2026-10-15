@@ -123,6 +123,20 @@ TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执�
          若给全部 RSS 条目都加摘要，450 条候选会多出几万字符，白白吃掉提示词
          预算（还可能把真正需要分析的条目挤出 max_news_for_analysis）。
 
+  [H] 报告顶部信息卡适配「纯 RSS 运行」
+      热榜命中 0/0、热榜平台 --、新增热点 0 三格与「AI 分析 0 + 111」
+      在纯 RSS 运行下恒为无意义值；改为条件渲染（platform_total > 0 才显示），
+      日后重新开启热榜源时格子自动恢复。
+
+  [I] 报告搜索框加「看得见的反馈」
+      原版 handleSearch() 只把不匹配的条目 display:none，别的什么都不做；
+      而 AI 双周报不参与搜索又占着页面最上方，真正会被搜索的 RSS 条目在
+      页面最底部 —— 用户在搜索框里打字，眼前毫无变化，观感是「搜索没反应」
+      （实测确认过滤其实生效了，只是看不见）。
+      补丁后：输入框下方实时显示「命中 N 条 · 仅下方 RSS 条目」+「跳到第一条 ↓」；
+      命中条目黄底高亮；滤空的分组整组隐藏、分组计数同步改成「命中 N 条」；
+      清空关键词后全部还原。
+
 注意：程序自带版本检查只对 config/ 下的配置文件做「只读」比对，不覆盖源码；
 但**升级程序（重新下载 master）会覆盖以上改动**，届时重跑本脚本即可。
 """
@@ -143,6 +157,8 @@ MARK_D = "★补丁D"
 MARK_E = "★补丁E"
 MARK_F = "★补丁F"
 MARK_G = "★补丁G"
+MARK_H = "★补丁H"
+MARK_I = "★补丁I"
 
 HEAD_TITLE = "✨ 船舶低碳情报双周报"
 
@@ -719,6 +735,105 @@ G_RSS_NEW = (
 )
 
 
+# ──────────────────────────────────────────────────────────────────────
+# [H] 报告顶部信息卡适配「纯 RSS 运行」
+#     本项目把 platforms.sources 清空、只跑 RSS（见 config.yaml 头部说明），
+#     于是信息卡里三格热榜口径的指标恒为无意义值：
+#         热榜命中  0 / 0        热榜平台  --        新增热点  0
+#     另「AI 分析」会拼成 "0 + 111"。
+#     本补丁统一改成：只有真的配了热榜（platform_total > 0）时才显示热榜格子。
+#     ——不删死，只做条件渲染：日后若重新开启热榜源，格子自动恢复。
+# ──────────────────────────────────────────────────────────────────────
+
+# ③ 热榜命中
+H_TREND_ANCHOR = (
+    '    # 3. 热榜命中\n'
+    '    html += f"""\n'
+    '                    <div class="info-item">\n'
+    '                        <span class="info-label">热榜命中</span>\n'
+    '                        <span class="info-value">{hot_news_count} / {hotlist_total}</span>\n'
+    '                    </div>"""\n'
+)
+H_TREND_NEW = (
+    '    # 3. 热榜命中（★补丁H：纯 RSS 运行没有热榜，整格隐藏，不再显示无意义的 0 / 0）\n'
+    '    if platform_total > 0 or hotlist_total > 0:\n'
+    '        html += f"""\n'
+    '                        <div class="info-item">\n'
+    '                            <span class="info-label">热榜命中</span>\n'
+    '                            <span class="info-value">{hot_news_count} / {hotlist_total}</span>\n'
+    '                        </div>"""\n'
+)
+
+# ④ 热榜平台
+H_PLATFORM_ANCHOR = (
+    '    # 5. 热榜平台\n'
+    '    if platform_total > 0:\n'
+    '        platform_value = f"{platform_success}/{platform_total}"\n'
+    '    else:\n'
+    '        platform_value = "--"\n'
+    '    html += f"""\n'
+    '                    <div class="info-item">\n'
+    '                        <span class="info-label">热榜平台</span>\n'
+    '                        <span class="info-value">{platform_value}</span>\n'
+    '                    </div>"""\n'
+)
+H_PLATFORM_NEW = (
+    '    # 5. 热榜平台（★补丁H：纯 RSS 运行没有热榜，整格隐藏，不再显示 "--"）\n'
+    '    if platform_total > 0:\n'
+    '        html += f"""\n'
+    '                        <div class="info-item">\n'
+    '                            <span class="info-label">热榜平台</span>\n'
+    '                            <span class="info-value">{platform_success}/{platform_total}</span>\n'
+    '                        </div>"""\n'
+)
+
+# ⑤ 新增热点（热榜新增口径；关键词模式下 rss_new_items 恒为 None）
+H_NEW_ANCHOR = (
+    '    # 7. 新增热点（热榜新增 + RSS 新增）\n'
+    '    rss_new_count = sum(len(stat.get("titles", [])) for stat in (rss_new_items or []))\n'
+    '    total_new = new_count + rss_new_count\n'
+    '    new_value = f"{new_count} + {rss_new_count}" if total_new > 0 else "0"\n'
+    '    html += f"""\n'
+    '                    <div class="info-item">\n'
+    '                        <span class="info-label">新增热点</span>\n'
+    '                        <span class="info-value">{new_value}</span>\n'
+    '                    </div>"""\n'
+)
+H_NEW_NEW = (
+    '    # 7. 新增热点（★补丁H：这是「热榜新增」口径，纯 RSS 运行恒为 0 → 整格隐藏；\n'
+    '    #    关键词匹配模式下 rss_new_items 恒为 None，RSS 侧本就没有新增计数可显示）\n'
+    '    if platform_total > 0:\n'
+    '        rss_new_count = sum(len(stat.get("titles", [])) for stat in (rss_new_items or []))\n'
+    '        total_new = new_count + rss_new_count\n'
+    '        new_value = f"{new_count} + {rss_new_count}" if total_new > 0 else "0"\n'
+    '        html += f"""\n'
+    '                        <div class="info-item">\n'
+    '                            <span class="info-label">新增热点</span>\n'
+    '                            <span class="info-value">{new_value}</span>\n'
+    '                        </div>"""\n'
+)
+
+# ⑥ AI 分析格的取值（原版把热榜的 0 也拼进去 → "0 + 111"）
+H_AI_ANCHOR = (
+    '        ai_parts = [str(hotlist_analyzed)]\n'
+    '        if ai_include_rss:\n'
+    '            ai_parts.append(str(rss_analyzed))\n'
+    '        if ai_include_standalone:\n'
+    '            ai_parts.append(str(standalone_analyzed))\n'
+    '        ai_value = " + ".join(ai_parts) if sum(int(p) for p in ai_parts) > 0 else "0"\n'
+)
+H_AI_NEW = (
+    '        # ★补丁H：纯 RSS 运行（platform_total == 0）不把热榜的 0 计入，\n'
+    '        #   否则 AI 分析格会显示成 "0 + 111" 这种没意义的拼接。\n'
+    '        ai_parts = [] if platform_total == 0 else [str(hotlist_analyzed)]\n'
+    '        if ai_include_rss:\n'
+    '            ai_parts.append(str(rss_analyzed))\n'
+    '        if ai_include_standalone:\n'
+    '            ai_parts.append(str(standalone_analyzed))\n'
+    '        ai_value = " + ".join(ai_parts) if ai_parts and sum(int(p) for p in ai_parts) > 0 else "0"\n'
+)
+
+
 def patch_rss_summary(root, log):
     """★补丁G：让 AI 能看到 RSS 摘要（法规表三列全「—」的根治手段）。
 
@@ -759,6 +874,289 @@ def patch_rss_summary(root, log):
     write(ai_path, new_text)
 
 
+def patch_report_infocard(root, log):
+    """★补丁H：报告顶部信息卡适配「纯 RSS 运行」。
+
+    本项目把 platforms.sources 清空、只跑 RSS，信息卡里三格热榜口径的指标
+    因此恒为无意义值：热榜命中 0 / 0、热榜平台 --、新增热点 0；
+    「AI 分析」还会拼成 "0 + 111"。
+
+    本补丁**不做删除**，只改条件渲染：只有真的配了热榜（platform_total > 0）
+    时才输出热榜格子，纯 RSS 运行自动隐藏，并把 AI 分析值里的 0 前缀去掉。
+    这样日后重新开启热榜源时格子会自动回来，不会丢信息。
+
+    四处替换必须全部命中才写入，避免出现「半改」的不一致状态。
+    """
+    path = os.path.join(root, "trendradar", "report", "html.py")
+    if not os.path.exists(path):
+        log.append("  ✗ 找不到 trendradar/report/html.py，跳过 [H]")
+        return
+    text = read(path)
+    if MARK_H in text:
+        log.append("  = [H] 报告信息卡：已打过，跳过")
+        return
+
+    pairs = [
+        (H_TREND_ANCHOR,    H_TREND_NEW,    "[H]③ 热榜命中 → 纯 RSS 模式整格隐藏"),
+        (H_PLATFORM_ANCHOR, H_PLATFORM_NEW, "[H]④ 热榜平台 → 纯 RSS 模式整格隐藏"),
+        (H_NEW_ANCHOR,      H_NEW_NEW,      "[H]⑤ 新增热点 → 纯 RSS 模式整格隐藏"),
+        (H_AI_ANCHOR,       H_AI_NEW,       "[H]⑥ AI 分析值 → 去掉热榜的 0 前缀"),
+    ]
+    ok_all = True
+    for anchor, new, label in pairs:
+        text, ok = replace_once(text, anchor, new, label, log)
+        ok_all = ok_all and ok
+
+    if ok_all:
+        write(path, text)
+    else:
+        log.append("  ⚠ [H] 有锚点未命中，为免半改，本次未写入（原文件保持不变）")
+
+
+# ──────────────────────────────────────────────────────────────────────
+# [I] 报告搜索框：加「看得见的反馈」
+#     原版 handleSearch() 的全部行为，就是把不匹配的 .news-item / .rss-item
+#     设成 display:none，别的一概不做。而本项目报告的主体是 AI 双周报
+#     （.ai-section）——它既不参与搜索、又占据页面最上方，真正会被搜索的
+#     RSS 条目却在页面最底部（5 屏以外）。于是用户在上方搜索框里打字，
+#     眼前这一屏毫无变化，观感就是「搜索没反应」（实测确认：过滤其实生效，
+#     15 条法规原文被正确滤到 2 条，只是看不见）。
+#
+#     本补丁补四样：
+#       ① 输入框下方实时显示「命中 N 条」，点「跳到第一条 ↓」可直接定位
+#       ② 命中的条目高亮（黄底 + 橙色左边框）
+#       ③ 被滤空的分组整组隐藏，分组计数同步改成「命中 N 条」
+#       ④ 清空关键词后全部还原（分组、计数、高亮一并复原）
+#
+#     ⚠️ 仍然只搜索「下方条目」，不搜索 AI 双周报：那是编排好的成稿，
+#        按关键词把它拆散反而没法读。故提示文案里明写搜索范围。
+# ──────────────────────────────────────────────────────────────────────
+
+I_CSS_ANCHOR = "            .search-input::placeholder { color: #9ca3af; }\n"
+I_CSS_BLOCK = """            /* ★补丁I：搜索的可见反馈（命中提示 / 高亮） */
+            .search-hint {
+                display: none;
+                margin-top: 8px;
+                font-size: 13px;
+                line-height: 1.6;
+                color: #6b7280;
+            }
+            .search-hint.show { display: block; }
+            .search-hint b { color: #4f46e5; font-weight: 600; }
+            .search-jump {
+                margin-left: 8px;
+                color: #059669;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+            .search-jump:hover { color: #047857; }
+            .rss-item.search-hit,
+            .news-item.search-hit {
+                background: #fffbeb !important;
+                border-left-color: #f59e0b !important;
+                box-shadow: inset 0 0 0 1px #fde68a;
+            }
+"""
+
+I_CSS_DARK_ANCHOR = "            body.dark-mode .search-input::placeholder { color: #64748b; }\n"
+I_CSS_DARK_BLOCK = """            /* ★补丁I：搜索反馈（深色模式） */
+            body.dark-mode .search-hint { color: #94a3b8; }
+            body.dark-mode .search-hint b { color: #a5b4fc; }
+            body.dark-mode .search-jump { color: #6ee7b7; }
+            body.dark-mode .search-jump:hover { color: #34d399; }
+            body.dark-mode .rss-item.search-hit,
+            body.dark-mode .news-item.search-hit {
+                background: #3a3113 !important;
+                border-left-color: #fbbf24 !important;
+                box-shadow: inset 0 0 0 1px #6b4e08;
+            }
+"""
+
+# 搜索栏 HTML：补一个「命中提示」容器（并顺手把 placeholder 说准，
+# 原版写着「搜索新闻标题...」，本项目报告里同时有法规条目与英文新闻）
+I_HTML_ANCHOR = (
+    '                <div class="search-bar">\n'
+    '                    <input type="text" class="search-input" placeholder="搜索新闻标题..." oninput="handleSearch(this.value)">\n'
+    '                </div>'
+)
+I_HTML_NEW = (
+    '                <div class="search-bar">\n'
+    '                    <!-- ★补丁I：placeholder 说准搜索范围；下方容器显示命中反馈 -->\n'
+    '                    <input type="text" class="search-input" placeholder="搜索下方 RSS 条目标题..." oninput="handleSearch(this.value)">\n'
+    '                    <div class="search-hint" id="search-hint"></div>\n'
+    '                </div>'
+)
+
+I_JS_ANCHOR = (
+    '            var handleSearch = (function() {\n'
+    '                var timer = null;\n'
+    '                return function(query) {\n'
+    '                    clearTimeout(timer);\n'
+    '                    timer = setTimeout(function() {\n'
+    '                        query = query.toLowerCase();\n'
+    "                        document.querySelectorAll('.news-item').forEach(function(item) {\n"
+    "                            var title = (item.querySelector('.news-title') || {}).textContent || '';\n"
+    "                            item.style.display = (!query || title.toLowerCase().indexOf(query) !== -1) ? '' : 'none';\n"
+    '                        });\n'
+    "                        document.querySelectorAll('.rss-item').forEach(function(item) {\n"
+    "                            var title = (item.querySelector('.rss-title') || {}).textContent || '';\n"
+    "                            item.style.display = (!query || title.toLowerCase().indexOf(query) !== -1) ? '' : 'none';\n"
+    '                        });\n'
+    '                    }, 200);\n'
+    '                };\n'
+    '            })();\n'
+)
+
+I_JS_NEW = """            // ★补丁I：搜索加可见反馈 —— 命中计数 / 高亮 / 空分组隐藏 / 一键跳转
+            //   原版只做「不匹配就 display:none」；而 AI 双周报不参与搜索又占着
+            //   页面最上方，于是打字时眼前毫无变化，观感成了「搜索没反应」。
+            var handleSearch = (function() {
+                var timer = null;
+
+                function titleText(item, titleSelector) {
+                    var el = item.querySelector(titleSelector);
+                    return el ? (el.textContent || '') : '';
+                }
+
+                function visibleCount(group) {
+                    var n = 0;
+                    group.querySelectorAll('.rss-item, .news-item').forEach(function(el) {
+                        if (el.style.display !== 'none') n++;
+                    });
+                    return n;
+                }
+
+                // 分组计数：过滤时显示「命中 N 条」，清空后还原原文
+                function applyGroup(group, countSelector, filtering) {
+                    var countEl = group.querySelector(countSelector);
+                    if (countEl && countEl.dataset.fullCount === undefined) {
+                        countEl.dataset.fullCount = countEl.textContent;
+                    }
+                    if (!filtering) {
+                        group.style.display = '';
+                        if (countEl) countEl.textContent = countEl.dataset.fullCount;
+                        return;
+                    }
+                    var n = visibleCount(group);
+                    group.style.display = n > 0 ? '' : 'none';
+                    if (countEl) countEl.textContent = n > 0 ? ('命中 ' + n + ' 条') : '0 条';
+                }
+
+                function applySectionCount(total, filtering) {
+                    var el = document.querySelector('.rss-section-count');
+                    if (!el) return;
+                    if (el.dataset.fullCount === undefined) el.dataset.fullCount = el.textContent;
+                    el.textContent = filtering ? ('命中 ' + total + ' 条') : el.dataset.fullCount;
+                }
+
+                return function(query) {
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        var raw = (query || '').trim();
+                        var q = raw.toLowerCase();
+                        var hits = [];
+                        var rssHits = 0;
+
+                        document.querySelectorAll('.news-item').forEach(function(item) {
+                            if (!q) {
+                                item.style.display = '';
+                                item.classList.remove('search-hit');
+                                return;
+                            }
+                            var ok = titleText(item, '.news-title').toLowerCase().indexOf(q) !== -1;
+                            item.style.display = ok ? '' : 'none';
+                            if (ok) { item.classList.add('search-hit'); hits.push(item); }
+                            else { item.classList.remove('search-hit'); }
+                        });
+
+                        document.querySelectorAll('.rss-item').forEach(function(item) {
+                            if (!q) {
+                                item.style.display = '';
+                                item.classList.remove('search-hit');
+                                return;
+                            }
+                            var ok = titleText(item, '.rss-title').toLowerCase().indexOf(q) !== -1;
+                            item.style.display = ok ? '' : 'none';
+                            if (ok) {
+                                item.classList.add('search-hit');
+                                hits.push(item);
+                                rssHits++;
+                            } else {
+                                item.classList.remove('search-hit');
+                            }
+                        });
+
+                        document.querySelectorAll('.feed-group').forEach(function(g) {
+                            applyGroup(g, '.feed-count', !!q);
+                        });
+                        document.querySelectorAll('.word-group').forEach(function(g) {
+                            applyGroup(g, '.word-count', !!q);
+                        });
+                        applySectionCount(rssHits, !!q);
+
+                        var hint = document.getElementById('search-hint');
+                        if (!hint) return;
+                        hint.className = 'search-hint';
+                        hint.textContent = '';
+                        if (!q) return;
+
+                        hint.className = 'search-hint show';
+                        if (hits.length === 0) {
+                            hint.appendChild(document.createTextNode('未命中「' + raw + '」 · 搜索范围仅限下方 RSS 条目'));
+                            return;
+                        }
+                        hint.appendChild(document.createTextNode('命中 '));
+                        var strong = document.createElement('b');
+                        strong.textContent = String(hits.length);
+                        hint.appendChild(strong);
+                        hint.appendChild(document.createTextNode(' 条（仅下方 RSS 条目）'));
+                        var jump = document.createElement('span');
+                        jump.className = 'search-jump';
+                        jump.textContent = '跳到第一条 ↓';
+                        jump.addEventListener('click', function() {
+                            hits[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        });
+                        hint.appendChild(jump);
+                    }, 200);
+                };
+            })();
+"""
+
+
+def patch_search_feedback(root, log):
+    """★补丁I：给报告搜索框加「看得见的反馈」。
+
+    四处替换（亮色 CSS / 深色 CSS / 搜索栏 HTML / handleSearch JS），
+    必须全部命中才写入，避免出现「半改」的不一致状态。
+    """
+    path = os.path.join(root, "trendradar", "report", "html.py")
+    if not os.path.exists(path):
+        log.append("  ✗ 找不到 trendradar/report/html.py，跳过 [I]")
+        return
+    text = read(path)
+    if MARK_I in text:
+        log.append("  = [I] 搜索反馈：已打过，跳过")
+        return
+
+    pairs = [
+        (I_CSS_ANCHOR,      I_CSS_ANCHOR + I_CSS_BLOCK,  "[I]⑦ 搜索反馈样式（亮色）"),
+        (I_CSS_DARK_ANCHOR, I_CSS_DARK_ANCHOR + I_CSS_DARK_BLOCK, "[I]⑧ 搜索反馈样式（深色）"),
+        (I_HTML_ANCHOR,     I_HTML_NEW,                   "[I]⑨ 搜索栏加命中提示容器"),
+        (I_JS_ANCHOR,       I_JS_NEW,                     "[I]⑩ handleSearch 加反馈逻辑"),
+    ]
+    ok_all = True
+    for anchor, new, label in pairs:
+        text, ok = replace_once(text, anchor, new, label, log)
+        ok_all = ok_all and ok
+
+    if ok_all:
+        write(path, text)
+    else:
+        log.append("  ⚠ [I] 有锚点未命中，为免半改，本次未写入（原文件保持不变）")
+
+
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else os.getcwd()
     root = os.path.abspath(root)
@@ -784,6 +1182,10 @@ def main():
     patch_smtp_login(root, log)
     print("\n[G] RSS 摘要带进 AI 提示词 (trendradar/core/analyzer.py + ai/analyzer.py)")
     patch_rss_summary(root, log)
+    print("\n[H] 报告信息卡适配纯 RSS (trendradar/report/html.py)")
+    patch_report_infocard(root, log)
+    print("\n[I] 报告搜索框加可见反馈 (trendradar/report/html.py)")
+    patch_search_feedback(root, log)
 
     print()
     for line in log:
@@ -815,3 +1217,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
