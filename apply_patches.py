@@ -137,6 +137,21 @@ TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执�
       命中条目黄底高亮；滤空的分组整组隐藏、分组计数同步改成「命中 N 条」；
       清空关键词后全部还原。
 
+  [J] 搜索加「中英同义词别名表」（叠加在 [I] 之上）
+      用户搜「氨动力散货船」命中 0 条。实测：该词全页出现 10 处，**全部在
+      AI 双周报里**（是 AI 把英文新闻译成中文后的概括用词），而 RSS 原标题是
+      英文 —— ammonia-powered bulker / dry bulk carrier / bulk carrier。
+      搜索是纯子串匹配、不做翻译，中文词必然 0 命中；刚好搜的就是英文标题时，
+      用户却只记得中文说法（他是在上面 AI 双周报里读到这个词的）。
+      补丁后：内置一张「同义簇」表（中文词与英文词同组，如
+          氨燃料 / 氨动力 / 氨 / ammonia / nh3 / ammonia-powered
+          散货船 / bulker / bulk carrier / dry bulk
+      ），查询词命中任一成员，就把整组词一起拿去检索，命中后再把「实际用上的
+      同义词」写进提示条（如「命中 5 条 · 同义词 ammonia / bulker 一并检索」）。
+      反向同样成立：搜 ammonia 也能搜到中文标题的「氨燃料…」条目。
+      ⚠️ 仍不搜 AI 双周报正文（成稿不拆散）；要加词直接改脚本里的
+      SEARCH_SYNONYMS 数组即可，中英文词条都能加。
+
 注意：程序自带版本检查只对 config/ 下的配置文件做「只读」比对，不覆盖源码；
 但**升级程序（重新下载 master）会覆盖以上改动**，届时重跑本脚本即可。
 """
@@ -159,6 +174,7 @@ MARK_F = "★补丁F"
 MARK_G = "★补丁G"
 MARK_H = "★补丁H"
 MARK_I = "★补丁I"
+MARK_J = "★补丁J"
 
 HEAD_TITLE = "✨ 船舶低碳情报双周报"
 
@@ -1125,6 +1141,224 @@ I_JS_NEW = """            // ★补丁I：搜索加可见反馈 —— 命中计
 """
 
 
+# ──────────────────────────────────────────────────────────────────────
+# [J] 搜索的中英同义词别名表（叠加在 [I] 之上）
+#     问题：用户搜「氨动力散货船」0 命中。该词全页 10 处全在 AI 双周报里
+#           （AI 把英文新闻译成中文的概括用词），RSS 原标题却是英文
+#           （ammonia-powered bulker / dry bulk carrier），纯子串匹配搜不到。
+#     解法：一张「同义簇」表，查询词命中任一成员就把整组词一起检索。
+#           表放在 html.py 的 handleSearch 里，改动只影响匹配，不动高亮/计数。
+#     ⚠️ 本补丁的 5 个锚点全部落在 [I] 重写后的 handleSearch 里，
+#        因此必须在 [I] 之后运行（脚本里 patch_search_synonyms 已排在 [I] 之后）。
+# ──────────────────────────────────────────────────────────────────────
+
+J_SYN_TABLE = '''                // ★补丁J：中英同义词别名表
+                //   报告里的中文词几乎都来自 AI 双周报的概括（如「氨动力散货船」），
+                //   而 RSS 原标题是英文（ammonia-powered bulker），纯子串匹配必然 0 命中。
+                //   每组是一个「同义簇」：命中任一成员，整组词一起参与检索。
+                //   要加词，直接往对应数组里追加即可，中英文词条都行。
+                var SEARCH_SYNONYMS = [
+                    ["氨燃料", "氨动力", "氨", "ammonia", "nh3", "ammonia-powered", "ammonia-fuelled", "ammonia bunkering"],
+                    ["甲醇", "绿色甲醇", "甲醇加注", "methanol", "e-methanol", "bio-methanol", "green methanol"],
+                    ["散货船", "干散货船", "bulker", "bulkers", "bulk carrier", "dry bulk", "dry cargo"],
+                    ["液化天然气", "lng", "liquefied natural gas", "bio-lng", "lbm", "biomethane", "bio-methane", "生物甲烷"],
+                    ["氢", "氢燃料", "氢能", "氢动力", "hydrogen", "h2"],
+                    ["加注", "加注作业", "燃料加注", "bunkering", "bunkering operation", "fuel supply"],
+                    ["岸电", "shore power", "cold ironing", "onshore power"],
+                    ["能效", "能效指数", "eedi", "eexi", "cii", "energy efficiency", "carbon intensity indicator"],
+                    ["风助推进", "风力助推", "转子帆", "旋筒风帆", "风帆", "wind-assisted propulsion", "rotor sail", "rotor sails", "flettner"],
+                    ["碳捕集", "碳捕集封存", "ccs", "ccus", "carbon capture"],
+                    ["脱碳", "温室气体", "净零", "减排", "碳排放", "ghg", "greenhouse gas", "net-zero", "net zero", "decarbonisation", "decarbonization"],
+                    ["国际海事组织", "imo", "marpol"],
+                    ["欧盟碳市场", "eu ets", "emissions trading system"],
+                    ["船用燃料", "燃料油", "marine fuel", "fuel oil", "vlsfo", "iso 8217"],
+                    ["核动力", "海上核能", "浮动核电站", "nuclear", "nuclear power", "smr"],
+                    ["电池动力", "电池", "纯电动", "混合动力", "燃料电池", "battery", "batteries", "hybrid-electric", "hybrid propulsion", "fuel cell", "fuel cells"],
+                    ["生物燃料", "biofuel", "biofuels", "biodiesel", "fame", "hvo"],
+                    ["船级社", "中国船级社", "classification society", "class society", "abs", "dnv", "classnk", "nkk", "bureau veritas", "lloyd's register"],
+                    ["碳税", "碳价", "carbon tax", "carbon price", "carbon levy"],
+                    ["双燃料", "dual-fuel", "dual fuel"]
+                ];
+
+                function _isCJK(s) {
+                    return /[\\u4e00-\\u9fa5]/.test(s);
+                }
+
+                // 单个词条是否「触发」本组：双向包含；拉丁文短词加长度门槛，防误触发
+                function _memberHits(m, q) {
+                    if (!m || !q) return false;
+                    if (m === q) return true;
+                    if (_isCJK(m)) return m.indexOf(q) !== -1 || q.indexOf(m) !== -1;
+                    if (q.length >= 3 && m.indexOf(q) !== -1) return true;
+                    if (m.length >= 3 && q.indexOf(m) !== -1) return true;
+                    return false;
+                }
+
+                // 由查询词展开出的检索词表；没命中任何同义簇时就只有它自己
+                function _qTerms(q) {
+                    if (!q) return [];
+                    var terms = [q];
+                    var seen = {};
+                    seen[q] = 1;
+                    SEARCH_SYNONYMS.forEach(function(group) {
+                        var on = group.some(function(m) { return _memberHits(m, q); });
+                        if (!on) return;
+                        group.forEach(function(m) {
+                            var t = m.toLowerCase();
+                            if (!seen[t]) { seen[t] = 1; terms.push(t); }
+                        });
+                    });
+                    return terms;
+                }
+
+                // 展开出的、不是原查询词的那部分（用来写提示文案）
+                function _extraTerms(terms, q) {
+                    var out = [];
+                    for (var i = 0; i < terms.length; i++) {
+                        if (terms[i] !== q) out.push(terms[i]);
+                    }
+                    return out;
+                }
+
+                // 标题命中哪个检索词：返回命中的那个词，没命中返回空串
+                function _firstHit(title, terms) {
+                    var low = (title || '').toLowerCase();
+                    for (var i = 0; i < terms.length; i++) {
+                        if (low.indexOf(terms[i]) !== -1) return terms[i];
+                    }
+                    return "";
+                }
+
+                // 提示文案里的词表缩写：最多列 4 个，多了加「等」
+                function _synBrief(list) {
+                    var show = list.slice(0, 4);
+                    return show.join(' / ') + (list.length > show.length ? ' 等' : '');
+                }
+
+'''
+
+J_TABLE_ANCHOR = "                // 分组计数：过滤时显示「命中 N 条」，清空后还原原文\n"
+
+J_TERMS_ANCHOR = (
+    "                        var raw = (query || '').trim();\n"
+    "                        var q = raw.toLowerCase();\n"
+)
+J_TERMS_NEW = J_TERMS_ANCHOR + (
+    "                        var terms = _qTerms(q);           // ★补丁J：展开中英同义词\n"
+    "                        var triedSyn = _extraTerms(terms, q);\n"
+    "                        var usedSyn = {};                 // ★补丁J：真的命中的同义词\n"
+)
+
+J_NEWS_ANCHOR = (
+    "                            var ok = titleText(item, '.news-title').toLowerCase().indexOf(q) !== -1;\n"
+)
+J_NEWS_NEW = (
+    "                            var hitTerm = _firstHit(titleText(item, '.news-title'), terms);\n"
+    "                            var ok = hitTerm !== '';\n"
+    "                            if (ok && hitTerm !== q) usedSyn[hitTerm] = 1;\n"
+)
+
+J_RSS_ANCHOR = (
+    "                            var ok = titleText(item, '.rss-title').toLowerCase().indexOf(q) !== -1;\n"
+)
+J_RSS_NEW = (
+    "                            var hitTerm = _firstHit(titleText(item, '.rss-title'), terms);\n"
+    "                            var ok = hitTerm !== '';\n"
+    "                            if (ok && hitTerm !== q) usedSyn[hitTerm] = 1;\n"
+)
+
+J_HINT_ANCHOR = (
+    "                        hint.className = 'search-hint show';\n"
+    "                        if (hits.length === 0) {\n"
+    "                            hint.appendChild(document.createTextNode('未命中「' + raw + '」 · 搜索范围仅限下方 RSS 条目'));\n"
+    "                            return;\n"
+    "                        }\n"
+    "                        hint.appendChild(document.createTextNode('命中 '));\n"
+    "                        var strong = document.createElement('b');\n"
+    "                        strong.textContent = String(hits.length);\n"
+    "                        hint.appendChild(strong);\n"
+    "                        hint.appendChild(document.createTextNode(' 条（仅下方 RSS 条目）'));\n"
+    "                        var jump = document.createElement('span');\n"
+    "                        jump.className = 'search-jump';\n"
+    "                        jump.textContent = '跳到第一条 ↓';\n"
+)
+J_HINT_NEW = (
+    "                        // ★补丁J：提示文案把「同义词」也说清楚\n"
+    "                        hint.className = 'search-hint show';\n"
+    "                        if (hits.length === 0) {\n"
+    "                            hint.appendChild(document.createTextNode('未命中「' + raw + '」'));\n"
+    "                            if (triedSyn.length) {\n"
+    "                                hint.appendChild(document.createTextNode(' · 已试同义词 '));\n"
+    "                                var tEl = document.createElement('b');\n"
+    "                                tEl.textContent = _synBrief(triedSyn);\n"
+    "                                hint.appendChild(tEl);\n"
+    "                            }\n"
+    "                            hint.appendChild(document.createTextNode(' · 只搜下方 RSS 条目标题，上方 AI 双周报不参与'));\n"
+    "                            return;\n"
+    "                        }\n"
+    "                        hint.appendChild(document.createTextNode('命中 '));\n"
+    "                        var strong = document.createElement('b');\n"
+    "                        strong.textContent = String(hits.length);\n"
+    "                        hint.appendChild(strong);\n"
+    "                        hint.appendChild(document.createTextNode(' 条（仅下方 RSS 条目标题）'));\n"
+    "                        var syns = Object.keys(usedSyn);\n"
+    "                        if (syns.length) {\n"
+    "                            hint.appendChild(document.createTextNode(' · 同义词 '));\n"
+    "                            var sEl = document.createElement('b');\n"
+    "                            sEl.textContent = _synBrief(syns);\n"
+    "                            hint.appendChild(sEl);\n"
+    "                            hint.appendChild(document.createTextNode(' 一并检索'));\n"
+    "                        }\n"
+    "                        var jump = document.createElement('span');\n"
+    "                        jump.className = 'search-jump';\n"
+    "                        jump.textContent = ' · 跳到第一条 ↓';\n"
+)
+
+
+def patch_search_synonyms(root, log):
+    """★补丁J：报告搜索加「中英同义词别名表」。
+
+    用户搜「氨动力散货船」0 命中。实测该词全页出现 10 处，**全部在 AI 双周报**
+    （AI 把英文新闻译成中文后的概括用词），而 RSS 原标题是英文
+    （ammonia-powered bulker / dry bulk carrier）——搜索是纯子串匹配、不做翻译，
+    中文词必然搜不到。
+
+    补法：在 [I] 的 handleSearch 里插一张「同义簇」表（中文词与英文词同组），
+    查询词命中任一成员就把整组词一起拿去检索；高亮 / 计数 / 跳转行为一律不变。
+    五处替换，必须全部命中才写入，避免出现「半改」的不一致状态。
+
+    ⚠️ 依赖 [I]：锚点全部落在 [I] 重写后的 handleSearch 里，未打 [I] 时自动跳过。
+    """
+    path = os.path.join(root, "trendradar", "report", "html.py")
+    if not os.path.exists(path):
+        log.append("  ✗ 找不到 trendradar/report/html.py，跳过 [J]")
+        return
+    text = read(path)
+    if MARK_J in text:
+        log.append("  = [J] 搜索同义词：已打过，跳过")
+        return
+    if MARK_I not in text:
+        log.append("  ✗ [J] 需要先打 [I]（未找到 ★补丁I 签名），已跳过")
+        return
+
+    pairs = [
+        (J_TABLE_ANCHOR, J_TABLE_ANCHOR + J_SYN_TABLE, "[J]⑪ 插入中英同义词别名表 + 匹配函数"),
+        (J_TERMS_ANCHOR, J_TERMS_NEW,                  "[J]⑫ 查询词展开成检索词表"),
+        (J_NEWS_ANCHOR,  J_NEWS_NEW,                   "[J]⑬ 新闻条目按同义词匹配"),
+        (J_RSS_ANCHOR,   J_RSS_NEW,                    "[J]⑭ RSS 条目按同义词匹配"),
+        (J_HINT_ANCHOR,  J_HINT_NEW,                   "[J]⑮ 命中提示带上同义词文案"),
+    ]
+    ok_all = True
+    for anchor, new, label in pairs:
+        text, ok = replace_once(text, anchor, new, label, log)
+        ok_all = ok_all and ok
+
+    if ok_all:
+        write(path, text)
+    else:
+        log.append("  ⚠ [J] 有锚点未命中，为免半改，本次未写入（原文件保持不变）")
+
+
 def patch_search_feedback(root, log):
     """★补丁I：给报告搜索框加「看得见的反馈」。
 
@@ -1186,6 +1420,8 @@ def main():
     patch_report_infocard(root, log)
     print("\n[I] 报告搜索框加可见反馈 (trendradar/report/html.py)")
     patch_search_feedback(root, log)
+    print("\n[J] 搜索中英同义词别名表 (trendradar/report/html.py，需先打 [I])")
+    patch_search_synonyms(root, log)
 
     print()
     for line in log:
