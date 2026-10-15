@@ -130,6 +130,45 @@ CTX.verify_mode = ssl.CERT_NONE
 
 
 # ────────────────────────────────────────────────────────────────────────
+# 船舶低碳相关性白名单（★ 这道闸是本次新增的核心）
+# ────────────────────────────────────────────────────────────────────────
+# ⚠️ 为什么必须要有这道闸：
+#   船级社的「规范 / 指南」栏目是**全专业**的 —— 结构、材料、焊接、消防、
+#   救生、海洋平台、油气田设施、集装箱…… 船舶低碳只是其中很小的一簇。
+#   实测 77 条原始条目里，真正与绿色低碳相关的只有 18 条左右，其余是
+#   《钢质海船入级规范》《材料与焊接规范》《集装箱检验规范》这类通用规范。
+#   它们塞进「法规前沿」只会把真正有用的信息淹掉，所以一律拦下。
+#
+# 判据：标题命中下面任一关键词才放行（命中即保留，纯白名单、不做反向排除）。
+#   「宁可漏、不可滥」—— 漏掉的通用规范本来也不是要看的。
+#
+# ⚠️ 改这个词表时注意两个坑：
+#   1. 不要用裸「CCS」当关键词 —— 它既是「中国船级社」的缩写，也是
+#      「碳捕集封存」的缩写，会把 CCS 发布的**所有**文件全放进来。
+#      要表达碳捕集，用「碳捕集 / CCUS」即可。
+#   2. 不要用裸「液化气体」—— 会命中《散装运输液化气体船舶构造与设备规范》
+#      这类**运输船**规范（那是货物运输，不是低碳）。要表达 LNG/LPG 燃料，
+#      用「液化天然气 / 液化石油气燃料」这种带燃料语境的写法。
+LOWCARBON_RE = re.compile(
+    # ── 替代燃料 ──
+    r"氨燃料|氨动力|氨发动机|甲醇|甲烷逃逸|"
+    r"氢燃料|氢动力|液氢|储氢|供氢|氢加注|氢能|"
+    r"液化天然气|LNG|液化石油气燃料|LPG燃料|"
+    r"生物燃料|生物柴油|生物甲醇|乙醇|乙烷|"
+    r"替代燃料|新能源|清洁能源|绿色燃料|燃料全生命周期|可持续燃料|"
+    # ── 电动化与储能 ──
+    r"电池动力|纯电|储能|燃料电池|岸电|直流综合电力|混合动力|超级电容|电动船舶|"
+    # ── 能效与排放 ──
+    r"能效|排放|温室气体|碳排放|碳强度|碳足迹|脱碳|减碳|零排放|净零|碳中和|"
+    r"EEDI|EEXI|CII|NOx|SOx|硫含量|氮氧化物|硫氧化物|颗粒物|"
+    r"废气清洗|脱硫|脱硝|选择性催化|"
+    # ── 绿色与可再生 ──
+    r"绿色|低碳|环保|可再生|风能|风帆|风力辅助|太阳能|光伏|空气润滑|余热回收|"
+    r"碳捕集|CCUS|能效设计指数",
+    re.I)
+
+
+# ────────────────────────────────────────────────────────────────────────
 # 抓取
 # ────────────────────────────────────────────────────────────────────────
 def fetch(url, timeout=25, retries=2):
@@ -252,7 +291,7 @@ def core_title(t, issuer=""):
 # ────────────────────────────────────────────────────────────────────────
 # 主流程
 # ────────────────────────────────────────────────────────────────────────
-def collect(days, verbose=True):
+def collect(days, verbose=True, relevance_filter=True, dropped_out=None):
     cutoff = datetime.now(timezone(timedelta(hours=8))) - timedelta(days=days)
     seen_key, seen_core = set(), set()
     items, stats = [], []
@@ -262,7 +301,7 @@ def collect(days, verbose=True):
         try:
             html, final = fetch(src["url"])
         except Exception as e:                       # noqa: BLE001
-            stats.append((src["name"], -1, "抓取失败: %s: %s" % (type(e).__name__, str(e)[:60])))
+            stats.append((src["name"], -1, 0, "抓取失败: %s: %s" % (type(e).__name__, str(e)[:60])))
             if verbose:
                 print("  ✗ %-26s 抓取失败：%s: %s" % (src["name"], type(e).__name__, str(e)[:60]))
             continue
@@ -271,11 +310,18 @@ def collect(days, verbose=True):
         ex = re.compile(src["exclude"]) if src.get("exclude") else None
         issuer = src["issuer"]
         kept_in_window = 0
+        dropped_offtopic = 0
         for dt, title, url in rows:
             if dt < cutoff:
                 continue
             kept_in_window += 1
             if ex and ex.search(title):
+                continue
+            # ★ 船舶低碳相关性闸门：与低碳无关的通用规范直接丢掉
+            if relevance_filter and LOWCARBON_RE.search(title) is None:
+                dropped_offtopic += 1
+                if dropped_out is not None:
+                    dropped_out.append((dt, title))
                 continue
             k = dedupe_key(url)
             ct = core_title(title, issuer)
@@ -295,10 +341,12 @@ def collect(days, verbose=True):
                 "date": dt,
                 "source": src["name"],
             })
-        stats.append((src["name"], kept_in_window, "%.1fs" % (time.time() - t0)))
+        stats.append((src["name"], kept_in_window, dropped_offtopic,
+                      "%.1fs" % (time.time() - t0)))
         if verbose:
-            print("  ✓ %-26s 窗口内 %3d 条（页面共 %3d 条 / %.1fs）"
-                  % (src["name"], kept_in_window, len(rows), time.time() - t0))
+            print("  ✓ %-26s 窗口内 %3d 条 → 低碳相关 %2d 条（滤掉 %2d 条无关）%.1fs"
+                  % (src["name"], kept_in_window, kept_in_window - dropped_offtopic,
+                     dropped_offtopic, time.time() - t0))
 
     items.sort(key=lambda x: x["date"], reverse=True)
     return items, stats
@@ -343,14 +391,22 @@ def main():
     ap.add_argument("--show", action="store_true", help="把抓到的条目打印出来")
     ap.add_argument("--min", type=int, default=1,
                     help="少于这个条数就打印告警（默认 1）")
+    ap.add_argument("--no-filter", action="store_true",
+                    help="关闭「船舶低碳相关性」过滤，输出原始全量条目。"
+                         "只用于排查（看站点到底发了什么），送进报告的永远是过滤后的结果。")
+    ap.add_argument("--dump-dropped", action="store_true",
+                    help="顺便打印被相关性过滤丢掉的那些条目，便于核对该不该滤")
     args = ap.parse_args()
 
     print("=" * 74)
     print("法规原文直采 —— 中国船级社 / 中国海事局官网公告")
-    print("窗口：最近 %d 天" % args.days)
+    print("窗口：最近 %d 天 ｜ 船舶低碳相关性过滤：%s"
+          % (args.days, "关（--no-filter）" if args.no_filter else "开"))
     print("=" * 74)
 
-    items, stats = collect(args.days)
+    dropped_log = [] if args.dump_dropped else None
+    items, stats = collect(args.days, relevance_filter=not args.no_filter,
+                           dropped_out=dropped_log)
 
     out_path = args.out
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
@@ -359,9 +415,21 @@ def main():
 
     print("-" * 74)
     ok = [s for s in stats if s[1] >= 0]
-    print("源汇总：成功 %d / %d，共捕获 %d 条法规原文" % (len(ok), len(stats), len(items)))
-    for name, n, note in stats:
-        print("   %s %-26s %s" % ("✓" if n >= 0 else "✗", name, note))
+    raw_total = sum(s[1] for s in ok)
+    dropped_total = sum(s[2] for s in ok)
+    print("源汇总：成功 %d / %d" % (len(ok), len(stats)))
+    print("过滤前窗口内 %d 条 → 滤掉 %d 条与低碳无关 → 输出 %d 条"
+          % (raw_total, dropped_total, len(items)))
+    for name, n, dropped, note in stats:
+        print("   %s %-26s %s" % ("✓" if n >= 0 else "✗", name,
+                                  note if n < 0 else "窗口 %d 条，保留 %d，滤掉 %d（%s）"
+                                  % (n, n - dropped, dropped, note)))
+
+    if args.dump_dropped and dropped_log:
+        print("-" * 74)
+        print("被「船舶低碳相关性」过滤丢掉的条目（%d 条，按日期倒序）：" % len(dropped_log))
+        for dt, title in sorted(dropped_log, reverse=True):
+            print("   [丢] %s  %s" % (dt.strftime("%Y-%m-%d"), title))
 
     if args.show:
         print("-" * 74)
