@@ -30,6 +30,9 @@ ABS 404 / ClassNK 无 / CCS 无 / IMO 全是 JS 动态渲染 / 海事局无）�
     · 单个源失败绝不影响其它源；全部失败也只是生成一个空 feed，不会中断爬虫
     · 按「链接里的 id」去重（CCS 的规范/指南/总览三页大量重叠，必须去重）
     · 输出 RSS 2.0，TrendRadar 用 feedparser 解析，RSS/Atom 都吃
+    · ★进详情页补「文号 / 生效日期」——列表页没有这两项，AI 建法规表时只能填「—」；
+      详情页里它们通常明写着，抓下来写进 <description>，AI 才有据可填（见下方说明）
+    · ★船舶低碳相关性过滤——船级社「规范/指南」栏是全专业的，不滤会把有效信息淹掉
 
 ════════════════════════════════════════════════════════════════════════
 """
@@ -169,6 +172,96 @@ LOWCARBON_RE = re.compile(
 
 
 # ────────────────────────────────────────────────────────────────────────
+# ★详情页补字段：文号 / 生效日期 / 文件性质
+# ────────────────────────────────────────────────────────────────────────
+# 为什么必须补这一层：
+#   列表页只有「标题 + 日期 + 链接」。而 AI 在「二、法规前沿」建表时要填
+#   「文件号 / 强制 / 生效日期」三列 —— 这三列在列表页里**一个字都没有**，
+#   提示词又明令「不得编造」，结果就是整列全是「—」（用户实际反馈的问题）。
+#
+#   实测（2026-10-15，15 条逐条进详情页核对）这两个字段是**真实存在**的：
+#     · CCS 指南/规范详情页 → 「发布时间：… | 生效日期：2026-10-01 00:00:00」
+#     · 海事局详情页        → 「文号：海船规函〔2025〕2287号」
+#                             「自2026年3月1日起施行」
+#   取出来写进 RSS 的 <description>，AI 才有据可填。
+#
+# ⚠️ 抽取原则：**只认页面上明写的字段**。抽不到就返回空，在 feed 里写成
+#    「未载明」——「查过了，没有」本身就是有用信息，AI 就不会去编。
+#    绝不推断日期、绝不自行编编号。
+#
+# 关于「文件性质」与「强制性」：
+#   · 文件性质（规范 / 指南 / 规则 / 征求意见稿）是**官方文件名里本来就有的字**，
+#     属于事实；
+#   · 强制性是由文件性质按固定规则映射出来的**推定值**，写进 feed 时带括号注明依据，
+#     AI 那边也只当推荐值用，不当成文件自己的声明。
+_PLAIN_SCRIPT_RE = re.compile(r"<(script|style)[^>]*>.*?</\1>", re.S | re.I)
+_TAG_STRIP_RE = re.compile(r"<[^>]+>")
+_WS_RUN_RE = re.compile(r"\s+")
+
+# 文号：「文号：海船规函〔2025〕2287号」「文号：2026年第1号公告」
+_DOC_NO_RE = re.compile(r"文号\s*[:：]\s*([^\s｜|，,。；;]{1,40})")
+_DOC_NO_EMPTY = {"", "无", "无。", "无文号", "暂无", "—", "-", "－", "／", "/"}
+
+# 生效日期：CCS 写带标签的「生效日期：2026-10-01」，
+#          海事局写在正文里「自2026年3月1日起施行」
+# 带标签的优先（那是页面结构字段），抓不到再退到正文句式。
+_EFF_LABEL_RE = re.compile(
+    r"(?:生效|施行|实施)日期\s*[:：]\s*"
+    r"(20\d{2})\s*[-/.年]\s*(\d{1,2})\s*[-/.月]\s*(\d{1,2})")
+_EFF_VERB_RE = re.compile(
+    r"自\s*(20\d{2})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日\s*起\s*"
+    r"(?:施行|生效|实施|执行)")
+
+
+def html_to_text(page_html):
+    """把详情页 HTML 压成一行纯文本（去脚本样式 → 去标签 → 还原实体 → 清空白）。"""
+    t = _PLAIN_SCRIPT_RE.sub(" ", page_html)
+    t = _TAG_STRIP_RE.sub(" ", t)
+    t = html_mod.unescape(t).replace("\u00a0", " ")
+    return _WS_RUN_RE.sub(" ", t)
+
+
+def extract_detail_meta(page_html):
+    """从法规详情页抽 {doc_no, effective}。抽不到的键不出现，绝不猜。"""
+    txt = html_to_text(page_html)
+    meta = {}
+    m = _DOC_NO_RE.search(txt)
+    if m:
+        v = m.group(1).strip().strip("：:。")
+        if v not in _DOC_NO_EMPTY:
+            meta["doc_no"] = v
+    m = _EFF_LABEL_RE.search(txt) or _EFF_VERB_RE.search(txt)
+    if m:
+        try:
+            meta["effective"] = "%04d-%02d-%02d" % (int(m.group(1)),
+                                                    int(m.group(2)),
+                                                    int(m.group(3)))
+        except ValueError:
+            pass
+    return meta
+
+
+# 文件性质 → (性质名, 强制性说明)，按顺序取首个命中。
+# ⚠️ 顺序不能乱：「指南」必须排在「规范/规则」前面 ——
+#    《新能源清洁能源动力船舶适用内河船舶技术规范条款实施指南》同时含
+#    「规范」和「指南」，它本质是指导性文件，按「规范」判会错成强制。
+_NATURE_RULES = (
+    (re.compile(r"征求意见|初稿|草案"), "征求意见稿", "未定（草案，尚未生效）"),
+    (re.compile(r"实施指南|指南|指导性"), "指南", "否（指南为推荐性技术文件）"),
+    (re.compile(r"暂行规则|检验技术规则|规范|规则"),
+     "规范/规则", "是（规范或法定规则，强制执行）"),
+)
+
+
+def classify(title):
+    """按官方文件名判定 (文件性质, 强制性说明)。都不中则归「其他 / 未载明」。"""
+    for pat, nature, note in _NATURE_RULES:
+        if pat.search(title):
+            return nature, note
+    return "其他", "未载明"
+
+
+# ────────────────────────────────────────────────────────────────────────
 # 抓取
 # ────────────────────────────────────────────────────────────────────────
 def fetch(url, timeout=25, retries=2):
@@ -291,7 +384,8 @@ def core_title(t, issuer=""):
 # ────────────────────────────────────────────────────────────────────────
 # 主流程
 # ────────────────────────────────────────────────────────────────────────
-def collect(days, verbose=True, relevance_filter=True, dropped_out=None):
+def collect(days, verbose=True, relevance_filter=True, dropped_out=None,
+            detail_fetch=True, detail_delay=1.0, detail_stats_out=None):
     cutoff = datetime.now(timezone(timedelta(hours=8))) - timedelta(days=days)
     seen_key, seen_core = set(), set()
     items, stats = [], []
@@ -335,11 +429,17 @@ def collect(days, verbose=True, relevance_filter=True, dropped_out=None):
             # 已带书名号（如「关于《船舶应用氨燃料指南》2026 征求意见」）会套两层。
             already = any(w in title for w in (issuer, "海事局", "船级社", "交通运输部"))
             disp = title if already else "%s｜%s" % (issuer, title)
+            # 文件性质与强制性由官方文件名推定（见 classify 的说明）
+            nature, mandatory = classify(title)
             items.append({
                 "title": disp,
                 "url": url,
                 "date": dt,
                 "source": src["name"],
+                "nature": nature,          # 规范/规则 · 指南 · 征求意见稿 · 其他
+                "mandatory": mandatory,    # 推定值，带依据说明
+                "doc_no": "",              # ↓ 第二遍进详情页才填
+                "effective": "",           # ↓
             })
         stats.append((src["name"], kept_in_window, dropped_offtopic,
                       "%.1fs" % (time.time() - t0)))
@@ -347,6 +447,28 @@ def collect(days, verbose=True, relevance_filter=True, dropped_out=None):
             print("  ✓ %-26s 窗口内 %3d 条 → 低碳相关 %2d 条（滤掉 %2d 条无关）%.1fs"
                   % (src["name"], kept_in_window, kept_in_window - dropped_offtopic,
                      dropped_offtopic, time.time() - t0))
+
+    # ★第二遍：逐条进详情页补「文号 / 生效日期」。
+    #   放在去重之后 —— 只对最终保留的条目抓，重复条目不会白抓一遍。
+    #   任何一条失败都只是少几个字段，绝不影响主流程（法规条目照常进 feed）。
+    if detail_fetch and items:
+        hit = 0
+        for it in items:
+            try:
+                page, _ = fetch(it["url"], timeout=25, retries=1)
+                meta = extract_detail_meta(page)
+                it["doc_no"] = meta.get("doc_no", "")
+                it["effective"] = meta.get("effective", "")
+                if it["doc_no"] or it["effective"]:
+                    hit += 1
+            except Exception:                        # noqa: BLE001
+                pass
+            time.sleep(detail_delay)
+        if detail_stats_out is not None:
+            detail_stats_out.append((hit, len(items)))
+        if verbose:
+            print("  ⓘ 详情页补字段：%d/%d 条取到「文号」或「生效日期」"
+                  % (hit, len(items)))
 
     items.sort(key=lambda x: x["date"], reverse=True)
     return items, stats
@@ -360,13 +482,30 @@ def build_rss(items, days):
              '    <title>船舶低碳 · 法规原文直采（IMO / 船级社 / 海事局）</title>',
              '    <link>https://www.ccs.org.cn/</link>',
              '    <description>由中国船级社、中国海事局官网公告列表直采的规则·指南·规范·标准原文条目'
-             '（窗口 %d 天，共 %d 条）。本源由 scripts/fetch_regulations.py 生成。</description>'
+             '（窗口 %d 天，共 %d 条）。每条目附「文件性质 / 文号 / 生效日期 / 强制性」四项，'
+             '取自详情页或按文件名推定，供 AI 填「法规清单表」使用。'
+             '本源由 scripts/fetch_regulations.py 生成。</description>'
              % (days, len(items)),
              '    <language>zh-CN</language>',
              '    <lastBuildDate>%s</lastBuildDate>' % format_datetime(now)]
     for it in items:
-        desc = ("发布/更新日期：%s ｜ 发布机构来源：%s ｜ 原文链接：%s"
-                % (it["date"].strftime("%Y-%m-%d"), it["source"], it["url"]))
+        # ★<description> 是 AI 唯一能看到「标题之外」的地方（配套补丁 [G] 把它带进提示词）。
+        #   四个字段的口径：
+        #     · 文件性质 —— 官方文件名里的字（规范/指南/规则/征求意见稿），事实
+        #     · 文号     —— 详情页「文号：」原值；没有就写「未载明」
+        #     · 生效日期 —— 详情页「生效日期：」或正文「自…起施行」；没有写「未载明」
+        #     · 强制性   —— 由文件性质推定的推荐值，括号里注明了依据
+        #   写「未载明」而不是留空，是为了让 AI 明确知道「查过了、没有」，
+        #   从而安心填「—」，而不是去脑补。
+        desc = " ｜ ".join([
+            "发布/更新日期：%s" % it["date"].strftime("%Y-%m-%d"),
+            "发布机构：%s" % it["source"],
+            "文件性质：%s" % it.get("nature", "其他"),
+            "文号：%s" % (it.get("doc_no") or "未载明"),
+            "生效日期：%s" % (it.get("effective") or "未载明"),
+            "强制性：%s" % it.get("mandatory", "未载明"),
+            "原文链接：%s" % it["url"],
+        ])
         lines += [
             '    <item>',
             '      <title>%s</title>' % escape(it["title"]),
@@ -396,17 +535,24 @@ def main():
                          "只用于排查（看站点到底发了什么），送进报告的永远是过滤后的结果。")
     ap.add_argument("--dump-dropped", action="store_true",
                     help="顺便打印被相关性过滤丢掉的那些条目，便于核对该不该滤")
+    ap.add_argument("--no-detail", action="store_true",
+                    help="跳过「进详情页补文号/生效日期」这一步（快很多，但 feed 里"
+                         "这两项会全是「未载明」）。只在调试抓取本身时用。")
     args = ap.parse_args()
 
     print("=" * 74)
     print("法规原文直采 —— 中国船级社 / 中国海事局官网公告")
-    print("窗口：最近 %d 天 ｜ 船舶低碳相关性过滤：%s"
-          % (args.days, "关（--no-filter）" if args.no_filter else "开"))
+    print("窗口：最近 %d 天 ｜ 船舶低碳相关性过滤：%s ｜ 详情页补字段：%s"
+          % (args.days,
+             "关（--no-filter）" if args.no_filter else "开",
+             "关（--no-detail）" if args.no_detail else "开"))
     print("=" * 74)
 
     dropped_log = [] if args.dump_dropped else None
+    detail_log = []
     items, stats = collect(args.days, relevance_filter=not args.no_filter,
-                           dropped_out=dropped_log)
+                           dropped_out=dropped_log, detail_fetch=not args.no_detail,
+                           detail_stats_out=detail_log)
 
     out_path = args.out
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
@@ -420,6 +566,10 @@ def main():
     print("源汇总：成功 %d / %d" % (len(ok), len(stats)))
     print("过滤前窗口内 %d 条 → 滤掉 %d 条与低碳无关 → 输出 %d 条"
           % (raw_total, dropped_total, len(items)))
+    if detail_log:
+        hit, total = detail_log[0]
+        print("详情页补字段：%d/%d 条取到「文号」或「生效日期」"
+              "（其余在 feed 里标「未载明」，AI 会填「—」）" % (hit, total))
     for name, n, dropped, note in stats:
         print("   %s %-26s %s" % ("✓" if n >= 0 else "✗", name,
                                   note if n < 0 else "窗口 %d 条，保留 %d，滤掉 %d（%s）"
@@ -436,6 +586,11 @@ def main():
         for it in items:
             print("   %s  %s" % (it["date"].strftime("%Y-%m-%d"), it["title"]))
             print("               %s" % it["url"])
+            print("               性质=%s ｜ 文号=%s ｜ 生效日期=%s ｜ 强制性=%s"
+                  % (it.get("nature", "其他"),
+                     it.get("doc_no") or "未载明",
+                     it.get("effective") or "未载明",
+                     it.get("mandatory", "未载明")))
 
     print("-" * 74)
     print("已写出：%s（%d 条）" % (out_path, len(items)))
@@ -450,3 +605,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
