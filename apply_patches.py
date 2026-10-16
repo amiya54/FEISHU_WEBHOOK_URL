@@ -34,7 +34,7 @@ TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执�
 ▸ 它是幂等的：重复运行不会重复修改，第二次执行会显示「已打过，跳过」。
 ═══════════════════════════════════════════════════════════════════
 
-包含六个补丁：
+包含以下补丁（顺序执行，全部幂等）：
 
   [D] AI 分析板块标题改为「船舶低碳情报双周报」场景措辞
       板块标题（核心热点态势 / 舆论风向争议 / 异动与弱信号 / RSS 深度洞察 /
@@ -152,6 +152,31 @@ TrendRadar 船舶低碳推送 —— 源码补丁脚本（幂等，可重复执�
       ⚠️ 仍不搜 AI 双周报正文（成稿不拆散）；要加词直接改脚本里的
       SEARCH_SYNONYMS 数组即可，中英文词条都能加。
 
+  [K] AI 正文 ↔ RSS 条目「交叉引用」（论文式：正文标引用，点一下跳到原文）
+      用户想要「像论文文献和正文交叉引用那样的效果，在看 AI 分析时能定位到
+      对应的 RSS」。原版两头都没有「句柄」：提示词里每条只有
+      「- [来源] 标题 | 时间」，AI 无从指认某一条；报告里
+      <div class="rss-item"> 也没有 id，正文无处可跳。补四块：
+        ① ai/analyzer.py  每条 RSS 行加行首编号「- [#12] [来源] 标题 | 时间」，
+           编号即「本条在 rss_items 里的顺序位」，与报告页天然一致；
+        ② ai/formatter.py 把 AI 正文里的引用标记（#12）/（#12、14）/（#12-14）
+           渲染成可点击徽标 —— 先转义再拼 HTML，不会引入注入风险；
+        ③ report/html.py  每个 RSS 条目加 id="rss-12" + 可见的 #12 徽标；
+           只给「主区」编号，「新增区」传 id_prefix="" 避免重复编号；
+        ④ report/html.py  注入一段 JS（在原 </script> 之前）：
+             · 点徽标 → 平滑滚到对应条目并闪烁 2.4s；
+             · 编号越界（AI 误引）→ 标灰划掉 + 标题说明 + 控制台告警；
+             · 被引用的条目显示「↩ 被引用 N 处」，点它跳回正文第一处；
+             · 自动兜底：AI 漏标的段落，用「英文专名 + 中英同义词簇」做一次
+               **保守**匹配（要求至少有 1 个只出现在 ≤2 个条目里的专名，
+               或同义词簇强命中），命中的徽标是虚线样式、悬停写明「仅供参考」。
+      视觉上：已标注=实线蓝底；自动兜底=虚线黄底；越界=灰底划掉。
+      ⚠️ 需配合 config/ai_analysis_prompt.txt（v3.3.0 起）的「引用规范」，
+         否则 AI 不会标引用，只剩自动兜底那一半能力；
+      ⚠️ AI 输出是运行时生成的，历史报告不会追溯补引用，要重跑一次才看得到；
+      ⚠️ 纯文本推送渠道（企业微信 / 飞书 / 钉钉 / Telegram）里 (#12) 只能原样
+         显示，读者可照编号去网页版找 —— HTML / 邮件渠道才是完整体验。
+
 注意：程序自带版本检查只对 config/ 下的配置文件做「只读」比对，不覆盖源码；
 但**升级程序（重新下载 master）会覆盖以上改动**，届时重跑本脚本即可。
 """
@@ -175,6 +200,7 @@ MARK_G = "★补丁G"
 MARK_H = "★补丁H"
 MARK_I = "★补丁I"
 MARK_J = "★补丁J"
+MARK_K = "★补丁K"
 
 HEAD_TITLE = "✨ 船舶低碳情报双周报"
 
@@ -1315,6 +1341,553 @@ J_HINT_NEW = (
 )
 
 
+# ──────────────────────────────────────────────────────────────────────
+# [K] AI 正文 ↔ RSS 条目「交叉引用」
+#
+#     目标（用户原话）：像论文的文献交叉引用那样，看 AI 分析时能定位到对应的 RSS。
+#
+#     原版两头都没有「句柄」，所以谁都指不到谁：
+#       · ai/analyzer.py 拼给 AI 的行是「- [来源] 标题 | 时间」，AI 无从指认某一条；
+#       · report/html.py 渲染的 <div class="rss-item"> 没有 id，正文也无从跳转。
+#
+#     补法分四块，缺一不可：
+#       ① ai/analyzer.py   每条 RSS 行加行首编号「- [#12] ...」，与报告页一一对应；
+#       ② ai/formatter.py  把 AI 正文里的引用标记 (#12) 渲染成可点击徽标（依赖 [F]）；
+#       ③ report/html.py   给每个 RSS 条目加 id="rss-12" + 可见编号，并注入样式；
+#       ④ report/html.py   注入一段 JS：点徽标跳转 + 闪烁、编号越界标灰划掉并告警、
+#                          被引用条目显示「↩ 被引用 N 处」并可跳回正文，
+#                          以及「AI 漏标时用专名 + 中英同义词簇保守补引用」。
+#
+#     ⚠️ 编号口径：AI 与报告读的是同一个 rss_items 列表、同一顺序，
+#        故「第 N 条」在两侧天然一致。AI 侧按全量编号后再截断，
+#        将来条目数超过 max_news_for_analysis 也不会错位。
+#     ⚠️ 编号只加在主区（rss_items）；「新增区」调用传 id_prefix=""，
+#        否则同一条目在一页里出现两个编号，引用就有歧义了。
+#     ⚠️ 需配合 config/ai_analysis_prompt.txt（v3.3.0 起）里的「引用规范」一起用，
+#        否则 AI 不会标引用，只剩自动兜底那一半能力。
+# ──────────────────────────────────────────────────────────────────────
+
+K_AI_ANCHOR = "                        rss_lines.append(line)\n"
+K_AI_NEW = (
+    "                        # ★补丁K：给每条 RSS 编一个与报告页一一对应的稳定编号\n"
+    "                        #   行首形如「- [#12] [来源] 标题 | 时间」，AI 据此回引。\n"
+    "                        #   编号用全量顺序，先编后截断，超限也不会错位。\n"
+    "                        _k_body = line[2:] if line.startswith(\"- \") else line\n"
+    "                        rss_lines.append(\"- [#%d] \" % (rss_count + 1) + _k_body)\n"
+)
+
+K_FMT_FN_ANCHOR = "def _md_inline_html(text: str) -> str:\n"
+K_FMT_CALL_ANCHOR = '    out = re.sub(r"\\*\\*(.+?)\\*\\*", r"<strong>\\1</strong>", out)\n'
+K_FMT_CALL_NEW = K_FMT_CALL_ANCHOR + (
+    "    out = _md_cite_html(out)   # ★补丁K：把 (#12) 变成可点击的引用徽标\n"
+)
+
+K_CITE_FN = r'''def _md_cite_html(html_text: str) -> str:
+    # ★补丁K：把 AI 正文里的引用标记渲染成可点击徽标，点击跳转到下方对应的
+    #   RSS 条目。能认这些写法（全角 / 半角括号都行，编号前可带「依据」等字样）：
+    #       （#12）        [#12]        （依据 #12）
+    #       （#3、#7）     （#3 #7）    （#3-7）  （#3、#5-7）
+    #   输入已经过 HTML 转义，所以这里可以安全地拼 HTML 片段。
+    def _rep(m):
+        nums = []
+        for part in re.split(r"[,，、;；]\s*", m.group(1)):
+            part = part.strip()
+            rng = re.match(r"^#?\s*(\d+)\s*[-–~～至]\s*#?\s*(\d+)$", part)
+            if rng:
+                a, b = int(rng.group(1)), int(rng.group(2))
+                if a > b:
+                    a, b = b, a
+                if 0 < b - a <= 12:
+                    nums.extend(range(a, b + 1))
+                continue
+            for d in re.findall(r"\d+", part):
+                nums.append(int(d))
+        seen = set()
+        out = []
+        for n in nums:
+            if n <= 0 or n in seen:
+                continue
+            seen.add(n)
+            out.append(
+                '<a class="cite-ref" href="#rss-%d" data-target="rss-%d" data-n="%d">#%d</a>'
+                % (n, n, n, n)
+            )
+        return "".join(out) if out else m.group(0)
+
+    return re.sub(
+        r"[（(\[]\s*[^#（）()\[\]]{0,8}#\s*([\d#\s\-–~～至,，、;；]+?)\s*[）)\]]",
+        _rep, html_text)
+
+
+'''
+
+K_SIG_ANCHOR = (
+    '    def render_rss_stats_html(stats: List[Dict], title: str = "RSS 订阅更新") -> str:\n'
+)
+K_SIG_NEW = (
+    '    # ★补丁K：id_prefix 非空时给每个条目编稳定序号 id="rss-12"，\n'
+    '    #   与提示词里给 AI 的 [#12] 一一对应，供 AI 正文回引。\n'
+    '    #   「新增区」调用传 id_prefix=""，避免同一页面出现两个编号。\n'
+    '    def render_rss_stats_html(stats: List[Dict], title: str = "RSS 订阅更新",\n'
+    '                              id_prefix: str = "rss") -> str:\n'
+)
+
+K_LOOP_ANCHOR = (
+    '        # 按关键词分组渲染（与热榜格式一致）\n'
+    '        for stat in stats:\n'
+    '            keyword = stat.get("word", "")\n'
+)
+K_LOOP_NEW = (
+    '        # 按关键词分组渲染（与热榜格式一致）\n'
+    '        _cite_no = 0  # ★补丁K：跨分组的全局条目序号\n'
+    '        for stat in stats:\n'
+    '            keyword = stat.get("word", "")\n'
+)
+
+K_ITEM_ANCHOR = (
+    '                rss_html += """\n'
+    '                        <div class="rss-item">\n'
+    '                            <div class="rss-meta">"""\n'
+)
+K_ITEM_NEW = (
+    '                _cite_no += 1  # ★补丁K\n'
+    '                _cite_attr = (\n'
+    '                    \' id="%s-%d" data-cite="%d"\' % (id_prefix, _cite_no, _cite_no)\n'
+    '                ) if id_prefix else ""\n'
+    '                rss_html += """\n'
+    '                        <div class="rss-item"%s>\n'
+    '                            <div class="rss-meta">""" % _cite_attr\n'
+)
+
+K_META_ANCHOR = (
+    '                if is_new:\n'
+    '                    rss_html += \'<span class="rss-author" style="color: #dc2626;">NEW</span>\'\n'
+)
+K_META_NEW = K_META_ANCHOR + (
+    '\n'
+    '                # ★补丁K：显示条目编号（与 AI 正文里的引用徽标对应）\n'
+    '                if id_prefix:\n'
+    '                    rss_html += (\'<span class="rss-no" title="AI 正文可引用此编号">#%d</span>\'\n'
+    '                                 % _cite_no)\n'
+)
+
+K_CALL_ANCHOR = (
+    '    rss_new_html = render_rss_stats_html(rss_new_items, "RSS 新增更新") if rss_new_items else ""\n'
+)
+K_CALL_NEW = (
+    '    # ★补丁K：新增区不加编号（同一条目在主区已编号，重复会让引用有歧义）\n'
+    '    rss_new_html = render_rss_stats_html(rss_new_items, "RSS 新增更新", "") if rss_new_items else ""\n'
+)
+
+K_CSS_ANCHOR = I_CSS_ANCHOR
+K_CSS_BLOCK = """            /* ★补丁K：AI 正文 ↔ RSS 条目交叉引用 */
+            .cite-ref {
+                display: inline-block;
+                margin: 0 1px 0 3px;
+                padding: 0 5px;
+                border-radius: 8px;
+                font-size: 11px;
+                line-height: 16px;
+                font-weight: 600;
+                color: #1d4ed8;
+                background: #e0e7ff;
+                border: 1px solid #c7d2fe;
+                text-decoration: none;
+                vertical-align: 1px;
+                cursor: pointer;
+                white-space: nowrap;
+                transition: background .15s, color .15s;
+            }
+            .cite-ref:hover { background: #c7d2fe; color: #1e3a8a; }
+            .cite-ref.cite-auto {
+                color: #92400e;
+                background: #fef3c7;
+                border: 1px dashed #fcd34d;
+            }
+            .cite-ref.cite-auto:hover { background: #fde68a; }
+            .cite-ref.cite-dead {
+                color: #9ca3af;
+                background: #f3f4f6;
+                border: 1px solid #e5e7eb;
+                text-decoration: line-through;
+                cursor: not-allowed;
+            }
+            .rss-no {
+                margin-left: auto;
+                padding: 0 6px;
+                border-radius: 8px;
+                font-size: 11px;
+                line-height: 16px;
+                font-weight: 600;
+                color: #1d4ed8;
+                background: #eef2ff;
+                border: 1px solid #c7d2fe;
+            }
+            .rss-cited {
+                margin-left: 6px;
+                font-size: 12px;
+                color: #6b7280;
+                cursor: pointer;
+                border-bottom: 1px dotted #9ca3af;
+            }
+            .rss-cited:hover { color: #1d4ed8; border-bottom-color: #1d4ed8; }
+            .rss-item.cite-flash { animation: citeFlash 2.4s ease-out 1; }
+            @keyframes citeFlash {
+                0%   { background: #fef3c7; box-shadow: inset 0 0 0 3px #f59e0b; }
+                100% { background: transparent; box-shadow: none; }
+            }
+"""
+
+K_CSS_DARK_ANCHOR = I_CSS_DARK_ANCHOR
+K_CSS_DARK_BLOCK = """            /* ★补丁K：交叉引用（深色模式） */
+            body.dark-mode .cite-ref {
+                color: #bfdbfe;
+                background: #1e3a5f;
+                border-color: #1e40af;
+            }
+            body.dark-mode .cite-ref:hover { background: #1e40af; color: #dbeafe; }
+            body.dark-mode .cite-ref.cite-auto {
+                color: #fcd34d;
+                background: #3a3113;
+                border-color: #b45309;
+            }
+            body.dark-mode .cite-ref.cite-dead {
+                color: #64748b;
+                background: #1f2937;
+                border-color: #374151;
+            }
+            body.dark-mode .rss-no {
+                color: #bfdbfe;
+                background: #1e3a5f;
+                border-color: #1e40af;
+            }
+            body.dark-mode .rss-cited { color: #94a3b8; border-bottom-color: #475569; }
+            body.dark-mode .rss-cited:hover { color: #bfdbfe; border-bottom-color: #bfdbfe; }
+            body.dark-mode .rss-item.cite-flash { animation: citeFlashDark 2.4s ease-out 1; }
+            @keyframes citeFlashDark {
+                0%   { background: #78350f; box-shadow: inset 0 0 0 3px #fbbf24; }
+                100% { background: transparent; box-shadow: none; }
+            }
+"""
+
+K_JS_ANCHOR = "        </script>\n    </body>\n"
+K_JS_CODE = r'''            /* ★补丁K：AI 正文 ↔ RSS 条目「交叉引用」
+               ---------------------------------------------------------------
+               ① AI 正文里的引用徽标（如 #12）点一下就滚到下方第 12 条 RSS 并闪烁；
+               ② 编号在本期报告里不存在的，标灰划掉并在控制台告警（AI 误引）；
+               ③ 被引用的条目上显示「↩ 被引用 N 处」，点它跳回正文第一处；
+               ④ AI 漏标的，用「英文专名 + 中英同义词簇」保守地自动补引用 ——
+                  补上的徽标是虚线样式，悬停会写明是自动匹配、仅供参考。
+               ⑤ 本段只在页面加载后加装饰，不改动任何既有 DOM 结构。 */
+            (function () {
+                var SYN = [
+                    ['氨', '氨燃料', '氨动力', 'ammonia'],
+                    ['甲醇', '绿色甲醇', 'methanol', 'e-methanol'],
+                    ['氢', '氢燃料', '氢能', 'hydrogen'],
+                    ['液化天然气', 'lng', 'lbm', '生物甲烷', 'biomethane', 'methane'],
+                    ['液化石油气', 'lpg'],
+                    ['生物燃料', '生物柴油', 'biofuel', 'biodiesel', 'hvo'],
+                    ['电池', '纯电动', '混合动力', 'battery', 'hybrid', 'electric'],
+                    ['燃料电池', 'fuel cell'],
+                    ['岸电', 'shore power', 'cold ironing'],
+                    ['风帆', '风助推进', '转子帆', '风能', 'wind-assisted', 'rotor sail', 'flettner', 'wind'],
+                    ['碳捕集', 'ccs', 'ccus', 'carbon capture'],
+                    ['核动力', '核能', 'nuclear', 'smr'],
+                    ['加注', '燃料加注', 'bunkering'],
+                    ['双燃料', 'dual-fuel'],
+                    ['船级社', 'classnk', 'dnv', 'bureau veritas', 'lloyd', 'abs'],
+                    ['国际海事组织', 'imo', 'marpol', 'mepc'],
+                    ['欧盟碳市场', 'eu ets', 'ets'],
+                    ['能效', 'eedi', 'eexi', 'cii', 'energy efficiency'],
+                    ['脱碳', '净零', '减排', '碳排放', 'greenhouse', 'decarbonisation',
+                     'decarbonization', 'net-zero', 'net zero'],
+                    ['散货船', 'bulker', 'bulkers', 'bulk carrier', 'bulk', 'dry cargo', 'dry bulk'],
+                    ['集装箱船', 'container'],
+                    ['油轮', 'tanker'],
+                    ['滚装船', 'ro-ro', 'roro'],
+                    ['邮轮', 'cruise'],
+                    ['海上风电', 'offshore wind']
+                ];
+                var STOP = { the: 1, and: 1, for: 1, with: 1, its: 1, new: 1, first: 1,
+                             world: 1, ship: 1, ships: 1, vessel: 1, vessels: 1,
+                             marine: 1, maritime: 1, fuel: 1, fuels: 1, energy: 1,
+                             power: 1, green: 1, low: 1, carbon: 1, port: 1, ports: 1,
+                             sea: 1, says: 1, will: 1, has: 1, have: 1, from: 1,
+                             that: 1, this: 1, into: 1, over: 1, more: 1, than: 1,
+                             global: 1, market: 1, project: 1, group: 1, ltd: 1,
+                             one: 1, two: 1, three: 1, all: 1, can: 1, may: 1,
+                             are: 1, was: 1, were: 1, been: 1, not: 1, but: 1,
+                             mid: 1, day: 1, week: 1, year: 1, next: 1, last: 1 };
+
+                function low(s) { return (s || '').toLowerCase(); }
+
+                function toks(s) {
+                    var out = {}, m;
+                    /* 注意：连字符要当分隔符用 —— 标题里大量出现 ammonia-powered /
+                       dual-fuel / wind-assisted 这类连字符词，若把整串当一个 token，
+                       「ammonia」就永远匹配不到了。 */
+                    var re = /[A-Za-z][A-Za-z0-9'’.]*/g;
+                    while ((m = re.exec(s || '')) !== null) {
+                        var w = m[0].replace(/^[.'’]+|[.'’]+$/g, '').toLowerCase();
+                        if (w.length >= 3) { out[w] = 1; }
+                    }
+                    return out;
+                }
+
+                function hasTerm(text, set, term) {
+                    if (!term) { return false; }
+                    term = term.toLowerCase();
+                    if (/^[a-z0-9]+$/.test(term)) { return !!set[term]; }
+                    return text.indexOf(term) !== -1;
+                }
+
+                function scrollToEl(el) {
+                    if (!el) { return; }
+                    if (typeof el.scrollIntoView === 'function') {
+                        try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+                        catch (e) { }
+                        try { el.scrollIntoView(true); return; } catch (e) { }
+                    }
+                    /* 兜底：不支持 scrollIntoView 的环境按坐标滚 */
+                    try {
+                        var y = el.getBoundingClientRect().top
+                              + (window.pageYOffset || document.documentElement.scrollTop || 0) - 120;
+                        window.scrollTo(0, y);
+                    } catch (e) { }
+                }
+
+                function flash(el) {
+                    if (!el) { return; }
+                    scrollToEl(el);
+                    el.classList.remove('cite-flash');
+                    void el.offsetWidth;
+                    el.classList.add('cite-flash');
+                    window.setTimeout(function () { el.classList.remove('cite-flash'); }, 2600);
+                }
+
+                function run() {
+                    var ai = document.querySelector('.ai-section');
+                    var list = [].slice.call(document.querySelectorAll('.rss-item[id^="rss-"]'));
+                    if (!ai || !list.length) { return; }
+
+                    /* ---- ① 已有引用：可跳转 / 越界标灰 ---- */
+                    var refs = [].slice.call(ai.querySelectorAll('a.cite-ref'));
+                    var byTarget = {};
+                    refs.forEach(function (a) {
+                        var id = a.getAttribute('data-target') || '';
+                        var el = id ? document.getElementById(id) : null;
+                        if (!el) {
+                            a.classList.add('cite-dead');
+                            a.setAttribute('title', '本期没有编号 #' + (a.getAttribute('data-n') || '?')
+                                                  + ' 的条目（AI 误引或编号已过期）');
+                            if (window.console && console.warn) {
+                                console.warn('[补丁K] 引用越界：' + (a.textContent || '') + ' → 找不到 #' + id);
+                            }
+                            return;
+                        }
+                        a.setAttribute('title', '定位到下方第 '
+                            + (el.getAttribute('data-cite') || '?') + ' 条 RSS');
+                        (byTarget[id] = byTarget[id] || []).push(a);
+                        a.addEventListener('click', function (ev) {
+                            ev.preventDefault();
+                            flash(el);
+                            try { history.replaceState(null, '', '#' + id); } catch (e) {}
+                        });
+                    });
+
+                    /* ---- ③ 反向索引：被引用 N 处 ---- */
+                    Object.keys(byTarget).forEach(function (id) {
+                        var el = document.getElementById(id);
+                        var meta = el ? el.querySelector('.rss-meta') : null;
+                        if (!meta) { return; }
+                        var n = byTarget[id].length;
+                        var sp = document.createElement('span');
+                        sp.className = 'rss-cited';
+                        sp.textContent = '↩ 被引用 ' + n + ' 处';
+                        sp.setAttribute('title', '点击回到 AI 正文里引用它的位置');
+                        sp.addEventListener('click', function () { flash(byTarget[id][0]); });
+                        meta.appendChild(sp);
+                    });
+
+                    /* ---- ④ 自动兜底：专名 + 同义词保守匹配 ---- */
+                    var corpus = list.map(function (el) {
+                        var t = el.querySelector('.rss-title');
+                        var s = t ? t.textContent : el.textContent;
+                        return { el: el, low: low(s), toks: toks(s) };
+                    });
+                    var N = corpus.length;
+                    var df = {};
+                    corpus.forEach(function (c) {
+                        Object.keys(c.toks).forEach(function (w) { df[w] = (df[w] || 0) + 1; });
+                    });
+                    function idf(w) { var d = df[w] || 0; return d ? Math.log(1 + N / d) : 0; }
+
+                    /* 同义词簇的「辨别力权重」：命中条目越少、越能区分，权重越高。
+                       这样「氨 + 散货船」两条同义线索同时命中时，能准确落到
+                       氨动力散货船的条目上，而不是所有含 ammonia 的条目。 */
+                    var gw = SYN.map(function (g) {
+                        var hit = 0;
+                        corpus.forEach(function (c) {
+                            for (var i = 0; i < g.length; i++) {
+                                if (hasTerm(c.low, c.toks, g[i])) { hit++; return; }
+                            }
+                        });
+                        return hit ? Math.log(1 + N / hit) : 0;
+                    });
+
+                    var blocks = [].slice.call(ai.querySelectorAll('.ai-md-text, .ai-md-p'));
+                    blocks.forEach(function (b) {
+                        if (b.querySelector('a.cite-ref')) { return; }
+                        var raw = b.textContent || '';
+                        if (raw.replace(/\s/g, '').length < 8) { return; }
+                        var btxt = low(raw);
+                        var bset = toks(raw);
+
+                        var active = [];
+                        SYN.forEach(function (g, gi) {
+                            for (var i = 0; i < g.length; i++) {
+                                if (hasTerm(btxt, bset, g[i])) { active.push(gi); return; }
+                            }
+                        });
+                        if (!active.length) { return; }
+
+                        var scored = [];
+                        corpus.forEach(function (c, idx) {
+                            var sc = 0, rare = 0, hit = 0, syn = 0, mx = 0;
+                            Object.keys(bset).forEach(function (w) {
+                                if (STOP[w] || !c.toks[w]) { return; }
+                                sc += idf(w);
+                                if ((df[w] || 0) <= 2) { rare++; }
+                            });
+                            active.forEach(function (gi) {
+                                var g = SYN[gi];
+                                for (var j = 0; j < g.length; j++) {
+                                    if (hasTerm(c.low, c.toks, g[j])) {
+                                        hit++;
+                                        syn += gw[gi];
+                                        if (gw[gi] > mx) { mx = gw[gi]; }
+                                        break;
+                                    }
+                                }
+                            });
+                            /* 保守口径，宁可漏不可滥：
+                               路线 A —— 命中了一个只出现在 ≤2 条里的「专名」
+                                         （公司名 / 船型代号 / 项目名），最可靠；
+                               路线 B —— 两条以上同义线索同时命中，且其中至少一条是
+                                         高辨别力的（如「散货船」只命中 4 条），
+                                         总分也要够。两条都不满足就宁可不标。 */
+                            var okA = (rare >= 1 && sc >= 1.2);
+                            var okB = (hit >= 2 && syn >= 5.0 && mx >= 2.8);
+                            if (okA || okB) {
+                                scored.push({ i: idx, s: sc + syn });
+                            }
+                        });
+                        if (!scored.length) { return; }
+                        scored.sort(function (x, y) { return y.s - x.s; });
+
+                        var keep = [scored[0]];
+                        if (scored[1] && scored[0].s >= 3.0 && scored[1].s >= scored[0].s * 0.7) {
+                            keep.push(scored[1]);
+                        }
+                        keep.forEach(function (k) {
+                            var el = corpus[k.i].el;
+                            var a = document.createElement('a');
+                            a.className = 'cite-ref cite-auto';
+                            a.setAttribute('href', '#' + el.id);
+                            a.setAttribute('data-target', el.id);
+                            a.setAttribute('data-n', String(el.getAttribute('data-cite') || ''));
+                            a.setAttribute('title', '自动匹配：AI 未标注，按专名 / 同义词推断，仅供参考');
+                            a.textContent = '#' + (el.getAttribute('data-cite') || '');
+                            a.addEventListener('click', function (ev) { ev.preventDefault(); flash(el); });
+                            b.appendChild(a);
+                        });
+                    });
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', run);
+                } else {
+                    run();
+                }
+            })();
+'''
+
+K_JS_NEW = K_JS_CODE + K_JS_ANCHOR
+
+
+def patch_citation(root, log):
+    """★补丁K：AI 正文 ↔ RSS 条目交叉引用（看 AI 分析时能定位到对应 RSS）。
+
+    四块替换，各自独立判定；[F] 未打时自动跳过 ②。
+    """
+    # ---------- ① 提示词侧：给每条 RSS 行加编号 ----------
+    ai_path = os.path.join(root, "trendradar", "ai", "analyzer.py")
+    if not os.path.exists(ai_path):
+        log.append("  ✗ 找不到 trendradar/ai/analyzer.py，跳过 [K]①")
+    else:
+        text = read(ai_path)
+        if MARK_K in text:
+            log.append("  = [K]① ai/analyzer.py 已有标记，跳过")
+        else:
+            new_text, ok = replace_once(
+                text, K_AI_ANCHOR, K_AI_NEW,
+                "[K]① RSS 行加行首编号（AI 可回引）", log)
+            if ok:
+                write(ai_path, new_text)
+
+    # ---------- ② 正文渲染：引用标记 → 可点击徽标 ----------
+    fmt_path = os.path.join(root, "trendradar", "ai", "formatter.py")
+    if not os.path.exists(fmt_path):
+        log.append("  ✗ 找不到 trendradar/ai/formatter.py，跳过 [K]②")
+    else:
+        text = read(fmt_path)
+        if MARK_K in text:
+            log.append("  = [K]② ai/formatter.py 已有标记，跳过")
+        elif "def _md_inline_html" not in text:
+            log.append("  ✗ [K]② 需要先打 [F]（未找到 _md_inline_html），已跳过")
+        else:
+            t1, ok1 = replace_once(
+                text, K_FMT_FN_ANCHOR, K_CITE_FN + K_FMT_FN_ANCHOR,
+                "[K]② formatter.py 注入引用徽标渲染函数", log)
+            t2, ok2 = replace_once(
+                t1, K_FMT_CALL_ANCHOR, K_FMT_CALL_NEW,
+                "[K]② 行内渲染接上引用徽标", log)
+            if ok1 and ok2:
+                write(fmt_path, t2)
+            else:
+                log.append("  ⚠ [K]② 有锚点未命中，为免半改，formatter.py 未写入")
+
+    # ---------- ③④ report/html.py：条目编号 + 样式 + JS ----------
+    path = os.path.join(root, "trendradar", "report", "html.py")
+    if not os.path.exists(path):
+        log.append("  ✗ 找不到 trendradar/report/html.py，跳过 [K]③④")
+        return
+    text = read(path)
+    if MARK_K in text:
+        log.append("  = [K]③④ report/html.py 已有标记，跳过")
+        return
+
+    pairs = [
+        (K_SIG_ANCHOR,   K_SIG_NEW,     "[K]③ RSS 渲染函数加 id_prefix 参数"),
+        (K_LOOP_ANCHOR,  K_LOOP_NEW,    "[K]④ 条目序号计数器（跨分组）"),
+        (K_ITEM_ANCHOR,  K_ITEM_NEW,    "[K]⑤ rss-item 加 id / data-cite"),
+        (K_META_ANCHOR,  K_META_NEW,    "[K]⑥ 条目显示编号徽标 #N"),
+        (K_CALL_ANCHOR,  K_CALL_NEW,    "[K]⑦ 新增区不加编号（避免重复）"),
+        (K_CSS_ANCHOR,   K_CSS_ANCHOR + K_CSS_BLOCK,        "[K]⑧ 交叉引用样式（亮色）"),
+        (K_CSS_DARK_ANCHOR, K_CSS_DARK_ANCHOR + K_CSS_DARK_BLOCK, "[K]⑨ 交叉引用样式（深色）"),
+        (K_JS_ANCHOR,    K_JS_NEW,      "[K]⑩ 跳转 / 越界标灰 / 反向索引 / 自动兜底"),
+    ]
+    ok_all = True
+    for anchor, new, label in pairs:
+        text, ok = replace_once(text, anchor, new, label, log)
+        ok_all = ok_all and ok
+
+    if ok_all:
+        write(path, text)
+    else:
+        log.append("  ⚠ [K] 有锚点未命中，为免半改，本次未写入（原文件保持不变）")
+
+
 def patch_search_synonyms(root, log):
     """★补丁J：报告搜索加「中英同义词别名表」。
 
@@ -1422,6 +1995,8 @@ def main():
     patch_search_feedback(root, log)
     print("\n[J] 搜索中英同义词别名表 (trendradar/report/html.py，需先打 [I])")
     patch_search_synonyms(root, log)
+    print("\n[K] AI 正文 ↔ RSS 条目交叉引用 (ai/analyzer.py + ai/formatter.py + report/html.py)")
+    patch_citation(root, log)
 
     print()
     for line in log:
@@ -1453,4 +2028,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
