@@ -242,6 +242,20 @@ bio-LNG
 液化天然气
 LPG
 LBM
+# ── 乙醇（v3.3.1 补）──
+#   之前这一组完全没有 ethanol，「Ethanol Could Offer Shipping Another Path」
+#   「Brazil eyes ethanol as marine fuel」这类只有乙醇一个信号的标题会被整条丢弃，
+#   能进报告的乙醇新闻全靠标题里碰巧还有 bunkering / marine fuel。
+#   ⚠️ 必须用 \b 卡边界：methanol 里就含 "ethanol" 这七个字母，
+#      写成普通词 ethanol 会把所有甲醇标题一起算成乙醇。
+/\b(e-)?(bio-?)?ethanol\b/
+/\bethyl alcohol\b/
+乙醇
+燃料乙醇
+生物乙醇
+乙醇燃料
+乙醇加注
+乙醇动力
 生物燃料
 biofuel
 生物柴油
