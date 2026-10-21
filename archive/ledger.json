@@ -1,0 +1,818 @@
+{
+ "version": 1,
+ "updated": "2026-10-21",
+ "issues": [
+  {
+   "date": "2026-10-21",
+   "items": 115,
+   "events": [
+    {
+     "cite": 1,
+     "title": "Oceania Bunkering tripling up its Mozambique service – with three supply options and three ports",
+     "url": "https://ship.energy/energy/oceania-bunkering-tripling-up-its-mozambique-service-with-three-supply-options-and-three-ports/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 2,
+     "title": "Equinor, SNOC to Explore Joint LPG Shipping, Storage and Trading in UAE",
+     "url": "https://www.marinelink.com/news/equinor-snoc-explore-joint-lpg-shipping-543813",
+     "src": "MarineLink",
+     "stage": "other"
+    },
+    {
+     "cite": 3,
+     "title": "Seaborne coal trade rebounds as Hormuz turns Asia away from LNG",
+     "url": "https://www.seatrade-maritime.com/dry-bulk/seaborne-coal-trade-rebounds-as-hormuz-turns-asia-away-from-lng",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 4,
+     "title": "PetroChina launches LNG bunkering operations in Singapore with first delivery",
+     "url": "https://www.manifoldtimes.com/news/petrochina-launches-lng-bunkering-operations-in-singapore-with-first-delivery/",
+     "src": "Manifold Times",
+     "stage": "operating"
+    },
+    {
+     "cite": 5,
+     "title": "EC Announces New Funding Support with Maritime and Alternative Fuels Included",
+     "url": "https://shipandbunker.com/news/emea/774660-ec-announces-new-funding-support-with-maritime-and-alternative-fuels-included",
+     "src": "Ship & Bunker",
+     "stage": "other"
+    },
+    {
+     "cite": 6,
+     "title": "BW LPG India offloads 18-year-old VLGC for over $80m",
+     "url": "https://splash247.com/bw-lpg-india-offloads-18-year-old-vlgc-for-over-80m/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 7,
+     "title": "Deployable Energy Nuclear Power Application Wins 2026 SHIPPINGInsight Award",
+     "url": "https://maritime-executive.com/article/deployable-energy-nuclear-power-application-wins-2026-shippinginsight-award",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 8,
+     "title": "LNG Canada entrusts Técnicas Reunidas with €200M+ EPCM deal",
+     "url": "https://offshore-energy.biz/2026/10/20/lng-canada-entrusts-tecnicas-reunidas-with-euro200m-epcm-deal",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 9,
+     "title": "FERC comes up with three-tiered fast track plan to streamline US LNG permitting",
+     "url": "https://offshore-energy.biz/2026/10/20/ferc-comes-up-with-three-tiered-fast-track-plan-to-streamline-us-lng-permitting",
+     "src": "Offshore Energy",
+     "stage": "planned"
+    },
+    {
+     "cite": 10,
+     "title": "Texas LNG seeks five-year delay for Brownsville export terminal",
+     "url": "https://www.seatrade-maritime.com/lng/texas-lng-seeks-five-year-delay-for-brownsville-export-terminal",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 11,
+     "title": "HMM places $1.5 billion order for eight dual-fuel LNG boxships",
+     "url": "https://ship.energy/energy/hmm-places-1-5-billion-order-for-eight-dual-fuel-lng-boxships/",
+     "src": "Bunkerspot",
+     "stage": "planned"
+    },
+    {
+     "cite": 12,
+     "title": "PetroChina International acquires methanol dual-fuel bunker vessel for Singapore fleet",
+     "url": "https://www.manifoldtimes.com/news/petrochina-international-acquires-methanol-dual-fuel-bunker-vessel-for-singapore-fleet/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 13,
+     "title": "IBT Bunkering & Trading hires Björn Hauschild as Sales Support Specialist",
+     "url": "https://www.manifoldtimes.com/news/ibt-bunkering-trading-hires-bjorn-hauschild-as-sales-support-specialist/",
+     "src": "Manifold Times · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 14,
+     "title": "ENGINE on Fuel Switch Snapshot: LBM nips at LSMGO’s heels in Rotterdam",
+     "url": "https://www.manifoldtimes.com/news/engine-on-fuel-switch-snapshot-lbm-nips-at-lsmgos-heels-in-rotterdam/",
+     "src": "Manifold Times · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 15,
+     "title": "SIBCON 2026: ONE navigates global bunkering challenges through strategic partnerships and digital innovation",
+     "url": "https://www.manifoldtimes.com/news/sibcon-2026-one-navigates-global-bunkering-challenges-through-strategic-partnerships-and-digital-innovation/",
+     "src": "Manifold Times · 第2页",
+     "stage": "planned"
+    },
+    {
+     "cite": 16,
+     "title": "MMMCZCS: ‘First-mover experience shows that methanol can be operated safely and effectively in commercial service’",
+     "url": "https://ship.energy/information/mmmczcs-first-mover-experience-shows-that-methanol-can-be-operated-safely-and-effectively-in-commercial-service/",
+     "src": "Bunkerspot · 第2页",
+     "stage": "operating"
+    },
+    {
+     "cite": 17,
+     "title": "WinGD notches up a first with ethanol bunkers for Maersk boxship",
+     "url": "https://www.seatrade-maritime.com/alternative-fuels/wingd-notches-up-a-first-with-ethanol-bunkers-for-maersk-boxship",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 18,
+     "title": "Wilhelmsen Ship Management welcomes latest methanol dual-fuel Shaper Class vessel",
+     "url": "https://ship.energy/energy/wilhelmsen-ship-management-welcomes-latest-methanol-dual-fuel-shaper-class-vessel/",
+     "src": "Bunkerspot · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 19,
+     "title": "'World’s first' commercial ship-to-ship green ammonia bunkering performed in China",
+     "url": "https://offshore-energy.biz/2026/10/19/worlds-first-commercial-ship-to-ship-green-ammonia-bunkering-performed-in-china",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 20,
+     "title": "Qatar LNG Cargo Makes Rare Red Sea Journey to Get Gas to Europe",
+     "url": "https://gcaptain.com/qatar-lng-cargo-makes-rare-red-sea-journey-to-get-gas-to-europe/",
+     "src": "gCaptain · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 21,
+     "title": "Maersk boxship bunkered with record ethanol stem in Singapore",
+     "url": "https://ship.energy/energy/maersk-boxship-bunkered-with-record-ethanol-stem-in-singapore/",
+     "src": "Bunkerspot · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 22,
+     "title": "SinoBunker completes Guangzhou Port’s first methanol bunkering op for RoRo vessel",
+     "url": "https://www.manifoldtimes.com/news/sinobunker-completes-guangzhou-ports-first-methanol-bunkering-op-for-roro-vessel/",
+     "src": "Manifold Times · 第3页",
+     "stage": "operating"
+    },
+    {
+     "cite": 23,
+     "title": "Avenir LNG launches second bunker vessel in China’s CIMC SOE yard",
+     "url": "https://www.manifoldtimes.com/news/avenir-lng-launches-second-bunker-vessel-in-chinas-cimc-soe-yard/",
+     "src": "Manifold Times · 第3页",
+     "stage": "operating"
+    },
+    {
+     "cite": 24,
+     "title": "AMS Barging christens methanol-ready tanker “Felicitas” in Rotterdam",
+     "url": "https://www.manifoldtimes.com/news/ams-barging-christens-methanol-ready-tanker-felicitas-in-rotterdam/",
+     "src": "Manifold Times · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 25,
+     "title": "CMA CGM names methanol-powered vessel “LORENZACCIO”",
+     "url": "https://www.manifoldtimes.com/news/cma-cgm-names-methanol-powered-vessel-lorenzaccio/",
+     "src": "Manifold Times · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 26,
+     "title": "SIBCON 2026: World’s leading bunkering hub confronts a rapidly evolving energy landscape, observes Equatorial Marine Fuel",
+     "url": "https://www.manifoldtimes.com/news/sibcon-2026-worlds-leading-bunkering-hub-confronts-a-rapidly-evolving-energy-landscape-observes-equatorial-marine-fuel/",
+     "src": "Manifold Times · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 27,
+     "title": "SIBCON 2026: Redefining Singapore’s role in the global bunkering ecosystem, from volume to value",
+     "url": "https://www.manifoldtimes.com/news/sibcon-2026-redefining-singapores-role-in-the-global-bunkering-ecosystem-from-volume-to-value/",
+     "src": "Manifold Times · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 28,
+     "title": "SIBCON 2026: Digital bunkering foundations enable Singapore to scale AI maritime solutions, states MPA",
+     "url": "https://www.manifoldtimes.com/news/sibcon-2026-digital-bunkering-foundations-enable-singapore-to-scale-ai-maritime-solutions-states-mpa/",
+     "src": "Manifold Times · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 29,
+     "title": "World’s largest ethanol bunkering on Maersk ship in Singapore",
+     "url": "https://www.seatrade-maritime.com/bunkering/world-s-largest-ethanol-bunkering-on-maersk-ship-in-singapore",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 30,
+     "title": "Golden Island completes world’s largest ethanol bunkering operation in Singapore",
+     "url": "https://www.manifoldtimes.com/news/golden-island-completes-worlds-largest-ethanol-bunkering-operation-in-singapore/",
+     "src": "Manifold Times · 第3页",
+     "stage": "operating"
+    },
+    {
+     "cite": 31,
+     "title": "CMA CGM names latest methanol-powered box ship",
+     "url": "https://ship.energy/energy/cma-cgm-names-latest-methanol-powered-box-ship/",
+     "src": "Bunkerspot · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 33,
+     "title": "Methanol-ready energy subsea construction vessel arrives in Norway for completion",
+     "url": "https://offshore-energy.biz/2026/10/16/methanol-ready-energy-subsea-construction-vessel-arrives-in-norway-for-completion",
+     "src": "Offshore Energy",
+     "stage": "operating"
+    },
+    {
+     "cite": 34,
+     "title": "Iran Ships Some LPG, Jet Fuel Despite US Blockade, Data Shows",
+     "url": "https://gcaptain.com/iran-ships-some-lpg-jet-fuel-despite-us-blockade-data-shows/",
+     "src": "gCaptain · 第3页",
+     "stage": "other"
+    },
+    {
+     "cite": 35,
+     "title": "Alternative fuels – capability doesn’t equal consumption",
+     "url": "https://www.seatrade-maritime.com/bunkering/alternative-fuels-capability-doesn-t-equal-consumption",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 36,
+     "title": "JERA deepens Australian LNG foothold with larger stake in Chevron’s project",
+     "url": "https://offshore-energy.biz/2026/10/14/jera-deepens-australian-lng-foothold-with-larger-stake-in-chevrons-project",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 37,
+     "title": "Hybrid propulsion explored for large LNG carriers",
+     "url": "https://www.motorship.com/news/electrification-and-battery-hybrids/hybrid-propulsion-explored-for-large-lng-carriers/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 38,
+     "title": "MISC and NYK joint venture bags LNG carrier charter",
+     "url": "https://www.seatrade-maritime.com/tankers/misc-and-nyk-joint-venture-bags-lng-carrier-charter",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 39,
+     "title": "Trio eyes bio-methane as Singapore’s next step for LNG Bunkering",
+     "url": "https://www.seatrade-maritime.com/bunkering/trio-eyes-bio-methane-as-singapore-s-next-step-for-lng-bunkering",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 40,
+     "title": "进军LNG加注船市场！造船巨头联手KR开发新船型- 船厂动态 - 国际船舶网",
+     "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9PcXU3RW1NN3JvVjNxNDY4a3FEOWh6b0xaMzZQeTdvSHlCSVVtVEl5N3RNdXptT2J1aTNiLV9EbmpsUlp5WmhFNE1pVWpJbklxbC1TbF9RTFUzcWxfamNyaURPUWhLTzFaOWpqeVF0eHM?oc=5",
+     "src": "GN · 国内绿色船舶政策",
+     "stage": "operating"
+    },
+    {
+     "cite": 41,
+     "title": "World’s First Ammonia-Powered Dry Bulk Carrier Completes Sea Trials - Marine Insight",
+     "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNMEhGTGNQRmFPa2VOVEwzR2t1NmpRMHI5Tkc4X0Q5OWVMdjhTNl9rQ0syb3VlWEVSV2N2MjRIN1BBT0xVZ0E4SzMwOEFibXpqcU95TDJVRExQNGF4ejBuZUJ5MFFxNjRXN2MyS0NuYTlweDUxZ0xoZnVIRGxDclBVRTZkenc3RnFVZEpuQmVPMXVaYnhqdjRQNWtNUFJGQQ?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "testing"
+    },
+    {
+     "cite": 42,
+     "title": "CMB.TECH Putting First Ammonia-Powered Bulkers into Service with Fortescue - The Maritime Executive",
+     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNWXJxdE9DeGtIZmFiaEJWSXZmYlppRlF0dmxYVXppN1Q3dnNoVEZuVkdJY0N3Sm1lZmY4MHBQZEZScTNXR043WDVtNW5FRWFlc2F5OURlaUhXaHRRNjhKRnl0S0ZBS1FEcWRDa1Vvc1pCaG5Ob3RJclRwd04tUTd2ZGI4WkZ2amdvc3ZSYWhLV09NNHJqYkNxRlFzbF9lTk5NNFBjZ2U1d1pIcmlhS3ZoUFNkQQ?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "operating"
+    },
+    {
+     "cite": 43,
+     "title": "Viking Energy PSV Moves Closer to Ammonia Operations - Offshore Engineer Magazine",
+     "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQUGxEWmg4S1R1RHd6VEpkdDNaYWZfYjlsMWRLTjBiMDdQaUtqNVNkNWd5MnRqQS1NTHVHVnJqaER2d1BHSnpHWEFzekYxVkU3N2xIRGhNVHZYZ2J3YXFUNkFjdFpSZXJvd1VlRUtFQVUtNW15RVh4cHdCQXJxdGpBY21SWkcyc2VhV2hBbko0VlhTVHlm?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "operating"
+    },
+    {
+     "cite": 44,
+     "title": "Wärtsilä supports two new LNGCs",
+     "url": "https://www.motorship.com/news/equipment/wartsila-supports-two-new-lngcs/",
+     "src": "The Motorship · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 45,
+     "title": "GasEntec gains approval for high-capacity LNG FSRU",
+     "url": "https://www.motorship.com/news/lng/gasentec-gains-approval-for-high-capacity-lng-fsru/",
+     "src": "The Motorship · 第2页",
+     "stage": "policy"
+    },
+    {
+     "cite": 46,
+     "title": "Consultation on Merchant Shipping Domestic Safety Management Code Regulations",
+     "url": "https://www.gov.uk/government/consultations/consultation-on-merchant-shipping-domestic-safety-management-code-regulations",
+     "src": "英国MCA · 全部发布",
+     "stage": "policy"
+    },
+    {
+     "cite": 47,
+     "title": "EU Arctic Strategy Draws NGO Support to Curb Black Carbon Emissions",
+     "url": "https://shipandbunker.com/news/emea/443739-eu-arctic-strategy-draws-ngo-support-to-curb-black-carbon-emissions",
+     "src": "Ship & Bunker",
+     "stage": "other"
+    },
+    {
+     "cite": 48,
+     "title": "Opportunity Green Warns Japan IMO Proposal Risks Weakening Shipping Net-Zero Framework - News and Statistics - IndexBox",
+     "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPR25PRW5jZl84ZVZ0MVpjZVFpLVozWHB2ZHVCV2ZyMHlnRVF1VFVVN3pRajg0Yk4tODJBektVanhFRDR6RDVSNzVLREJlTUpxMWNDWlYtakZ2cTY4UXZNa2tRZ1JIRlRvMkZtMndIak5hbzlYQUlral9nNkQxRXdQWTduaDRxMWpWdWNpdGdxckdFbUJRcl9jcjZhbi1vSGQwWEg0R19tS2VNZw?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 49,
+     "title": "Japan IMO attempt to weaken the IMO Net-Zero Framework - Cyprus Shipping News",
+     "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQdC00bi16WUZ5Z1N4UVItSHRYVHF2YUx4VXdkbW9IZkEyd3VqZmNpNmlHZnQ2LWFvdzZ3dUc4RlJfekV1UWcwMWUxZjFUel9OalNZY2E5Q0FNaWZNN0tQUHdlRTk2ZUg3Vzh3WG83UndJU2dmOWRNVDMtSkp3c18tdWFoV2RwZzVSLXFVQkd4djlTTExpcGV2X3VCMDVCUQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 50,
+     "title": "Study says shipping pays twice its share to EU ETS, and negotiations signal ongoing imbalance - Riviera Maritime Media",
+     "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxOS3YyeXpwZThib3Y0MjhBeGhfX2Q5MGk0akpTYWhpNFpKenkyaXdwSVdybVNkQ3VyTVhHZmlFTEhqdnVKOWtyNU54aG41QXNuTENHbnVRSnhUeHBZTVdLYy13eWtoYzBwNTNnN0ZaNFR3T3FlaXY4Nk1YUFRCa1YtQVJvckItSjNTeGt2aGE4el92MTRzOHpfM1VUaEVtTzBaV2djMUltT3RTSjlkd2ZUV3YtNFNmak01UXNnMmJPSHJXa21Db3kzZVF2b1FVbS10MmJUcUtacDY?oc=5",
+     "src": "GN · FuelEU与EU ETS",
+     "stage": "planned"
+    },
+    {
+     "cite": 51,
+     "title": "New study finds shipping pays twice its share to EU ETS: earmarked revenues should triple to help build market for sustainable fuels and technologies - Hellenic Shipping News",
+     "url": "https://news.google.com/rss/articles/CBMilAJBVV95cUxOTzJ6OVcxVWxCeTJXSjdjSDJ6VWk3SWhIYUttMXpfTEVOM1p1YmNoZDIxQ0VidDZCc05wZkRrOEY4Ylg0WjJzSktMOGlELVV1ek5wX3lOV2hOSzVzeWFubXZTRThPUDVlT0xzYms4bGwxamZlQVdDbnBaUTVPa0k1d0MzLXY3X2RWSjZ6VENpWGM3N0ZranFTM3pPR2RsdzhFb21iTExXYjZ5cHFqTnJ0NTU3TU1hdVZaUzhETlhmR1hjMHR4anNVR040R3VhNHMxY1VFTmZYNUUyOUg3Wkw4SHVwa3pLdF9tT29Bc2FFNi1rcjZwWXA4eEJIUU1sUjB6S2VfWnhqeUtNUk1qcU1EODJsX1Q?oc=5",
+     "src": "GN · FuelEU与EU ETS",
+     "stage": "planned"
+    },
+    {
+     "cite": 52,
+     "title": "US Coast Guard Releases New Maritime Cybersecurity Compliance Guidance",
+     "url": "https://maritime-executive.com/article/us-coast-guard-releases-new-maritime-cybersecurity-compliance-guidance",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 53,
+     "title": "Russian Diesel Cargoes Continue to Intended Destinations After Export Ban Lifts",
+     "url": "https://www.marinelink.com/news/russian-diesel-cargoes-continue-intended-543800",
+     "src": "MarineLink",
+     "stage": "planned"
+    },
+    {
+     "cite": 54,
+     "title": "New EU Arctic strategy commits bloc to engaging with IMO on black carbon",
+     "url": "https://ship.energy/information/new-eu-arctic-strategy-commits-bloc-to-engaging-with-imo-on-black-carbon/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 55,
+     "title": "Timor-Leste throws 12-month lifeline to delayed gas project ahead of drilling ops",
+     "url": "https://offshore-energy.biz/2026/10/20/timor-leste-throws-12-month-lifeline-to-delayed-gas-project-ahead-of-drilling-ops",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 56,
+     "title": "EC net-zero tech funding includes support for alt.fuels production and shipping",
+     "url": "https://ship.energy/energy/ec-net-zero-tech-funding-includes-support-for-alt-fuels-production-and-shipping/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 57,
+     "title": "IMO Net-Zero Framework: Japan’s proposal sparks debate over climate finance - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPNjVTSWdRRFpJQkQwWGg1bDVJQnpSeEV3YTBWbG9XUXlGT1pOd3JndUdTS005VW0xMVhMZmdfUkNoVmpKeUEtVTVIUHZSWDdXWHk0bkVuVDh4VXY1eVdJSE9wZy1WalFwaVZYdV85VERBUnNMaF9qVGtlTnZablZzVk5yR0NBNmJPQ1RpcFR5STlaUl9ubFFQTWtwSktwQQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 58,
+     "title": "Climate NGO claims Japan’s NZF proposal would ‘undermine incentives for early uptake of zero-emission energy and fuels’",
+     "url": "https://ship.energy/policy/climate-ngo-claims-japans-nzf-proposal-would-undermine-incentives-for-early-uptake-of-zero-emission-energy-and-fuels/",
+     "src": "Bunkerspot · 第2页",
+     "stage": "planned"
+    },
+    {
+     "cite": 59,
+     "title": "GCMD launches Onboard Carbon Capture and Storage Impact Calculator",
+     "url": "https://www.manifoldtimes.com/news/gcmd-launches-onboard-carbon-capture-and-storage-impact-calculator/",
+     "src": "Manifold Times · 第2页",
+     "stage": "operating"
+    },
+    {
+     "cite": 60,
+     "title": "SIBCON 2026: Regulatory clarity single most critical factor for unlocking investment to decarbonise shipping, states DNV expert",
+     "url": "https://www.manifoldtimes.com/news/sibcon-2026-regulatory-clarity-single-most-critical-factor-for-unlocking-investment-to-decarbonise-shipping-states-dnv-expert/",
+     "src": "Manifold Times · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 61,
+     "title": "British Ports Association report challenges claims EU carbon pricing is causing maritime carbon leakage to Britain",
+     "url": "https://ship.energy/information/british-ports-association-report-challenges-claims-eu-carbon-pricing-is-causing-maritime-carbon-leakage-to-britain/",
+     "src": "Bunkerspot · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 62,
+     "title": "Petronas and Petrovietnam strengthen ties in pursuit of energy security and low-carbon growth",
+     "url": "https://offshore-energy.biz/2026/10/19/petronas-and-petrovietnam-strengthen-ties-in-pursuit-of-energy-security-and-low-carbon-growth",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 63,
+     "title": "Cyprus-based shipping executive urges rethink of IMO Net-Zero Framework - Cyprus Inform",
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOSXZpeTVTZno0WXNXVklBd3ZRcEREeFZvWEZQZ2VjWWlQd3owbWlMVVRiamdrR2tsa0RNRWhaNE9HcmJqR0hUVkRTNVZVWERTdjBjM0loWnQzUkRNam4xNTVJVUlHb2p1ZmFvVlhEYm5wS2JrWmtvdmpHLUctT0dldE9kaDNwaVpUaEliWXZybGM5LVVqZTBZLS1RQXZqWEZpNTItcGNfU204V00?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 64,
+     "title": "Cyprus shipowner challenges IMO carbon tax plans at Tokyo maritime forum - Cyprus Mail",
+     "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNbHkxVFQzYjNxR3F3MWNhcTlTaVB2Z21LWVlpUFRiSHlCcmV1SUVpa2R2V29iWGFRWWdsWVlmRy1wTUZzMDdpSDBEOHJ0dEdwbnVxM1BERENUbVU5cEVqVTRRaEhBZzZNZGM3NWl2UXRtZi12bTZETjBkRlkzYTFxUUhITGlnNVppcExCWVUtV0RQcmlvRUpKanRqakRHMEswY0NDTG5EcE1LYjQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 65,
+     "title": "BPA links UK container growth to port investment rather than EU ETS diversion - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQM2luWlFmM2hHQmtIVmg5dUJldHJjZ2dzQk1iTHNraWJMcnVheC1ubHBvejFKMF9vZE9IbkhRQ2tlZ2dlUnJqUzdWOHVadDZ5ck5hVDVwZGxTZzkzMl80STdZREdHNmtmbWNNaU9SQzZMREVRa0IyS3BVWFdXUmVBRmotRHVncmJZZ0ZNSW1YbVRyaTNhWTVURFUtNk9DbndNck1N?oc=5",
+     "src": "GN · FuelEU与EU ETS",
+     "stage": "other"
+    },
+    {
+     "cite": 66,
+     "title": "IMO Members Seek Compromise on Net-Zero Framework as Shipowners Push for Global Rules - Global Trade Magazine",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNMUpwTlhWWjY5U3RVYUlwVDVPWHprLVk3TXhZRE1HclJnbHczU29yNG1jTXNMbXk3Y19Oc0luYnJfZkhUeThNUk9XRkl6Z200Y2pQOTk4ZC1pZk9pWXZheHlXTk5YaG85VklIU2kzOTRORFhTTmMtWHN4YzhvMnI5UlFwRW50YU1ZV3JXQnp1ZDFIaU1rcVpxaUs3S2F6NFJieEhZSlNSbl9sa1E3ZTFNN045TGJ1NlVi?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "policy"
+    },
+    {
+     "cite": 67,
+     "title": "Rig provider and other contractors revealed for Timor-Leste's oil field",
+     "url": "https://offshore-energy.biz/2026/10/15/rig-provider-and-other-contractors-revealed-for-timor-lestes-oil-field",
+     "src": "Offshore Energy",
+     "stage": "planned"
+    },
+    {
+     "cite": 68,
+     "title": "Green ammonia could be cheaper than VLSFO by 2035 under IMO NZF",
+     "url": "https://www.seatrade-maritime.com/regulations/green-ammonia-could-be-cheaper-than-vlsfo-by-2035-under-imo-nzf",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 69,
+     "title": "First Greater Bay Area zero-carbon container route starts up",
+     "url": "https://www.seatrade-maritime.com/containers/first-greater-bay-area-zero-carbon-container-route-starts-up",
+     "src": "Seatrade Maritime",
+     "stage": "operating"
+    },
+    {
+     "cite": 70,
+     "title": "E-fuels need own share of proposed EU ETS shipping subsidy - T&E - https://www.engine.online/",
+     "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQbkNPaEt6WUdGcXpFVjFYamdhSnU3YzFMREE0RDRGTFFVVDV4WEliczZHLU9hZFVkY21VVy10eGhFS3d4cVpkTkZIcnlQaGhzUDhXSHZEZjl2Wk5DRUdUM0JqbEJ3N0R3Q0pJenBmaWxaSWkyWEp4dk05RTJCUjVGOFJqN1NDZlQweHhTT3JtSndyR1R3dE4wUEhvbDlaVTA?oc=5",
+     "src": "GN · FuelEU与EU ETS",
+     "stage": "planned"
+    },
+    {
+     "cite": 71,
+     "title": "Proposed Merchant Shipping (Safety of Navigation) Regulations 2027",
+     "url": "https://www.gov.uk/government/consultations/proposed-merchant-shipping-safety-of-navigation-regulations-2027",
+     "src": "英国MCA · 法规与征求意见",
+     "stage": "policy"
+    },
+    {
+     "cite": 72,
+     "title": "IMO highlights detention and lengthy legal proceedings against seafarers",
+     "url": "https://www.seatrade-maritime.com/crewing/imo-highlights-detention-and-lengthy-legal-proceedings-against-seafarers",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 73,
+     "title": "中国船级社｜关于《船舶应用氨燃料指南》2026（初稿）征求意见",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202609300276771776&columnId=201900002000000413",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 74,
+     "title": "中国海事局｜甲醇燃料内河加注趸船技术与检验指南",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202609290227994206&columnId=202006161032321078",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "operating"
+    },
+    {
+     "cite": 75,
+     "title": "中国船级社｜船舶应用氢燃料指南 2026",
+     "url": "https://www.ccs.org.cn/ccswz/specialDetail?id=202609031076494076",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 76,
+     "title": "中国船级社｜关于征求《船用燃料全生命周期温室气体排放强度计算与认证指南（2026）》（初稿）意见的函",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202608190518084148&columnId=201900002000000413",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 77,
+     "title": "中国海事局｜液化石油气燃料动力船舶技术与检验暂行规则",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202608141066175620&columnId=202006161032321078",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 78,
+     "title": "中国船级社｜国际航行海船能效设计指数（EEDI）计算与验证指南2026年第1次变更通告",
+     "url": "https://www.ccs.org.cn/ccswz/specialDetail?id=202608210238594409",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 79,
+     "title": "中国船级社｜船舶应用直流综合电力系统指南 2026",
+     "url": "https://www.ccs.org.cn/ccswz/specialDetail?id=202607161013848356",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 80,
+     "title": "中国船级社｜关于《船舶氢燃料加注作业指南》2026（初稿）征求意见",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202512150419624238&columnId=201900002000000413",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "operating"
+    },
+    {
+     "cite": 81,
+     "title": "中国船级社｜关于《船用高压储供氢和加注系统指南》《船用固态储供氢及加注系统》和《船用液氢储供及加注系统》初稿征求意见",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202606250595928152&columnId=201900002000000413",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "operating"
+    },
+    {
+     "cite": 82,
+     "title": "中国船级社｜船舶智能能效管理检验指南 2026",
+     "url": "https://www.ccs.org.cn/ccswz/specialDetail?id=202605061038814225",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 83,
+     "title": "中华人民共和国海事局关于发布《氨燃料动力船舶技术与检验暂行规则（2026）》的公告",
+     "url": "https://www.msa.gov.cn/html/cnmsa/xxgk/article/2026/d5d57ec0193740848c6ae1da2bba848f.html",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 84,
+     "title": "中国海事局｜新能源清洁能源动力船舶适用内河船舶技术规范条款实施指南",
+     "url": "https://www.ccs.org.cn/ccswz/articleDetail?id=202603300415423184&columnId=202006161032321078",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 85,
+     "title": "中国船级社｜船舶应用电池动力规范 2025",
+     "url": "https://www.ccs.org.cn/ccswz/specialDetail?id=202601060114611630",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 86,
+     "title": "交通运输部海事局关于发布《中国籍国际航行海船使用废气清洗系统等效燃油硫含量要求实施指南》的通知",
+     "url": "https://www.msa.gov.cn/html/cnmsa/xxgk/article/2025/d10800a7a0cc499b9e2a319d77d6afc6.html",
+     "src": "法规原文直采 · 船级社/海事局",
+     "stage": "policy"
+    },
+    {
+     "cite": 87,
+     "title": "MPA, CCS to collaborate on green bunker fuels, electrification and smart ships",
+     "url": "https://www.manifoldtimes.com/news/mpa-ccs-to-collaborate-on-green-bunker-fuels-electrification-and-smart-ships/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 88,
+     "title": "OceanAlpha L42B marine survey uncrewed surface vessel (USV) receives Bureau Veritas Approval in Principle (AiP) certificate",
+     "url": "https://offshore-energy.biz/2026/10/20/oceanalpha-l42b-marine-survey-uncrewed-surface-vessel-usv-receives-bureau-veritas-approval-in-principle-aip-certificate",
+     "src": "Offshore Energy",
+     "stage": "policy"
+    },
+    {
+     "cite": 89,
+     "title": "Hapag-Lloyd operated ship abandoned in Atlantic after fire",
+     "url": "https://www.seatrade-maritime.com/accidents/hapag-lloyd-operated-ship-abandoned-in-atlantic-after-fire",
+     "src": "Seatrade Maritime",
+     "stage": "operating"
+    },
+    {
+     "cite": 90,
+     "title": "ABS highlights technology shaping maritime’s future",
+     "url": "https://www.motorship.com/news/alternative-fuels-lubricants/abs-highlights-technology-shaping-maritimes-future/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 91,
+     "title": "Indian Register of Shipping awards Type Approval to Medha Energy’s lithium-ion battery",
+     "url": "https://ship.energy/energy/indian-register-of-shipping-awards-type-approval-to-medha-energys-lithium-ion-battery/",
+     "src": "Bunkerspot · 第2页",
+     "stage": "policy"
+    },
+    {
+     "cite": 92,
+     "title": "AI, Robotics and Nuclear Top the Agenda at ABS N. America Regional Meeting",
+     "url": "https://maritime-executive.com/article/ai-robotics-and-nuclear-energy-lead-discussion-at-abs-north-america-regional-committee-meeting",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 93,
+     "title": "IRClass Grants Type Approval to Medha Energy's Lithium-Ion Batteries",
+     "url": "https://maritime-executive.com/article/indian-register-of-shipping-grants-type-approval-to-medha-energy-s-92-kwh-lto-lithium-ion-battery-system",
+     "src": "The Maritime Executive",
+     "stage": "policy"
+    },
+    {
+     "cite": 94,
+     "title": "ABS Helps Industry Put Augmented Reality to the Test",
+     "url": "https://maritime-executive.com/article/abs-helps-industry-put-augmented-reality-to-the-test-3",
+     "src": "The Maritime Executive",
+     "stage": "testing"
+    },
+    {
+     "cite": 95,
+     "title": "Guidance: MSN 1874 (M+F) Amendment 12 Marine Equipment – United Kingdom conformity assessment and type approval procedures for marine equipment",
+     "url": "https://www.gov.uk/government/publications/msn-1874-mf-amendment-12-marine-equipment-united-kingdom-conformity-assessment-and-type-approval-procedures-for-marine-equipment",
+     "src": "英国MCA · 全部发布",
+     "stage": "policy"
+    },
+    {
+     "cite": 96,
+     "title": "Lloyd’s Register issues retrofit guidance",
+     "url": "https://www.motorship.com/news/alternative-fuels-lubricants/lloyds-register-issues-retrofit-guidance/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 97,
+     "title": "ABS sets framework for safer industrial AR",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/abs-sets-framework-for-safer-industrial-ar/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 98,
+     "title": "ABS and US DoE boost maritime nuclear technology",
+     "url": "https://www.motorship.com/news/nuclear/abs-and-us-doe-boost-maritime-nuclear-technology/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 99,
+     "title": "LR and Sagar Defence advance maritime autonomy",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/lr-and-sagar-defence-advance-maritime-autonomy/",
+     "src": "The Motorship · 第2页",
+     "stage": "other"
+    },
+    {
+     "cite": 100,
+     "title": "DNV appoints Océane King to lead Miami Cruise Center - Container News",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNQTU4OGVDcmFHMTRFUXBHMjlQY0FmZlRIdms0c0ZCYW1rekRUS0s4MjQweGJyYmdfdngwSEtLZW1SNXplYnR2ZENoNEp0RTJ2TzAzMUtSengtazQtWFRQbGlaaWt4bm5CZmFYVWtOeDlpN3NnU2lISU5jNGxRVU9oZjRhMk1tRWM?oc=5",
+     "src": "GN · 船级社规范动态",
+     "stage": "other"
+    },
+    {
+     "cite": 101,
+     "title": "HD Hyundai Vietnam to invests $100m in yard expansion",
+     "url": "https://www.seatrade-maritime.com/shipyards/hd-hyundai-vietnam-to-invests-100m-in-yard-expansion",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 102,
+     "title": "SIBCON 2026: Digitalisation must address growing complexity in marine fuel supply chain, says Maersk",
+     "url": "https://www.manifoldtimes.com/news/sibcon-2026-digitalisation-must-address-growing-complexity-in-marine-fuel-supply-chain-says-maersk/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 103,
+     "title": "Wärtsilä Engines Selected for 2 Additional Inland Waterway Tugs in Brazil",
+     "url": "https://maritime-executive.com/article/wartsila-engines-selected-for-2-additional-inland-waterway-tugs-in-brazil",
+     "src": "The Maritime Executive",
+     "stage": "planned"
+    },
+    {
+     "cite": 104,
+     "title": "First Maersk Containership Arrives in India for Scheduled Maintenance",
+     "url": "https://maritime-executive.com/article/first-maersk-containership-arrives-in-india-for-scheduled-maintenance",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 105,
+     "title": "Maersk and Hateco Plan $3.5 Billion Vietnam Rail Freight Project",
+     "url": "https://gcaptain.com/maersk-and-hateco-plan-3-5-billion-vietnam-rail-freight-project/",
+     "src": "gCaptain",
+     "stage": "planned"
+    },
+    {
+     "cite": 106,
+     "title": "HD Hyundai and Anduril Demonstrate Autonomous Vessel for US Navy",
+     "url": "https://maritime-executive.com/article/hd-hyundai-and-anduril-demonstrate-autonomous-vessel-for-us-navy",
+     "src": "The Maritime Executive",
+     "stage": "testing"
+    },
+    {
+     "cite": 107,
+     "title": "Omani Government to End Maersk-Linked Concession in Salalah Port",
+     "url": "https://maritime-executive.com/article/omani-government-to-end-maersk-linked-concession-in-salalah-port",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 108,
+     "title": "Implementation Plan launched for Shanghai–Melbourne green shipping corridor",
+     "url": "https://ship.energy/energy/implementation-plan-launched-for-shanghai-melbourne-green-shipping-corridor/",
+     "src": "Bunkerspot",
+     "stage": "operating"
+    },
+    {
+     "cite": 109,
+     "title": "Shanghai-Melbourne Green Shipping Corridor Advances",
+     "url": "https://shipandbunker.com/news/apac/204630-shanghai-melbourne-green-shipping-corridor-advances",
+     "src": "Ship & Bunker",
+     "stage": "other"
+    },
+    {
+     "cite": 110,
+     "title": "HMM Adds $1.4B Order to Already Record Containership Orderbook",
+     "url": "https://maritime-executive.com/article/hmm-adds-1-4b-order-to-already-record-containership-orderbook",
+     "src": "The Maritime Executive",
+     "stage": "planned"
+    },
+    {
+     "cite": 111,
+     "title": "MSC and HMM send boxship orderbook to new peak",
+     "url": "https://www.seatrade-maritime.com/containers/msc-and-hmm-send-orderbook-to-new-peak",
+     "src": "Seatrade Maritime",
+     "stage": "planned"
+    },
+    {
+     "cite": 112,
+     "title": "深度解读《内河新能源船舶推广应用行动方案（2026—2030年）》 - 21财经",
+     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQMUJnMkozckRSTTllM1ZrVTdsamVZSDlQSVhQSU1Ed1lvNUR1eGN4RlNoMXRuNUpLZDdNcWxKUkdtZUQwUWZ1OTNTejU5UnNIcmg2dXdnc2ZuNXNFTWtSWGdGVkRqaGE3bjJYajBBRTJvSDY5WXZISnloMXdwTU9lZEpYODRsSFRldGtub1A2NA?oc=5",
+     "src": "GN · 国内绿色船舶政策",
+     "stage": "other"
+    },
+    {
+     "cite": 113,
+     "title": "Wind-Assisted Shipping Gains Ground as Airbus RoRo Adds Rotor Sails",
+     "url": "https://gcaptain.com/wind-assisted-shipping-gains-ground-as-airbus-roro-adds-rotor-sails/",
+     "src": "gCaptain · 第3页",
+     "stage": "operating"
+    },
+    {
+     "cite": 114,
+     "title": "Six Rotor Sails installed on Airbus RoRo vessel",
+     "url": "https://www.motorship.com/news/wind-propulsion/six-rotor-sails-installed-on-airbus-roro-vessel/",
+     "src": "The Motorship",
+     "stage": "operating"
+    },
+    {
+     "cite": 115,
+     "title": "World’s first pay-as-you-save retrofit fund finances Eastern Pacific Shipping’s wind-assisted propulsion systems",
+     "url": "https://ship.energy/information/worlds-first-pay-as-you-save-retrofit-fund-finances-eastern-pacific-shippings-wind-assisted-propulsion-systems/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    }
+   ],
+   "summary": {
+    "done": 0,
+    "policy": 0,
+    "progress": 0,
+    "watching": 0,
+    "new": 3,
+    "pool": 19
+   }
+  }
+ ]
+}
