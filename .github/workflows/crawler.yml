@@ -44,7 +44,8 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  # 过刊归档需要把 archive/ 提交回仓库（否则下一期读不到上一期的台账）
+  contents: write
   actions: write
 
 jobs:
@@ -70,7 +71,13 @@ jobs:
     needs: gate
     if: needs.gate.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # ★法规扩容改动：40 → 60 分钟。
+    #   接入法规直采后单轮负载明显变重：源 22→30、7 个 Google News 源各放宽到
+    #   100 条、候选池上限 450 条、首轮还要一次带入全年 77 条法规。
+    #   实测 2026-10-15 首轮「Run crawler」单步就跑了 11 分钟以上，
+    #   而扩容前整轮（含所有步骤）只要 4 分半 —— 40 分钟余量太薄，
+    #   一旦被强杀，已消耗的 AI 调用和 token 会一起丢掉。
+    timeout-minutes: 60
     outputs:
       # 供 deploy-pages 判断本次是否真的产出了可发布的网页
       pages_ready: ${{ steps.pages_prep.outputs.ready }}
@@ -237,6 +244,9 @@ jobs:
           S3_ENDPOINT_URL: ${{ secrets.S3_ENDPOINT_URL }}
           S3_REGION: ${{ secrets.S3_REGION }}
           GITHUB_ACTIONS: true
+          # 让 Python 日志实时刷出（默认非交互环境是块缓冲，进度会攒到进程结束
+          # 才整段显示，从 Actions 页面看就像「卡住不动」）。
+          PYTHONUNBUFFERED: "1"
         run: |
           # 把上一步直采生成的法规 feed 暴露成一个本地 URL 再交给爬虫。
           # 为什么要绕这一道：爬虫用的是 requests，而 requests 不支持 file://，
@@ -253,6 +263,48 @@ jobs:
             echo "⚠️ 未生成 regfeed/reg_feed.xml，本轮跳过法规直采源"
           fi
           uv run python -m trendradar
+
+      # --------------------------------------------------------------------------------
+      # 🗂️ ARCHIVE & CROSS-ISSUE TRACKING / 过刊归档 + 跨期进展跟踪
+      # --------------------------------------------------------------------------------
+      # 解决的问题：TrendRadar 每期把 index.html 整个覆盖，没有过刊库；
+      #   双周报也只会说「这两周发生了什么」，不会说「上期提的那件事现在怎么样了」。
+      #
+      # 这一步在报告生成之后、发布之前跑，做三件事：
+      #   1. 把本期另存为 archive/issues/<日期>.html（自包含单文件）
+      #   2. 与上一期的台账比对，判定每条「计划/试验」类事项的进展
+      #      （已落地 / 规则落地 / 有新进展 / 未见后续），在 AI 正文前插入一张表
+      #   3. 生成 archive/index.html 过刊目录
+      #
+      # 台账 archive/ledger.json 只存「每期事件」，观察池由它现算 ——
+      # 所以同一天重跑是覆盖而不是累积，脚本天然幂等。
+      #
+      # 失败不阻断：脚本退出码永远 0，报告照常发布（只是这期没有跟踪表）。
+      # --------------------------------------------------------------------------------
+      - name: Archive & cross-issue tracking
+        if: success()
+        continue-on-error: true
+        run: |
+          python scripts/archive_and_track.py --report index.html --archive archive
+
+      # 把 archive/ 提交回仓库：下一期要靠它读上一期的台账和编号
+      - name: Persist archive to repository
+        if: success()
+        continue-on-error: true
+        run: |
+          if [ ! -d archive ]; then
+            echo "⚠️ 没有 archive/ 目录，跳过提交"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add archive
+          if git diff --cached --quiet; then
+            echo "📭 归档无变化，跳过提交"
+            exit 0
+          fi
+          git commit -m "chore(archive): 归档 $(date -u +%F) 期报告与跟踪台账"
+          git push || (git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push)
 
       # --------------------------------------------------------------------------------
       # 📥 UPLOAD REPORT AS ARTIFACT / 把报告挂到本次运行记录里，可随时下载
@@ -307,6 +359,11 @@ jobs:
           rm -rf pages_dist
           mkdir -p pages_dist
           cp index.html pages_dist/index.html
+          # 过刊库：archive/issues/*.html + archive/index.html
+          if [ -d archive ]; then
+            cp -r archive pages_dist/archive
+            echo "🗂 过刊库已带上：$(find pages_dist/archive -name '*.html' | wc -l) 个页面"
+          fi
           # 把历史快照一并带上，便于回看上几期
           if [ -d output/html ]; then
             cp -r output/html pages_dist/html
@@ -363,6 +420,7 @@ jobs:
           rm -rf cloudflare_dist
           mkdir -p cloudflare_dist
           cp index.html cloudflare_dist/index.html
+          if [ -d archive ]; then cp -r archive cloudflare_dist/archive; fi
 
       - name: Deploy to Cloudflare Pages
         if: success() && steps.cf_check.outputs.enabled == 'true'
@@ -402,4 +460,5 @@ jobs:
           echo "✅ 报告已发布，固定网址："
           echo "   ${{ steps.deployment.outputs.page_url }}"
           echo "   这个网址永远显示最新一期，手机可「添加到主屏幕」当作 App 使用。"
+
 
