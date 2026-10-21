@@ -1200,6 +1200,7 @@ J_SYN_TABLE = '''                // ★补丁J：中英同义词别名表
                     ["船用燃料", "燃料油", "marine fuel", "fuel oil", "vlsfo", "iso 8217"],
                     ["核动力", "海上核能", "浮动核电站", "nuclear", "nuclear power", "smr"],
                     ["电池动力", "电池", "纯电动", "混合动力", "燃料电池", "battery", "batteries", "hybrid-electric", "hybrid propulsion", "fuel cell", "fuel cells"],
+                    ["乙醇", "燃料乙醇", "生物乙醇", "乙醇燃料", "乙醇加注", "ethanol", "bioethanol", "bio-ethanol", "e-ethanol", "ethyl alcohol"],
                     ["生物燃料", "biofuel", "biofuels", "biodiesel", "fame", "hvo"],
                     ["船级社", "中国船级社", "classification society", "class society", "abs", "dnv", "classnk", "nkk", "bureau veritas", "lloyd's register"],
                     ["碳税", "碳价", "carbon tax", "carbon price", "carbon levy"],
@@ -1210,14 +1211,34 @@ J_SYN_TABLE = '''                // ★补丁J：中英同义词别名表
                     return /[\\u4e00-\\u9fa5]/.test(s);
                 }
 
-                // 单个词条是否「触发」本组：双向包含；拉丁文短词加长度门槛，防误触发
+                // ★补丁J-r2：拉丁词「整词」判定。
+                //   原来用 indexOf 子串匹配，会踩两个坑：
+                //     ① methanol 里含 ethanol 这七个字母 —— 搜 ethanol 会把甲醇新闻全带出来；
+                //     ② abs 是船级社，但 absolute / absorb 也会被当成命中。
+                //   这里改成扫一遍字符串、要求前后是首尾或非字母数字，
+                //   顺带允许尾部一个 s（bunkerings / bioethanols）。
+                function _wHits(text, term) {
+                    if (!text || !term) { return false; }
+                    text = text.toLowerCase();
+                    term = term.toLowerCase();
+                    var i = text.indexOf(term);
+                    while (i !== -1) {
+                        var b = i === 0 ? '' : text.charAt(i - 1);
+                        var a = i + term.length >= text.length ? '' : text.charAt(i + term.length);
+                        var okB = b === '' || !/[a-z0-9]/.test(b);
+                        var okA = a === '' || !/[a-z0-9]/.test(a) || a === 's';
+                        if (okB && okA) { return true; }
+                        i = text.indexOf(term, i + 1);
+                    }
+                    return false;
+                }
+
+                // 单个词条是否「触发」本组：中文双向包含；拉丁文按整词判定
                 function _memberHits(m, q) {
                     if (!m || !q) return false;
                     if (m === q) return true;
-                    if (_isCJK(m)) return m.indexOf(q) !== -1 || q.indexOf(m) !== -1;
-                    if (q.length >= 3 && m.indexOf(q) !== -1) return true;
-                    if (m.length >= 3 && q.indexOf(m) !== -1) return true;
-                    return false;
+                    if (_isCJK(m) || _isCJK(q)) return m.indexOf(q) !== -1 || q.indexOf(m) !== -1;
+                    return _wHits(m, q) || _wHits(q, m);
                 }
 
                 // 由查询词展开出的检索词表；没命中任何同义簇时就只有它自己
@@ -1247,10 +1268,12 @@ J_SYN_TABLE = '''                // ★补丁J：中英同义词别名表
                 }
 
                 // 标题命中哪个检索词：返回命中的那个词，没命中返回空串
+                // ★补丁J-r2：拉丁词走整词判定，避免 ethanol 命中 methanol
                 function _firstHit(title, terms) {
                     var low = (title || '').toLowerCase();
                     for (var i = 0; i < terms.length; i++) {
-                        if (low.indexOf(terms[i]) !== -1) return terms[i];
+                        var t = terms[i];
+                        if (_isCJK(t) ? low.indexOf(t) !== -1 : _wHits(low, t)) return t;
                     }
                     return "";
                 }
@@ -1586,6 +1609,7 @@ K_JS_CODE = r'''            /* ★补丁K：AI 正文 ↔ RSS 条目「交叉引
                     ['氢', '氢燃料', '氢能', 'hydrogen'],
                     ['液化天然气', 'lng', 'lbm', '生物甲烷', 'biomethane', 'methane'],
                     ['液化石油气', 'lpg'],
+                    ['乙醇', '燃料乙醇', '生物乙醇', 'ethanol', 'bioethanol', 'bio-ethanol', 'e-ethanol'],
                     ['生物燃料', '生物柴油', 'biofuel', 'biodiesel', 'hvo'],
                     ['电池', '纯电动', '混合动力', 'battery', 'hybrid', 'electric'],
                     ['燃料电池', 'fuel cell'],
@@ -2028,3 +2052,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
