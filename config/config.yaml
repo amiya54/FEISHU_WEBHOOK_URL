@@ -254,7 +254,11 @@ rss:
     - id: "imarine"
       name: "龙de船人"
       url: "https://www.imarine.cn/feed"
-      enabled: true
+      # ★2026-10-15 实跑日志：403 Client Error: Forbidden。
+      #   该站已上反爬（[C] 补丁换的浏览器 UA 也没绕过），在 GitHub 境外机房
+      #   尤其容易被拦。国内绿色船舶动态已由下面的 GN 中文源覆盖，
+      #   所以直接关掉，避免每轮日志里留一条红色失败项。
+      enabled: false
 
     # ── 官方机构（地址可能变动，首次运行后看日志确认）──
     # ⚠️ imo.org 这个 RSS 地址 2026-10-14 实跑返回 500 Server Error，
@@ -309,6 +313,14 @@ rss:
     - id: "gnews-altfuel"
       name: "GN · 替代燃料技术"
       url: "https://news.google.com/rss/search?q=methanol+OR+ammonia+OR+hydrogen+marine+fuel+engine+vessel+order&hl=en-US&gl=US&ceid=US:en&num=100"
+
+    # ★乙醇专项：通用替代燃料查询里乙醇报道太少（10-23 期只靠撞进来 3 条）。
+    #   查询词刻意避开 methanol 单独出现，防止把甲醇新闻混进乙醇线；
+    #   误混进的也会被词表/AI 归类兜底。本机连不上 Google 无法本地验证，
+    #   跑一次看 Actions 日志里 "GN · 乙醇船用燃料" 条数 >0 即生效。
+    - id: "gnews-ethanol"
+      name: "GN · 乙醇船用燃料"
+      url: "https://news.google.com/rss/search?q=ethanol+bunkering+OR+bioethanol+ship+OR+ethanol+%22marine+fuel%22&hl=en-US&gl=US&ceid=US:en&num=100"
 
     # ★双周报改动13：IMO 官网抓不到（SharePoint 动态渲染），用定向检索兜底。
     #   查询词刻意围绕「法规动作」而不是主题词，避免又抓回一堆泛泛的行业新闻。
@@ -496,11 +508,16 @@ ai:
   #   deepseek/xxx   → DeepSeek 官方
   #   openai/xxx     → 任何 OpenAI 兼容端点（配 api_base 即可）
   model: "deepseek/deepseek-v4-flash"
-  api_key: "AI_API_KEY"                 # 建议用环境变量 AI_API_KEY，别把 key 写进仓库
+  api_key: ""                 # 建议用环境变量 AI_API_KEY，别把 key 写进仓库
   api_base: ""                # 换第三方厂商时填，见下方示例
-  timeout: 600                # ★双周报改动5：180 → 600。
-                              #   双周报正文 3000-5000 字，单轮生成可能 3~5 分钟，
-                              #   180s 会在中途被掐断 → 只拿到半截或不完整 JSON
+  timeout: 1200               # ★法规扩容改动：600 → 1200（20 分钟）。
+                              #   2026-10-15 首轮实测：crawl job 跑到 23 分钟时
+                              #   AI 环节仍未结束，而 600s 上限意味着单次调用
+                              #   到 10 分钟就被掐断，再叠加 num_retries: 1
+                              #   → 白重跑一遍，最坏吃掉 20 分钟。
+                              #   双周报正文 3800-5200 字 + 思考链，10 分钟本来就不够。
+                              #   1200 × 2 次 + 其它步骤 ≈ 45 分钟，
+                              #   ⚠️ 必须与 crawl job 的 timeout-minutes: 60 配套使用。
   temperature: 1.0            # ⚠️ deepseek-v4 系列在「思考模式」下此项不生效（官方文档明确）
   max_tokens: 32768           # ★改动6：5000 会被思维链吃光 → 正文为空 →「AI 返回空响应」
   num_retries: 1
@@ -511,7 +528,6 @@ ai:
   #         分析任务复杂 → 思维链把 max_tokens 全部用光 → 200 OK 但 content 为空。
   #         翻译任务简单，思维链很短，所以翻译正常 —— 这就是为什么只有 AI 简报空。
   #   印证方法：打开程序自带的 debug，或看 usage 里 reasoning_tokens 是否≈max_tokens。
-  #
   #   解决（三选一，方案①最省事）：
   #     ① 提高输出上限：把上面的 max_tokens 改成 32768（需 ≥32K 才能稳定出正文）
   #     ② 关闭思考（更省钱、更快、JSON 格式更稳）：
