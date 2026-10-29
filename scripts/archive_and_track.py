@@ -291,9 +291,38 @@ def match_score(a_title: str, a_url: str, b_title: str, b_url: str):
     return score, ""
 
 
+# 连续多少期「没有相关报道」后停止跟踪（结案）。
+# 不结案的话观察池只进不出：每期新增 3~6 项、永不退出，
+# 半年后跟踪表会长到没人看。结案只是不再展示，台账里记录还在。
+MISS_LIMIT = 2
+
+
+def consecutive_misses(ev, from_date: str, issues) -> int:
+    """事件在 from_date 期之后，连续有多少期没出现相关报道。
+
+    「出现」的判定刻意宽松（标题 jaccard >= 0.5）——
+    误判成「有消息」的代价是晚 1 期结案，误判成「没消息」的代价是漏掉真进展。
+    中间只要有一期匹配上就清零重计。
+    """
+    key = tokens(ev.get("title", ""))
+    if not key:
+        return 0
+    miss = 0
+    for issue in issues:
+        if issue.get("date", "") <= from_date:
+            continue
+        hit = any(
+            jac(key, tokens(x.get("title", ""))) >= 0.5
+            for x in issue.get("events", [])
+        )
+        miss = 0 if hit else miss + 1
+    return miss
+
+
 def build_tracking(cur_events, prev_issues, today, max_new=3, max_rows=8):
     """返回 (rows, stats)。rows 每项：dict(status, cur, prev, prev_date, tracked)。"""
     # 候选：往期处于 planned / testing 的事件（这些才「值得期待后续」）
+    closed = 0
     candidates = []
     seen_titles = set()
     for issue in reversed(prev_issues[-3:]):
@@ -301,6 +330,10 @@ def build_tracking(cur_events, prev_issues, today, max_new=3, max_rows=8):
             if ev.get("stage") not in ("planned", "testing"):
                 continue
             if is_roundup(ev.get("title", "")):
+                continue
+            # 连续 2 期无相关报道 → 结案，不再进跟踪表（台账里仍保留）
+            if consecutive_misses(ev, issue.get("date", ""), prev_issues) >= MISS_LIMIT:
+                closed += 1
                 continue
             key = norm(ev.get("title", "")).lower()
             if not key or key in seen_titles:
@@ -404,6 +437,7 @@ def build_tracking(cur_events, prev_issues, today, max_new=3, max_rows=8):
     # 否则「已落地」一多就把「未见后续」全挤掉，摘要数字也会跟着缩水
     stats = {k: sum(1 for r in rows if r["status"] == k) for k in STATUS_ORDER}
     stats["pool"] = sum(1 for ev in cur_events if ev["stage"] in ("planned", "testing"))
+    stats["closed"] = closed
 
     caps = {"done": 4, "policy": 2, "progress": 2, "watching": 2}
     shown, used_n = [], {}
@@ -458,6 +492,7 @@ font-size:12px;color:#475569;background:#fff;border:1px solid #e2e8f0;white-spac
 .c-policy b{color:#2563eb}.c-policy i{background:#2563eb}
 .c-progress b{color:#d97706}.c-progress i{background:#d97706}
 .c-watching b{color:#94a3b8}.c-watching i{background:#cbd5e1}
+.c-closed b{color:#94a3b8}.c-closed i{background:#64748b}
 .c-new b{color:#7c3aed}.c-new i{background:#a78bfa}
 
 /* 明细：一行一件事 */
@@ -565,6 +600,7 @@ def render_box(rows, stats, prev_date, archive_href: str):
             chip("c-policy", stats["policy"], "规则落地"),
             chip("c-progress", stats["progress"], "有新进展"),
             chip("c-watching", stats["watching"], "未见后续"),
+            chip("c-closed", stats.get("closed", 0), "停止跟踪"),
             chip("c-new", stats["new"], "本期新增"),
         ]
     )
@@ -638,6 +674,7 @@ def render_box(rows, stats, prev_date, archive_href: str):
     note = (
         '<div class="tk-note">「未见后续」只表示本期没抓到相关报道，不等于事情没进展。'
         "状态按条目措辞判定：计划 / 订单 → 试验 / 试航 → 交付 / 营运，法规类走「规则落地」。"
+        "连续 2 期没有相关报道的事项会自动停止跟踪（只停展示，记录仍在台账）。"
         "点编号可跳到下方对应 RSS 原文。</div>"
     )
 
@@ -770,9 +807,10 @@ def main(argv=None):
     dup = len(items) - len(events)
     print(
         "[track] 条目 %d → 事件 %d（合并同一事件 %d 条）｜上期 %s ｜"
-        "已落地 %d · 规则落地 %d · 有新进展 %d · 仍在观察 %d"
+        "已落地 %d · 规则落地 %d · 有新进展 %d · 仍在观察 %d · 结案 %d"
         % (len(items), len(events), dup, prev_date or "无",
-           stats["done"], stats["policy"], stats["progress"], stats["watching"])
+           stats["done"], stats["policy"], stats["progress"], stats["watching"],
+           stats.get("closed", 0))
     )
 
     if args.dry_run:
