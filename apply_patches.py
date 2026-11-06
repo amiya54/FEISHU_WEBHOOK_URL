@@ -1923,7 +1923,7 @@ def patch_citation(root, log):
 #       · Manifold Times(+分页) 21 条、Bunkerspot(+分页) 17 条，合计 31%。
 #     做法（在 _convert_rss_items_to_list 统一出口处套一层）：
 #       ① 法规直采源标题已在上期台账(archive/ledger.json)出现过 → 丢弃；
-#       ② 标题近似（英文 J≥0.62 / 中文 J≥0.75，中文二元组相似度虚高故提阈值）
+#       ② 标题近似（英文 J≥0.50 / 中文 J≥0.75，中文二元组相似度虚高故提阈值）
 #          → 保留先出现的一条，后续来源并入 l_alts；
 #       ③ 同一媒体（去掉「· 第N页」后缀）超过 10 条 → 丢弃多余（feed 内最新在前）。
 #     编号对齐：raw_rss_items 与 new_items_list 都过本函数且逻辑确定，
@@ -1983,7 +1983,7 @@ L_METHOD_SRC = '''    def _l_thin_items(self, items: List[Dict]) -> List[Dict]:
             # ② 同事件合并（中文二元组相似度虚高，阈值更高）
             hit = None
             for k in kept:
-                thr = 0.75 if (has_cjk and _cjk.search(str(k.get("title") or ""))) else 0.62
+                thr = 0.75 if (has_cjk and _cjk.search(str(k.get("title") or ""))) else 0.50
                 if _jac(title, k.get("title", "")) >= thr:
                     hit = k
                     break
