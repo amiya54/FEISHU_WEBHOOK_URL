@@ -1912,6 +1912,131 @@ def patch_citation(root, log):
         log.append("  ⚠ [K] 有锚点未命中，为免半改，本次未写入（原文件保持不变）")
 
 
+# ──────────────────────────────────────────────────────────────────────
+# [L] 数据层瘦身：同事件合并 / 法规直采降重 / 单源配额
+#     背景（2026-11-06 期实测，121 条中）：
+#       · 同一事件多源转述各占一条（15 组可疑、约 12 组真重复）：
+#         #11~#12 Equisera 生物甲醇(0.86)、#20/#21/#26 Envision 绿氨加注三连、
+#         #51~#59 + #55~#56 IMO 秘书长连任四条、#101~#102 LR 甲醇加注(0.86)…
+#       · 「法规原文直采」源每期把窗口内官方文件整批重复展示（13 条/期，
+#         最老 3 月发文），挤占正文与 AI 提示词预算；
+#       · Manifold Times(+分页) 21 条、Bunkerspot(+分页) 17 条，合计 31%。
+#     做法（在 _convert_rss_items_to_list 统一出口处套一层）：
+#       ① 法规直采源标题已在上期台账(archive/ledger.json)出现过 → 丢弃；
+#       ② 标题近似（英文 J≥0.62 / 中文 J≥0.75，中文二元组相似度虚高故提阈值）
+#          → 保留先出现的一条，后续来源并入 l_alts；
+#       ③ 同一媒体（去掉「· 第N页」后缀）超过 10 条 → 丢弃多余（feed 内最新在前）。
+#     编号对齐：raw_rss_items 与 new_items_list 都过本函数且逻辑确定，
+#     两序列保持一致 → 提示词 [#N] 与正文 rss-no 的对应关系不受影响。
+# ──────────────────────────────────────────────────────────────────────
+
+L_METHOD_DEF = ("    def _convert_rss_items_to_list(self, items_dict: Dict, "
+                "id_to_name: Dict) -> List[Dict]:")
+
+L_METHOD_SRC = '''    def _l_thin_items(self, items: List[Dict]) -> List[Dict]:
+        """★补丁L：数据层瘦身 —— 同事件合并 / 法规直采降重 / 单源配额。"""
+        import json
+        import re
+        if not items or len(items) < 4:
+            return items
+        seen_reg = set()
+        try:
+            led_path = os.path.join(os.getcwd(), "archive", "ledger.json")
+            with open(led_path, encoding="utf-8") as f:
+                _led = json.load(f)
+            for _iss in (_led.get("issues") or []):
+                for _ev in (_iss.get("events") or []):
+                    _t = str(_ev.get("title") or "").strip().lower()
+                    if _t:
+                        seen_reg.add(_t)
+        except Exception:
+            pass
+
+        _cjk = re.compile(r"[\\u4e00-\\u9fff]+")
+
+        def _tok(t):
+            t = str(t or "").lower()
+            out = set()
+            for run in _cjk.findall(t):
+                if len(run) == 1:
+                    out.add(run)
+                for i in range(len(run) - 1):
+                    out.add(run[i : i + 2])
+            for w in re.findall(r"[a-z0-9]{2,}", t):
+                out.add(w)
+            return out
+
+        def _jac(a, b):
+            ta, tb = _tok(a), _tok(b)
+            return len(ta & tb) / len(ta | tb) if ta and tb else 0.0
+
+        kept, dropped, quota = [], [], {}
+        for it in items:
+            title = str(it.get("title") or "").strip()
+            feed = str(it.get("feed_name") or it.get("source_name") or "")
+            base = re.sub(r"\\s*·\\s*第\\d+页\\s*$", "", feed).strip()
+            has_cjk = bool(_cjk.search(title))
+            # ① 法规直采：上期台账已刊出 → 不再重复占正文
+            if "法规" in feed and title.lower() in seen_reg:
+                dropped.append(("法规已刊", title))
+                continue
+            # ② 同事件合并（中文二元组相似度虚高，阈值更高）
+            hit = None
+            for k in kept:
+                thr = 0.75 if (has_cjk and _cjk.search(str(k.get("title") or ""))) else 0.62
+                if _jac(title, k.get("title", "")) >= thr:
+                    hit = k
+                    break
+            if hit is not None:
+                alts = hit.setdefault("l_alts", [])
+                if base and base not in alts:
+                    alts.append(base)
+                dropped.append(("同事件", title))
+                continue
+            # ③ 单源配额：同一媒体（去分页后缀）最多 10 条
+            if base:
+                if quota.get(base, 0) >= 10:
+                    dropped.append(("单源配额", title))
+                    continue
+                quota[base] = quota.get(base, 0) + 1
+            kept.append(it)
+        if dropped:
+            print(f"[补丁L] 数据瘦身：{len(items)} -> {len(kept)} 条（剔除 {len(dropped)} 条）")
+            for _r, _t in dropped[:15]:
+                print(f"    - ({_r}) {_t[:64]}")
+        return kept
+
+'''
+
+L_RET_ANCHOR = ("        return rss_items\n\n"
+                "    def _filter_rss_by_keywords(self, rss_items: List[Dict]) -> List[Dict]:")
+L_RET_NEW = ("        return self._l_thin_items(rss_items)\n\n"
+             "    def _filter_rss_by_keywords(self, rss_items: List[Dict]) -> List[Dict]:")
+
+
+def patch_thin_items(root, log):
+    """★补丁L：数据层瘦身（同事件合并 / 法规直采降重 / 单源配额）。"""
+    rel = "trendradar/__main__.py"
+    p = os.path.join(root, rel)
+    if not os.path.exists(p):
+        log.append("[L] ✗ 找不到 %s" % rel)
+        return
+    src = read(p)
+    if "_l_thin_items" in src:
+        log.append("[L] 已打过，跳过")
+        return
+    if L_METHOD_DEF not in src:
+        log.append("[L] ✗ 找不到方法注入点（_convert_rss_items_to_list 定义行）")
+        return
+    if L_RET_ANCHOR not in src:
+        log.append("[L] ✗ 找不到 return 注入点（_convert_rss_items_to_list 末尾）")
+        return
+    src = src.replace(L_METHOD_DEF, L_METHOD_SRC + L_METHOD_DEF, 1)
+    src = src.replace(L_RET_ANCHOR, L_RET_NEW, 1)
+    write(p, src)
+    log.append("[L] ✓ 数据层瘦身已注入（_l_thin_items 方法 + return 包装）")
+
+
 def patch_search_synonyms(root, log):
     """★补丁J：报告搜索加「中英同义词别名表」。
 
@@ -2021,6 +2146,8 @@ def main():
     patch_search_synonyms(root, log)
     print("\n[K] AI 正文 ↔ RSS 条目交叉引用 (ai/analyzer.py + ai/formatter.py + report/html.py)")
     patch_citation(root, log)
+    print("\n[L] 数据层瘦身：同事件合并/法规直采降重/单源配额 (trendradar/__main__.py)")
+    patch_thin_items(root, log)
 
     print()
     for line in log:
@@ -2036,7 +2163,8 @@ def main():
                 "trendradar/report/html.py",
                 "trendradar/notification/senders.py",
                 "trendradar/crawler/rss/fetcher.py",
-                "trendradar/crawler/rss/parser.py"):
+                "trendradar/crawler/rss/parser.py",
+                "trendradar/__main__.py"):
         p = os.path.join(root, rel)
         if not os.path.exists(p):
             continue
@@ -2052,4 +2180,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
