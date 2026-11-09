@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-06",
+ "updated": "2026-11-09",
  "issues": [
   {
    "date": "2026-10-21",
@@ -2885,6 +2885,315 @@
     "new": 3,
     "pool": 10,
     "closed": 6
+   }
+  },
+  {
+   "date": "2026-11-09",
+   "items": 42,
+   "events": [
+    {
+     "cite": 1,
+     "title": "Lila Global adds third vintage LNG carrier with Diamond deal",
+     "url": "https://splash247.com/lila-global-adds-third-vintage-lng-carrier-with-diamond-deal/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 2,
+     "title": "TFG Marine expands Caribbean bunkering network into Venezuela",
+     "url": "https://www.seatrade-maritime.com/bunkering/tfg-marine-expands-caribbean-bunkering-network-into-venezuela",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 3,
+     "title": "Biofuel Bunker Snapshot: Rotterdam’s B30-VLSFO price slumps despite higher feedstock costs",
+     "url": "https://www.hellenicshippingnews.com/biofuel-bunker-snapshot-rotterdams-b30-vlsfo-price-slumps-despite-higher-feedstock-costs/",
+     "src": "Hellenic Shipping News",
+     "stage": "other"
+    },
+    {
+     "cite": 4,
+     "title": "TFG Marine anticipating a mid-November start for new Venezuelan bunkering operation",
+     "url": "https://ship.energy/information/tfg-marine-anticipating-a-mid-november-start-for-new-venezuelan-bunkering-operation/",
+     "src": "Bunkerspot",
+     "stage": "operating"
+    },
+    {
+     "cite": 5,
+     "title": "The Week in Alt Fuels: Ammonia and methanol bunkering gain ground - https://www.engine.online/",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPUkUzWTFDN0szNG9XUzZCQk8weGhuTy1ydk9Zb014YzBVQ19fZUE4cEdOdTY5VVhYV0V4T1M4Xy01MFhpZTFtaVRRQnMzbWxHNGVPaDFUR245V245Vk9mYVB1Q051SWpuN0wtY1NTR0toZmhJMTdpajVUZGVUbFNaRTNYWDFHWXU3R0czaFJPVjc4WmVDWGxkTEpKMS15WlFqNlE?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "other"
+    },
+    {
+     "cite": 6,
+     "title": "Worley on EPC duty at Venture Global's US LNG expansion project",
+     "url": "https://www.offshore-energy.biz/2026/11/06/worley-on-epc-duty-at-venture-globals-us-lng-expansion-project",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 7,
+     "title": "Sawgrass LNG & Power undertakes LNG bunker delivery in Fort Lauderdale",
+     "url": "https://ship.energy/energy/sawgrass-lng-power-undertakes-lng-bunker-delivery-in-fort-lauderdale/",
+     "src": "Bunkerspot",
+     "stage": "operating"
+    },
+    {
+     "cite": 8,
+     "title": "Naming ceremony held for TotalEnergies’ next LNG bunker vessel",
+     "url": "https://ship.energy/energy/lng/naming-ceremony-held-for-totalenergies-next-lng-bunker-vessel/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 9,
+     "title": "REV LNG and Siem Car Carriers sign new LNG bunkering partnership",
+     "url": "https://ship.energy/information/rev-lng-and-siem-car-carriers-sign-new-lng-bunkering-partnership/",
+     "src": "Bunkerspot",
+     "stage": "planned"
+    },
+    {
+     "cite": 10,
+     "title": "TotalEnergies locks in LNG supply from ADNOC and offtake deal with Chinese firm",
+     "url": "https://www.offshore-energy.biz/2026/11/06/totalenergies-locks-in-lng-supply-from-adnoc-and-offtake-deal-with-chinese-firm",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 11,
+     "title": "First STS LNG bunkering of a cruise ship at the Port of Malaga",
+     "url": "https://ship.energy/energy/first-sts-lng-bunkering-of-a-cruise-ship-at-the-port-of-malaga/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 12,
+     "title": "PIL books seven methanol-ready boxships at Huanghai Shipbuilding",
+     "url": "https://www.seatrade-maritime.com/containers/pil-books-seven-methanol-ready-boxships-at-huanghai-shipbuilding",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 13,
+     "title": "Singapore-based PIL orders seven new 1,400 TEU methanol-ready feeders",
+     "url": "https://www.manifoldtimes.com/news/singapore-based-pil-orders-seven-new-1400-teu-methanol-ready-feeders/",
+     "src": "Manifold Times",
+     "stage": "planned"
+    },
+    {
+     "cite": 14,
+     "title": "O Bunkering secures 48 million litres of annual MGO supply from OQ RPI",
+     "url": "https://www.manifoldtimes.com/news/o-bunkering-secures-48-million-litres-of-annual-mgo-supply-from-oq-rpi/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 15,
+     "title": "AxDo Bahamas inks 11-year LNG supply deal with Excelerate to support bunkering hub",
+     "url": "https://www.manifoldtimes.com/news/axdo-bahamas-inks-11-year-lng-supply-deal-with-excelerate-to-support-bunkering-hub/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 16,
+     "title": "Wärtsilä wins major FLNG propulsion order",
+     "url": "https://www.motorship.com/news/propulsion/wartsila-wins-major-flng-propulsion-order/",
+     "src": "The Motorship",
+     "stage": "planned"
+    },
+    {
+     "cite": 17,
+     "title": "Pupuk Indonesia eyes USD 500 million Batam ammonia hub for production and bunkering",
+     "url": "https://www.manifoldtimes.com/news/pupuk-indonesia-eyes-usd-500-million-batam-ammonia-hub-for-production-and-bunkering/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 18,
+     "title": "Singapore, Qingdao to explore alternative fuel bunkering along green shipping corridor",
+     "url": "https://www.manifoldtimes.com/news/singapore-qingdao-to-explore-alternative-fuel-bunkering-along-green-shipping-corridor/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 19,
+     "title": "Singapore-Norway research grant call targets alternative fuel infrastructure and bunkering",
+     "url": "https://www.manifoldtimes.com/news/singapore-norway-research-grant-call-targets-alternative-fuel-infrastructure-and-bunkering/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 20,
+     "title": "Wärtsilä completes LNG carrier engine conversions",
+     "url": "https://www.motorship.com/news/repair-conversion/wartsila-completes-lng-carrier-engine-conversions/",
+     "src": "The Motorship",
+     "stage": "operating"
+    },
+    {
+     "cite": 21,
+     "title": "Envision supplies green ammonia bunker fuel to world’s first VLAC - Manifold Times",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNMXJ0Ql8yOEdWaUd0OHQ2M1ZkUk5UUGpVT3E1QjNqRE1KSmZSdW9idXEzZUhVcjhrd08tSWJ0VTF3ajVoRnd6d2Q5X0lFSGxkbmxuM3kwN0lFTld4a25WNGZiYy1TUTdicW1xaU5EVXQtU3RqYUdFMkZCdlQ2LWUtdjVtcGN2MG1Ndkw3cE9nUlNPQnVfeHM3bGhHQXZPT0x6M2c?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "other"
+    },
+    {
+     "cite": 22,
+     "title": "Pilbara Ports marks Australia’s first green ammonia bunkering operation - Manifold Times",
+     "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOR05yVDlkcnEyamhNLXN0c1lIblJ2WEZNMDgxY3RnUFkzX3NNcUIzNXhDR2VyUnhhZmlCNHVKQTZDTGh1X0JNeC05MzFEeGpZOFVLU0tXNXNXQUxPVHF2aDNKdm9yWC1HTVRtcVB6cjN6RGpqUk50RnBKQ2Zmc1RBZmxNWTN3aVBvOGUyUFlZaW5NVkJDTVIwUTAzallabHFQVXNiZTRXTUVUdw?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "operating"
+    },
+    {
+     "cite": 23,
+     "title": "The commercial proposition: Building a case for nuclear shipping",
+     "url": "https://www.motorship.com/news/nuclear/the-commercial-proposition-building-a-case-for-nuclear-shipping/",
+     "src": "The Motorship",
+     "stage": "planned"
+    },
+    {
+     "cite": 24,
+     "title": "HD Hyundai Fires Back at China With Ammonia-Powered Ship, but China Takes 65% of VLAC Orders - BigGo Finance",
+     "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9KTVFvaFBkYTdfclc5bVgzVEx4ZWxrMlVJdGl3bnhTS01FeGNZdlBreDFjMWQ5Yl9vWFFDVGk5N1Z0aVVWd2dVUGtCN3ZnWFVQTHA5X05uNlg3YzdEczdBUjBnV1J2dHZDSlduelNQb3ZqcGNIdUE?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 25,
+     "title": "ZERO44 launches interactive biofuel cost calculator",
+     "url": "https://www.motorship.com/news/alternative-fuels-lubricants/zero44-launches-interactive-biofuel-cost-calculator/",
+     "src": "The Motorship",
+     "stage": "operating"
+    },
+    {
+     "cite": 26,
+     "title": "Guidance: Declaration of maritime labour compliance part II and guidance",
+     "url": "https://www.gov.uk/government/publications/declaration-of-maritime-labour-compliance-part-ii-and-guidance",
+     "src": "英国MCA · 全部发布",
+     "stage": "other"
+    },
+    {
+     "cite": 27,
+     "title": "Australia Bans Bulker After Finding Falsified Crew Work Records",
+     "url": "https://maritime-executive.com/article/australia-bans-bulker-after-finding-falsified-crew-work-records",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 28,
+     "title": "IMO Council urges stronger protection of seafarers amid threats to global shipping",
+     "url": "https://www.hellenicshippingnews.com/imo-council-urges-stronger-protection-of-seafarers-amid-threats-to-global-shipping/",
+     "src": "Hellenic Shipping News",
+     "stage": "other"
+    },
+    {
+     "cite": 29,
+     "title": "The IMO NZF as agreed upon in 2025 still remains the most likely way to achieve the IMO 2023 GHG strategy",
+     "url": "https://www.hellenicshippingnews.com/the-imo-nzf-as-agreed-upon-in-2025-still-remains-the-most-likely-way-to-achieve-the-imo-2023-ghg-strategy/",
+     "src": "Hellenic Shipping News",
+     "stage": "planned"
+    },
+    {
+     "cite": 30,
+     "title": "IMO council backs second term for shipping chief Dominguez - London Daily News",
+     "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOYmtqWXY1NVQwc1NENUlndGFMMDF6YUE2SjFaNXU3WVlPZXpxdnRFZW1VQ3lLZC0zZWFEdVNGLVB5Rm82THZKeng2MW5JNGRVSGRKcGVSNzNmSFhuTzJMTnVHeEJnRnVQd3lwdHI1REdFLXN1dmQxa1NUZWliX1ZRLTVidFdleVNMcl9tSmZZa1FaZw?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 31,
+     "title": "Carrier choice drives shipping emissions",
+     "url": "https://www.motorship.com/news/emission-control-technology-and-equipment/carrier-choice-drives-shipping-emissions/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 32,
+     "title": "Second term for Arsenio Dominguez backed by IMO Council",
+     "url": "https://www.seatrade-maritime.com/regulations/second-term-for-arsenio-dominguez-backed-by-imo-council",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 33,
+     "title": "IMO Backs Dominguez for Second Term Amid Shipping Attacks and Climate Deadlock - gCaptain",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPcUFCVHU2cjZ1UVhVdlBHSHplMlNfMGFSVDBtdVhfWXZ2R1daeG1ycFhZQ08yVzF1akNPZjVKb21QYkREdEhSS3RKUkVfY2VTd2V5WDFLaS1vUXIwWDN6MklPQk11TEFNN0RsdGtWdWRPZGdlZUtXWTZVbklkYlVTdFJWR0lfNFgwTG1TMldzUlZBSHBVYk14a0l3QUpiNTJOWHc?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 34,
+     "title": "New study links shipping emissions to $963 billion in global economic damages - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNWjVxd252OEh5QmRnTW5wTFljcVI0ZkVyS1BUTGN3ajc1V3I0VmNsal9kcWhoR1ZDMXUxd3pya3h4dEJYQXBFekxnY3l2WExMNWJJUVpJLUhrSlcybHp6X2EyeFZlX0RXaU01V0JBOWpveTRiV2hCREpoRU9meGt0NThsYUx0d0xZajAwNHo4bTFsM2xmdUtqZW5TUk14RFE1MFE?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 35,
+     "title": "Silverstream joins zero-carbon shipping centre",
+     "url": "https://www.motorship.com/news/energy-saving-devices/silverstream-joins-zero-carbon-shipping-centre/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 36,
+     "title": "H2 tech shows promise for marine decarbonisation",
+     "url": "https://www.motorship.com/news/alternative-fuels-lubricants/h2-tech-shows-promise-for-marine-decarbonisation/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 37,
+     "title": "Hapag-Lloyd seals acquisition of 25% stake in APM Terminals Maasvlakte II",
+     "url": "https://ship.energy/policy/ports/hapag-lloyd-seals-acquisition-of-25-stake-in-apm-terminals-maasvlakte-ii/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 38,
+     "title": "DNV examines vessel and infrastructure needs as LNG bunkering scales up",
+     "url": "https://www.manifoldtimes.com/news/dnv-examines-vessel-and-infrastructure-needs-as-lng-bunkering-scales-up/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 39,
+     "title": "BV发布新一期欧洲法规政策报告- 船级社 - 国际船舶网",
+     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQTlJEYmVVbmxFT3RBWFR2RThwb0ROOEYtY01HV29aQkhwV0NrWWtDTkQxeUFVOWFYR283SVp3V05nd0JFWFNicVZwTmE0UXZxanZMWXN5aWJTRTBLUXRESFZZZVRCVjJPTFg0bDV1Q1F3bDhLVDhGeU1pQS12YWhfQ3B3?oc=5",
+     "src": "GN · 国内绿色船舶政策",
+     "stage": "other"
+    },
+    {
+     "cite": 40,
+     "title": "DNV validates Atlas offshore CO2 storage concept",
+     "url": "https://www.motorship.com/news/carbon-capture/dnv-validates-atlas-offshore-co2-storage-concept/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 41,
+     "title": "Meyer Werft sets up offshore business to handle $2.8bn converter orderbook",
+     "url": "https://splash247.com/meyer-werft-sets-up-offshore-business-to-handle-2-8bn-converter-orderbook/",
+     "src": "Splash 247",
+     "stage": "planned"
+    },
+    {
+     "cite": 42,
+     "title": "WinGD expands Korean engine partnerships",
+     "url": "https://www.motorship.com/news/propulsion/wingd-expands-korean-engine-partnerships/",
+     "src": "The Motorship",
+     "stage": "planned"
+    }
+   ],
+   "summary": {
+    "done": 0,
+    "policy": 0,
+    "progress": 8,
+    "watching": 22,
+    "new": 2,
+    "pool": 9,
+    "closed": 20
    }
   }
  ]
