@@ -2067,6 +2067,12 @@ M_REPLACES = [
     ("headerTitle.textContent.trim() : 'TrendRadar')",
      "headerTitle.textContent.trim() : '船舶低碳情报双周报')",
      "MD 导出标题兜底"),
+    ('<title>热点新闻分析</title>',
+     '<title>船舶低碳情报双周报</title>',
+     "浏览器标签页标题"),
+    ('<div class="header-title">热点新闻分析</div>',
+     '<div class="header-title">船舶低碳情报双周报</div>',
+     "页头横幅标题"),
 ]
 
 
