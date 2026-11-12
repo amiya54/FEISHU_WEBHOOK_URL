@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-09",
+ "updated": "2026-11-12",
  "issues": [
   {
    "date": "2026-10-21",
@@ -3194,6 +3194,315 @@
     "new": 2,
     "pool": 9,
     "closed": 20
+   }
+  },
+  {
+   "date": "2026-11-12",
+   "items": 42,
+   "events": [
+    {
+     "cite": 1,
+     "title": "Executive Interview: Arsenio Dominguez, Secretary-General, IMO",
+     "url": "https://maritime-executive.com/article/executive-interview-arsenio-dominguez-secretary-general-imo",
+     "src": "The Maritime Executive",
+     "stage": "other"
+    },
+    {
+     "cite": 2,
+     "title": "IBIA 2026: US Says IMO Net-Zero Framework \"Cannot Be Adopted, Will Never Be Enforced\" - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPODJVVEY3SEVGZVBaVmhwX2gyd1ZZYXF4eVhkVVNDOHBhY3F1QVI4THpHT2s4azZZVkxraTBEZDJnRHhITC1nQ0tXbC1kT2U3TVctQVJIUHhXSUcyRmlVVWZPbXlXWmpPM1IydV9qT2E3Nm93OXhFck1EVGpCbzFHOUo5eFQ2WFNaR3FCZmlFVDZOZ3dndV9wdEcyN0luTEFqNDByRkI3WVJPVVpKcmZ3YXlEbzlfZjRlZEJiVDdsWQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 3,
+     "title": "Shipping and port groups seek changes to EU ETS transshipment rules - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxORDlKSy1QMlZSVUlmQlNVRzh5WF9BMG1sNXFid0ZrU0s5OVR6cHlYRnAyWFUzSUQ5VTlXbm9DVUZJRTBsZ2dCbm51NkxOZHpRbEVQUGFJSlFhM1R5WS1vQlhwYklDSTVvN19aMWNzclZrd25RN29oN0NPbExBNEp1bU5RUXh6S3F4bXoxdVZRWE5yTmZVWlE?oc=5",
+     "src": "GN · FuelEU与EU ETS",
+     "stage": "policy"
+    },
+    {
+     "cite": 4,
+     "title": "IMO Chief Calls for Strict Enforcement of SOLAS Rules in Strait of Hormuz",
+     "url": "https://gcaptain.com/imo-chief-calls-for-strict-enforcement-of-solas-rules-in-strait-of-hormuz/",
+     "src": "gCaptain",
+     "stage": "policy"
+    },
+    {
+     "cite": 5,
+     "title": "Blue Carbon Launches Autonomous oPod Mini",
+     "url": "https://www.marinelink.com/news/blue-carbon-launches-autonomous-opod-mini-544296",
+     "src": "MarineLink",
+     "stage": "operating"
+    },
+    {
+     "cite": 6,
+     "title": "Ghana's oil & gas drilling yields hydrocarbons and first carbonate reservoir",
+     "url": "https://www.offshore-energy.biz/2026/11/11/ghanas-oil-and-gas-drilling-yields-hydrocarbons-and-first-carbonate-reservoir",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 7,
+     "title": "UCL Launches Tool to Assess IMO Net Zero Framework's Country-Level Economic Impacts - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQMmRhWHR4akVXSU5fc1REbjV4RFI5UnE3UHZkTGR3NEJ6MW5CV2YyaEZzNlJoekFxVldjeXljRmtiTGRtR3R3NldtZXN4UjZUSlFqaXQ5MVdUOHFPM0loajJBT2pKZVJRb2ZpYzdtUUEzb0xWOWtuX3JDU2I3Q2w5RmM0eVdIcmJKNjZ1ak1MV3BoNHdrbXJmSk1GcF9oR3BuTXNIeE11Z2JvLWVlNlR3SVJGUmR4X2UtZTFud2lYaGJkajU0?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "operating"
+    },
+    {
+     "cite": 8,
+     "title": "New open-access tool shows IMO delegations what the NZF policy options could mean for trade costs in their country - India Shipping News",
+     "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxOalBVLTBCTVBMcXQ3VHZYMWNXZXRBSXVkVll2VnVVSTFOSThFRkgwTDNEWGx5M2Y4WTgzV19xZXhaYUpOam1ZZFVLU0RBYmJmLVd5M3prcGpIY3YwclpuUHpnU2l5QThZZzVHM3RVZTR1VHljZlBsemZFbmlGNTNDcHpIMGNxa2hlQVU3MjRQUEdqMXdCR1ZmZFRFRGxMWGxNSjJJTWR4emJzWTlBNlN6MURXckx2Y19oR3NMOUNsRWRWdEVlRTJ4eUR6SmZsREVBY2tKTDYxT0RNT0xaN0gwdmR2MTcteGtUdkZ5M2lva09Wci1nV294TGJHREs?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 9,
+     "title": "Fifteen shipping companies raise concerns over IMO’s Net-Zero Framework - Shipping Telegraph",
+     "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPRDJrVXE0UllpVURyTFJsWVJpSFh6a3pTTmF2a25ZbEYzdnctLUJydkNoR0F4eTBoOUU3SmhIcDVyVmxEVnVhQ0FpcFdXZm4tQThtQzU2clVKdnAyLUUyYzNTd0VlR09GZFowMmo2N3N3Mk04Zi1ZeXJxVHJRQ1BmUzNSS1JTanlaWXYybDVRRGpzOUd6R3Jhd29WOVExbmRuamkzWU9ldUZmN1U1YXZIVy0wVnFpM0xla3c?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 10,
+     "title": "Russian Diesel Tanker Awaits Orders Off U.S. Coast Amid Import Ban Dispute",
+     "url": "https://gcaptain.com/russian-diesel-tanker-awaits-orders-off-u-s-coast-amid-import-ban-dispute/",
+     "src": "gCaptain",
+     "stage": "planned"
+    },
+    {
+     "cite": 11,
+     "title": "Free tool shows how net-zero policy options could impact trade costs for IMO member states - Riviera Maritime Media",
+     "url": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxPVDI2UnV3T3ZfNUpWX1Zxa3E4REZzVzQ1cEZuTVNUY211WHhXbEtQWlJfOWg5UTZOTzhSb29DMzZNcTlvWUVsR2tCUmpFUmpPSjh4LWN3Nlk5eEVjV3FnLVFaSUphem9XS05pdzRMcG5keFNLY3FVWkl2X2NsYkthRm40X3BWZUg5X3YtS0hudS1iVWF3TEpnOG93SExFeVFIQ1B5Y0JiSDdEcEk5NE9qblBTallLcHZIRGc0WkFhdTZlVEJMd252NzhHbzBhMnVqTG9ZNHBoVkdrd2I1RFVtcS1WZTU5TlREaHpCel9pUGlJYjVUcV9SWFJn?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 12,
+     "title": "Shipowners favor simpler enforcement under IMO Net-Zero Framework - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNVGdnYWRkc1cxXzBfVXJxelRsM0VUTlpDdEMxUk92cFBVUXd1QjdMejNocUk3NE9TRjJTT1ZkRUJYSGQ5N0tHQlZTY1pyV2lnNlNjN1MwZTI2SEhkUUFEOG1MNEhkOE5HVWFCRTUwWnZONXo1TjBUSi13azRyc2wyT19Ob1A3OXplLW5LVkJ3N0J3Vmc?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 13,
+     "title": "IMarEST Members Identify Key Barriers to Shipping's Net-Zero Transition - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOOGI3ZUdsS09tQVdRZTE3d1RzYndzdTZMTXh3U2gweWxmLWkzb240dkRaUGJUOW5aeDBVaC04ek9zUnlra0VmVGdpeS1XU09xSlZsQ2UzaVlNNjUzQ01lV2tFZ1lCVVZLeVMzWHY1VFFWemhwR2hoTmJTbk5QcjlOV2QwYUhvU0Y4ZEROQ2Z6RjdCZDdyNXp5ZlZ4U2dGc3JiTDMyaHhrV2JYV1lEM1BkYnE4cng?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 14,
+     "title": "Guidance: Declaration of maritime labour compliance part II and guidance",
+     "url": "https://www.gov.uk/government/publications/declaration-of-maritime-labour-compliance-part-ii-and-guidance",
+     "src": "英国MCA · 全部发布",
+     "stage": "other"
+    },
+    {
+     "cite": 15,
+     "title": "Carrier choice drives shipping emissions",
+     "url": "https://www.motorship.com/news/emission-control-technology-and-equipment/carrier-choice-drives-shipping-emissions/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 16,
+     "title": "IMO Backs Dominguez for Second Term Amid Shipping Attacks and Climate Deadlock - gCaptain",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPcUFCVHU2cjZ1UVhVdlBHSHplMlNfMGFSVDBtdVhfWXZ2R1daeG1ycFhZQ08yVzF1akNPZjVKb21QYkREdEhSS3RKUkVfY2VTd2V5WDFLaS1vUXIwWDN6MklPQk11TEFNN0RsdGtWdWRPZGdlZUtXWTZVbklkYlVTdFJWR0lfNFgwTG1TMldzUlZBSHBVYk14a0l3QUpiNTJOWHc?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 17,
+     "title": "New study links shipping emissions to $963 billion in global economic damages - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNWjVxd252OEh5QmRnTW5wTFljcVI0ZkVyS1BUTGN3ajc1V3I0VmNsal9kcWhoR1ZDMXUxd3pya3h4dEJYQXBFekxnY3l2WExMNWJJUVpJLUhrSlcybHp6X2EyeFZlX0RXaU01V0JBOWpveTRiV2hCREpoRU9meGt0NThsYUx0d0xZajAwNHo4bTFsM2xmdUtqZW5TUk14RFE1MFE?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 18,
+     "title": "Silverstream joins zero-carbon shipping centre",
+     "url": "https://www.motorship.com/news/energy-saving-devices/silverstream-joins-zero-carbon-shipping-centre/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 19,
+     "title": "IMO Council backs second four-year term for Arsenio Dominguez - Shipping Telegraph",
+     "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOQ0dYNFdTZVlHNktDcUFqZUxmb3FacmFQQTJRSVJQdXN3Y2UzWlA2SHhqMnJPMjRkSUNTVl9KZkt1cHdDYURWUnZpVUxUT2thQ2J3TmFLWUdfemU1clpETWdpcW93VjdFa0RZRGlSaklvbEFENGo4Z21fZ1dFYWJuZ2JRMXJabnVNOGJpRFRvUEVHRXg1M2dfZ25ZeHBnMjlKUzFxSEc3cmQ2NHp5a2VzWU1UbzU2YTA?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 20,
+     "title": "U.S. Ethanol Could Fuel Growing Fleet of Methanol-Capable Ships, Study Finds",
+     "url": "https://gcaptain.com/u-s-ethanol-could-fuel-growing-fleet-of-methanol-capable-ships-study-finds/",
+     "src": "gCaptain",
+     "stage": "planned"
+    },
+    {
+     "cite": 21,
+     "title": "Iran Forbids Nuclear Material to Exit the Country, Oil Prices Rise 1%",
+     "url": "https://www.marinelink.com/news/iran-forbids-nuclear-material-exit-544302",
+     "src": "MarineLink",
+     "stage": "other"
+    },
+    {
+     "cite": 22,
+     "title": "Flex LNG lines up $145.5m leaseback",
+     "url": "https://splash247.com/flex-lng-lines-up-145-5m-leaseback/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 23,
+     "title": "US ethanol readily available to fuel the world's methanol-capable fleet, study finds - The Manila Times",
+     "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxNSmlLeGpaYWdPdEJhTENsOWJHeUx0WEs0VjZzM0dEakhzQno3ZDRSYWJTeldtZ1VfYjhDYjk2RUpnU2J1S1o2VFRCdGRCYTJXeEVLTDQ0dXRudHFJRko2MjN3MDhoRnBzcVh1WmhSOXEyYUJKQ1hzQWJHVzZVdF90a3BQdXZnaUdKeTB4VzBvRHNTYmxrNlNNTVlPbUJ6X2VNUHg5ZlJEUEN0NG9pSGVWVnhLd1ZyQThzV0hlRXlmM2V6bG9NT1R0elRoX1Bkdkt3ZW5MUnlYQVdMVHFDaTNDUkJXcmVpSU5CT0HSAe8BQVVfeXFMUE9peWxFNEg0OXZrZUJKdFVFRXRBeEE5eG5TaFhEelpEVEluZHhZLTlxZTZoQy1SX2VDdURGWF9tZTZkWmxyWWZoOXN3MmlIN3VUaHI2WFYwMDVsT25fRzhueEhPbXlfbnRjeWRKZ0FHT29uVGEtMmxzMDVSTFhvZm5pdlRZRWhQNFB3VkJTQmowTHVFQ2l2X3N6U25yeHdGVWRRcGtPbUJUWk9QN0dqMWJVM2FWajJCTjNOanJIT2toSjh6QUF2OEV2c1pfSXRIVlh5X1ljM01QQ3RQRExDQVdDZDl4QzRaRTdOMDJGVEk?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 24,
+     "title": "Qatar Loses First LNG Customer Since War Disrupted Flows",
+     "url": "https://gcaptain.com/qatar-loses-first-lng-customer-since-war-disrupted-flows/",
+     "src": "gCaptain",
+     "stage": "other"
+    },
+    {
+     "cite": 25,
+     "title": "ADNOC widens its Asian footprint with decade-long LNG offtake deal",
+     "url": "https://www.offshore-energy.biz/2026/11/11/adnoc-widens-its-asian-footprint-with-decade-long-lng-offtake-deal",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 26,
+     "title": "India’s first green methanol bunkering hub targets commercial operations by November",
+     "url": "https://www.manifoldtimes.com/news/indias-first-green-methanol-bunkering-hub-targets-commercial-operations-by-november/",
+     "src": "Manifold Times",
+     "stage": "operating"
+    },
+    {
+     "cite": 27,
+     "title": "Uniper submits environmental permit application for Östersund e-methanol facility",
+     "url": "https://ship.energy/energy/uniper-submits-environmental-permit-application-for-ostersund-e-methanol-facility/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 28,
+     "title": "Technip Energies to provide project management services for Transition Industries’ Mexican methanol plant",
+     "url": "https://ship.energy/energy/technip-energies-to-provide-project-management-services-for-transition-industries-mexican-methanol-plant/",
+     "src": "Bunkerspot",
+     "stage": "planned"
+    },
+    {
+     "cite": 29,
+     "title": "PowerCell secures SEK 15 million order for Norwegian maritime ammonia-to-power project",
+     "url": "https://ship.energy/technology/powercell-secures-sek-15-million-order-for-norwegian-maritime-ammonia-to-power-project/",
+     "src": "Bunkerspot · 第2页",
+     "stage": "planned"
+    },
+    {
+     "cite": 30,
+     "title": "BYD Wins Marine Battery Deal for Höegh Autoliners’ Ammonia-Powered Aurora No. 12 - Fuel Cells Works",
+     "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQSmtKM3VXSTN5b05heWF5aEdEMUJVR3dGQVJ5c3p6SXRvU2FnclFPRGl0NUlXOUtEaVJGdTJqMlI4bm0weHIyUkk2VGNTeHZrU3d2a3RjektyZEZjcVFrR1hTS19XQ3hnOHVrWVdKTEdUbmdSZGlVUFlfQnRhak11dDZKSEdwbnhfLVRMQVJyT21rZXVRU3Q5YkFuSWxKTlV3OUE1WDR6MjBhX21Od2F6dTBOTWFyZFM5bndyWmUwOXlYZw?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "other"
+    },
+    {
+     "cite": 31,
+     "title": "The Week in Alt Fuels: Ammonia and methanol bunkering gain ground - https://www.engine.online/",
+     "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPUkUzWTFDN0szNG9XUzZCQk8weGhuTy1ydk9Zb014YzBVQ19fZUE4cEdOdTY5VVhYV0V4T1M4Xy01MFhpZTFtaVRRQnMzbWxHNGVPaDFUR245V245Vk9mYVB1Q051SWpuN0wtY1NTR0toZmhJMTdpajVUZGVUbFNaRTNYWDFHWXU3R0czaFJPVjc4WmVDWGxkTEpKMS15WlFqNlE?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "other"
+    },
+    {
+     "cite": 32,
+     "title": "Wärtsilä wins major FLNG propulsion order",
+     "url": "https://www.motorship.com/news/propulsion/wartsila-wins-major-flng-propulsion-order/",
+     "src": "The Motorship",
+     "stage": "planned"
+    },
+    {
+     "cite": 33,
+     "title": "Wärtsilä completes LNG carrier engine conversions",
+     "url": "https://www.motorship.com/news/repair-conversion/wartsila-completes-lng-carrier-engine-conversions/",
+     "src": "The Motorship",
+     "stage": "operating"
+    },
+    {
+     "cite": 34,
+     "title": "The commercial proposition: Building a case for nuclear shipping",
+     "url": "https://www.motorship.com/news/nuclear/the-commercial-proposition-building-a-case-for-nuclear-shipping/",
+     "src": "The Motorship",
+     "stage": "planned"
+    },
+    {
+     "cite": 35,
+     "title": "HD Hyundai Fires Back at China With Ammonia-Powered Ship, but China Takes 65% of VLAC Orders - BigGo Finance",
+     "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9KTVFvaFBkYTdfclc5bVgzVEx4ZWxrMlVJdGl3bnhTS01FeGNZdlBreDFjMWQ5Yl9vWFFDVGk5N1Z0aVVWd2dVUGtCN3ZnWFVQTHA5X05uNlg3YzdEczdBUjBnV1J2dHZDSlduelNQb3ZqcGNIdUE?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 36,
+     "title": "Lloyd’s Register expands AI readiness benchmarking",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/lloyds-register-expands-ai-readiness-benchmarking/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 37,
+     "title": "Elemental Energies wins offshore CCS deal from Harbour Energy",
+     "url": "https://splash247.com/elemental-energies-wins-offshore-ccs-deal-from-harbour-energy/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 38,
+     "title": "DNV为江南造船自主研发LNGC-FSRU颁发AiP - 国际船舶网",
+     "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNY2x1anV4eHZsYS1IQ1ZseFRMcHFYMTBIUVA2TU5CUS1xU0NUMUhRbHJ3WUhKR0l6VTMzem5HdjJkbWFySlhYcWFFRzljeUh0NzRVMXRqbHZCVlBlcEVDTm1RUFBQS1hfcEUwUTBhV09NM0FUWkdmRnJRUkhyalJRQjV3?oc=5",
+     "src": "GN · 国内绿色船舶政策",
+     "stage": "other"
+    },
+    {
+     "cite": 39,
+     "title": "DNV validates Atlas offshore CO2 storage concept",
+     "url": "https://www.motorship.com/news/carbon-capture/dnv-validates-atlas-offshore-co2-storage-concept/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 40,
+     "title": "Construction begins on shore power facilities at ROG’s Waalhaven ship repair yard",
+     "url": "https://ship.energy/technology/onshore-power/construction-begins-on-shore-power-facilities-at-rogs-waalhaven-ship-repair-yard/",
+     "src": "Bunkerspot",
+     "stage": "operating"
+    },
+    {
+     "cite": 41,
+     "title": "UK government must recognise shore power electricity as marine fuel, says Port Director of Portsmouth International Port",
+     "url": "https://ship.energy/policy/uk-government-must-recognise-shore-power-electricity-as-marine-fuel-says-port-director-of-portsmouth-international-port/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 42,
+     "title": "Maersk hit by fresh cyber breach",
+     "url": "https://splash247.com/maersk-hit-by-fresh-cyber-breach/",
+     "src": "Splash 247",
+     "stage": "other"
+    }
+   ],
+   "summary": {
+    "done": 0,
+    "policy": 0,
+    "progress": 4,
+    "watching": 9,
+    "new": 3,
+    "pool": 10,
+    "closed": 19
    }
   }
  ]
