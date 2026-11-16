@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-12",
+ "updated": "2026-11-16",
  "issues": [
   {
    "date": "2026-10-21",
@@ -3503,6 +3503,343 @@
     "new": 3,
     "pool": 10,
     "closed": 19
+   }
+  },
+  {
+   "date": "2026-11-16",
+   "items": 46,
+   "events": [
+    {
+     "cite": 1,
+     "title": "Naftomar returns to South Korea for LPG quartet",
+     "url": "https://splash247.com/naftomar-returns-to-south-korea-for-lpg-quartet/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 2,
+     "title": "Eastern Pacific Shipping Takes Delivery of World’s First Ammonia Dual-Fuel VLAC - Hydrogen Central",
+     "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOcUNaaDNYdzZTemNDWFYyMVIxY083NXdhTjVOeDhuN29idnliUktjM2EtREdDWDQ1X1VhSXdvQV9fcG02UmplbTUzSlozQ3hBU3U3MFJMN0ZaZjNqZlpYTXpJUGhZMlIxZVJSS0xEY09nVXcwRnJLbVl5blUzX0YtTlBoMkdtZ1RkNkVIQl9IcVE2RnQzOTZJOVAxdWFleUJadlMteHF0LUEwc2JU?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "operating"
+    },
+    {
+     "cite": 3,
+     "title": "Nikkiso Delivers Dry Dock Overhaul for LNG Tanker",
+     "url": "https://www.marinelink.com/news/nikkiso-delivers-dry-dock-overhaul-lng-544354",
+     "src": "MarineLink",
+     "stage": "operating"
+    },
+    {
+     "cite": 4,
+     "title": "US ethanol readily available to fuel the world's methanol-capable fleet, study finds - Ethanol Producer Magazine",
+     "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNSXNKb3dSQjdkZGtjVWl4WXZKU2lYUUhFdThReTQ2S3ZYY3I2Q19Jcy1mZ2hQSEpyZUNYUlhSMXlBQm9leHYxcVBLbkNSR2R2Y2lrei1PaldlaGJJamFJdEUzUUt3YVNxWldyX2REeHZhc2E0SVc4Q2JreXBoNnpzMUM0bFJ0WnNUckt3eDE0VktZTFdBNG9GS082RDY1eU1XaFJVNkhSVjJDbDlxUkFaUFdXZDhHbWdPNGRn?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 5,
+     "title": "Marine ethanol gains ground amid advances in engine technology - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPVUxGMGh6ZW9xMi1QRm9YcUxrWEdfUHhwUmV3X19UUnh3bHI5NW0tZHJvd3pRU0ozY1BRd3ZmVHdFMk1yR3NtM1JuQk1Ld0I5NlJZX21zWTBDZkpxdFNqa0V4d3FyeDJYcnh0dFhLdUVoaWtmWGVaY3hpYVlmNE94anhrZlRDLThaZWEzU0dOTQ?oc=5",
+     "src": "GN · 乙醇船用燃料",
+     "stage": "other"
+    },
+    {
+     "cite": 6,
+     "title": "LNG-fuelled MV Glen Rosa sets off for sea trials",
+     "url": "https://ship.energy/energy/lng-fuelled-mv-glen-rosa-sets-off-for-sea-trials/",
+     "src": "Bunkerspot",
+     "stage": "testing"
+    },
+    {
+     "cite": 7,
+     "title": "New LNG dual fuel Suezmax joins Maran Tankers’ fleet",
+     "url": "https://ship.energy/energy/new-lng-dual-fuel-suezmax-joins-maran-tankers-fleet/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 8,
+     "title": "BW LPG scores another lucrative Avance VLGC flip",
+     "url": "https://splash247.com/bw-lpg-scores-another-lucrative-avance-vlgc-flip/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 9,
+     "title": "Singapore-based EPS completes first TTS LNG bunkering operation in Davisville",
+     "url": "https://www.manifoldtimes.com/news/singapore-based-eps-completes-first-tts-lng-bunkering-operation-in-davisville/",
+     "src": "Manifold Times",
+     "stage": "operating"
+    },
+    {
+     "cite": 10,
+     "title": "US ethanol could fuel growing methanol-capable fleet, MEMA study finds",
+     "url": "https://www.manifoldtimes.com/news/us-ethanol-could-fuel-growing-methanol-capable-fleet-mema-study-finds/",
+     "src": "Manifold Times",
+     "stage": "planned"
+    },
+    {
+     "cite": 11,
+     "title": "Ethanol as Marine Fuel: Study Backs US Bunkering Opportunity - News and Statistics - IndexBox",
+     "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOMGlqUm5FLVg5R1VPUnNrZXVLaGVkcGFaT1hZSE5mbkdCWHQ0UndreGZQZ3A4emxBU3hBUjdHNkxUVUVCZzZnVTZrWDZrUnlDN2J2QlNSVExnUTgtSGZWZEJ6NWxZSEMyR3A5cWN5WkZLemVkU25VWXBDTEJ3aEFnem5KSzJmV2dVd0JacFhsTFNBWUVtREZUaUdiOVpUS2QxR2Fr?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 12,
+     "title": "US Ethanol Could Help Bridge Supply Gap for Methanol-Fuelled Fleet: New Study - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNRDhqWjRlMFFadkNYcVBkazNwdExiaFF2YXdBRW85ZC1jT0tIT0hQT0VRb3RRd0JTOURoZVZuNW9XN3oxQjc3WExveXltd1YtTXNNNE9kLTBUYnhVSlBBUHdCcWVHQUlMYXRHZ1ppQ0M1MHJ0bHNhUVh5R0NtWDVVSUFteDJLSTNGdjNCMWtoRC1jcEdoNU44c3dTdUs0ZHB0SW5obWpHRVlhWXo5WUJwb0JZVlhMTE9v?oc=5",
+     "src": "GN · 乙醇船用燃料",
+     "stage": "planned"
+    },
+    {
+     "cite": 13,
+     "title": "US ethanol has 2 billion gallons spare to fuel ships worldwide: Study - Interesting Engineering",
+     "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxOUjVZUDBxNzRPM2JZOWVVMmtZRC1reEMwTjFGaTZDRlJWSzNBaU9wVUhXZmgxdm5SVmhaZXREaDJTMHlDQlBFQ25rcHVxb3BXalZkVWh4eDVMSEdlMG9UaDBHNEpRa3VvalJsY0U0MG5qa3FFWFlKNHUtUlcyZHZNMzZ6dHVMQ19oUkROVkpR?oc=5",
+     "src": "GN · 乙醇船用燃料",
+     "stage": "planned"
+    },
+    {
+     "cite": 14,
+     "title": "US Ethanol Could Fuel Methanol-Ready Ships, Study Finds - Marine News Magazine",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOWUlzRFEySXJNbmZTYnJtS3NQWVN2VkJhR3JoXzV3NmNmQklMeFVYb2hld3J6VTJwWlhqWlRsemJCMkxtbWJ2QzkyV0RmT1RjaVpIV0dmazJVOTBkNXlBY3RaMjVrdDBZZEZMQy0tY2dpN3NCRnh2MklsYTJPQVFfTENfcjA4T1k?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 15,
+     "title": "Port of Gothenburg eyes large-scale biogas bunkering in 2027",
+     "url": "https://www.offshore-energy.biz/2026/11/12/port-of-gothenburg-eyes-large-scale-biogas-bunkering-in-2027",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 16,
+     "title": "Ethanol as Marine Fuel: Study Sees US Supply Role for 300+ Methanol-Capable Ships - News and Statistics - IndexBox",
+     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPWGtnVGx5RWJKSkh2b1BUeEktMWZzenBLOE9GcXJYbnBWRGxtVEQ3VElYWEZ3ZFh5MV9ZT09NTWJ5VHA2clZ1UGFBV2FYQU9FempwbDk3Y191eUdwWTZIcnhrS1hVaVVMTW9FV01lVERoMXlaMHkza0FuWWJWX3ZKc3ZBV05pcHpDcWItRkFxZjU5U184SWd2Y1d1c2RnUVpvcWwtRWF5bVdSQmFmeENkckhzZw?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 17,
+     "title": "US ethanol industry eyes growing marine fuel market - Splash247",
+     "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5VZ1dvamhDQ21ieWc1b1pWN1dReEc3V294WG0tVzl1cDhRTnZxeWp4M2gwVEM3M21qbjRkRGoybjdTdl9VT0hVbUt4SklNalVJTmVBWHp4dmoyMENkQTZiSmpWcGlEQkJwZFR0aGxSRUxQbTN0bC15RUo4TkhaSTA?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "other"
+    },
+    {
+     "cite": 18,
+     "title": "GULF broadens LNG trading horizons beyond Thailand with PetroChina deal",
+     "url": "https://www.offshore-energy.biz/2026/11/12/gulf-broadens-lng-trading-horizons-beyond-thailand-with-petrochina-deal",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 19,
+     "title": "Singapore opens applications for LNG floating storage unit licences to support bunkering",
+     "url": "https://www.manifoldtimes.com/news/singapore-opens-applications-for-lng-floating-storage-unit-licences-to-support-bunkering/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 20,
+     "title": "US ethanol could support global methanol fleet: study - Quantum Commodity Intelligence",
+     "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQdWJ4MVc4Z3dKb3B1cU55TzRxelZVdXJudVpxd0NpRFhqSFZwTVZFR2VlQzB2YUgtX2Q5VjNsVGpPTFp1MFZHRkVMUlFpSlFLakZGY3VxcC0yX21jTFBnblVGVDNEV0hNRjBPQjVBTEppaTJia0hrNVJocmVUN2ZGcVJVWlNkZzZuSzJXdnlNV0dLRHhYUW1EdFBVYWtlTkszbWg1X1BSQQ?oc=5",
+     "src": "GN · 乙醇船用燃料",
+     "stage": "planned"
+    },
+    {
+     "cite": 21,
+     "title": "Wärtsilä wins major FLNG propulsion order",
+     "url": "https://www.motorship.com/news/propulsion/wartsila-wins-major-flng-propulsion-order/",
+     "src": "The Motorship",
+     "stage": "planned"
+    },
+    {
+     "cite": 22,
+     "title": "IMO faces challenges in net-zero framework compliance without emissions cost",
+     "url": "https://www.hellenicshippingnews.com/imo-faces-challenges-in-net-zero-framework-compliance-without-emissions-cost/",
+     "src": "Hellenic Shipping News",
+     "stage": "other"
+    },
+    {
+     "cite": 23,
+     "title": "Shipping sector backs an International Maritime Organization (IMO) climate deal, but not all of the details - https://megaproject.com/",
+     "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQN09ISmVvUVBUUjFXa1ZOVGtxbU80X2F6OHQyRmhaYVAxOTZ5aWVmQjRPU215UWc1VVhKMU82OEVhakc2UzhUeUw1U04wc1lhRDliREFtV0didk1vdHdlQ2JXVEZuMVRXdXJ2VVpoVEl5Vjkzb0NOYVlaaGhaN29QSVBET2VmN2x5Yy1BLVpjMk44cEpwOE9YNzNzSmJ0d0M0elcyb1JEOXhkRDZsZUNSVDB6RjJiMElDSGkxQl9xa2lmSkxxUkdJLWdBWW9LOE5ia0ZlS3dzYTI?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 24,
+     "title": "New portal simplifies vessel waste reporting",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/new-portal-simplifies-vessel-waste-reporting/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 25,
+     "title": "Shipping industry supports IMO climate agreement, calls for clarification on key details - European Interest",
+     "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOOTc2anhsYkFmSldNRUExN2hhX1JvLVgzeHk2NXNidFVhWkpWM2RUUHAwdXR3cm56WDhyMnZ3djZUNUxJMVVNNUZmeGE3M3ViVnNuaHcyTktPZ3o1ODRPd1FYSzI1RjM4Mk5ZMmdLYlg2NFNULU4wQ2k1a25qeGRDNVd2eG9YQ3dUb1MwcTI2TEtFTGdiN0lBVTExNHd4MFBTODBNblZ6eE41S05rMnM4ZDh3Sk9WNmRCUFBScQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 26,
+     "title": "Shipping Industry Broadly Supports IMO Net-Zero Framework, Report Finds - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPckZ5N0hlSlBIa3pMbTdMUXpjVzNZYjBmeFA2VVJGazB5bm8xRHRKR3YtVnZqMzA5aDBDbmk4MGs3ZXlRWnJ0V1k1QlhxcUlSUXZqd1ZPZDVmTHRqSGN0eGNmcEV5aWkwVG5PNndlNXRuOUlmRDMxdWhQUGw1SE02aVlhTU5IZENsdW4xbm1CdDloM3ladXVUdXlyUk5lTk50aDBrRktSSXVoa0huSER4MEpiRXo?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 27,
+     "title": "How US ethanol farmers can help maritime decarbonisation - TradeWinds News",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNTW9temUtckZvMDZyUHdpbC1Oa1FJUUNPTXJDbkE3OFhtemQxNmhXMmlGb3Fkakc1S1JDaUVnRExkR1BIMmRnYVVueUhKRGs2Nm02U2Eta211Z0tpbVBfTjZUT3hRdzlTWGdjTnpqa2RDdjFXQUxBNFlpbHJQWkxmYUYxZ1FBd25Kd1Q4OTRTT3djMnFPUkJaVW1sT3Nrc2xFSE00X3d5Y1BMaFcwMkV0UzNDQmg?oc=5",
+     "src": "GN · 乙醇船用燃料",
+     "stage": "other"
+    },
+    {
+     "cite": 28,
+     "title": "Korea advances global onboard carbon capture",
+     "url": "https://www.motorship.com/news/carbon-capture/korea-advances-global-onboard-carbon-capture/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 29,
+     "title": "中国船级社《船载碳捕集系统（OCCS）白皮书》正式发布 - 中国碳排放交易网",
+     "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE9hellNSlVhTHdUc0ZXdjZ5WW9TaVdBV3VfRVVSZk5qQmJSd1QtOGlhVlJuZHpxaGlkWEMwUDlPSGs1c3g2QmxCejFfeXJFV3R2TkJEb3dB?oc=5",
+     "src": "GN · 国内绿色船舶政策",
+     "stage": "other"
+    },
+    {
+     "cite": 30,
+     "title": "Ahead of MEPC85, IMarEST members highlight barriers to net-zero delivery - Cyprus Shipping News",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNc2h2MGo5Y29nWVlZV2FZQzdGTENMWm93UHFTVEFpU051UjZxMVIzVUV4SU1HSmJXbjlfZm84ZzN6anEtREh4S0lveFB2aktEZVd6cVE5aWpweHRuSGppWkRrMDR5dTNYZUV5bmJfZXYtSEZDTldGalE0TWt5U2tRVGRRSkZ6eEJ0QmNVMWR3R0NMNEZhaEpNNXFkblpnOGR4cW9QMlpnRkpEcVNmUVB4RmozQnU?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "operating"
+    },
+    {
+     "cite": 31,
+     "title": "IBIA 2026: US Says IMO Net-Zero Framework \"Cannot Be Adopted, Will Never Be Enforced\" - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPODJVVEY3SEVGZVBaVmhwX2gyd1ZZYXF4eVhkVVNDOHBhY3F1QVI4THpHT2s4azZZVkxraTBEZDJnRHhITC1nQ0tXbC1kT2U3TVctQVJIUHhXSUcyRmlVVWZPbXlXWmpPM1IydV9qT2E3Nm93OXhFck1EVGpCbzFHOUo5eFQ2WFNaR3FCZmlFVDZOZ3dndV9wdEcyN0luTEFqNDByRkI3WVJPVVpKcmZ3YXlEbzlfZjRlZEJiVDdsWQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 32,
+     "title": "UCL Launches Tool to Assess IMO Net Zero Framework's Country-Level Economic Impacts - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQMmRhWHR4akVXSU5fc1REbjV4RFI5UnE3UHZkTGR3NEJ6MW5CV2YyaEZzNlJoekFxVldjeXljRmtiTGRtR3R3NldtZXN4UjZUSlFqaXQ5MVdUOHFPM0loajJBT2pKZVJRb2ZpYzdtUUEzb0xWOWtuX3JDU2I3Q2w5RmM0eVdIcmJKNjZ1ak1MV3BoNHdrbXJmSk1GcF9oR3BuTXNIeE11Z2JvLWVlNlR3SVJGUmR4X2UtZTFud2lYaGJkajU0?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "operating"
+    },
+    {
+     "cite": 33,
+     "title": "New open-access tool shows IMO delegations what the NZF policy options could mean for trade costs in their country - India Shipping News",
+     "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxOalBVLTBCTVBMcXQ3VHZYMWNXZXRBSXVkVll2VnVVSTFOSThFRkgwTDNEWGx5M2Y4WTgzV19xZXhaYUpOam1ZZFVLU0RBYmJmLVd5M3prcGpIY3YwclpuUHpnU2l5QThZZzVHM3RVZTR1VHljZlBsemZFbmlGNTNDcHpIMGNxa2hlQVU3MjRQUEdqMXdCR1ZmZFRFRGxMWGxNSjJJTWR4emJzWTlBNlN6MURXckx2Y19oR3NMOUNsRWRWdEVlRTJ4eUR6SmZsREVBY2tKTDYxT0RNT0xaN0gwdmR2MTcteGtUdkZ5M2lva09Wci1nV294TGJHREs?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 34,
+     "title": "Fifteen shipping companies raise concerns over IMO’s Net-Zero Framework - Shipping Telegraph",
+     "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPRDJrVXE0UllpVURyTFJsWVJpSFh6a3pTTmF2a25ZbEYzdnctLUJydkNoR0F4eTBoOUU3SmhIcDVyVmxEVnVhQ0FpcFdXZm4tQThtQzU2clVKdnAyLUUyYzNTd0VlR09GZFowMmo2N3N3Mk04Zi1ZeXJxVHJRQ1BmUzNSS1JTanlaWXYybDVRRGpzOUd6R3Jhd29WOVExbmRuamkzWU9ldUZmN1U1YXZIVy0wVnFpM0xla3c?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 35,
+     "title": "Free tool shows how net-zero policy options could impact trade costs for IMO member states - Riviera Maritime Media",
+     "url": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxPVDI2UnV3T3ZfNUpWX1Zxa3E4REZzVzQ1cEZuTVNUY211WHhXbEtQWlJfOWg5UTZOTzhSb29DMzZNcTlvWUVsR2tCUmpFUmpPSjh4LWN3Nlk5eEVjV3FnLVFaSUphem9XS05pdzRMcG5keFNLY3FVWkl2X2NsYkthRm40X3BWZUg5X3YtS0hudS1iVWF3TEpnOG93SExFeVFIQ1B5Y0JiSDdEcEk5NE9qblBTallLcHZIRGc0WkFhdTZlVEJMd252NzhHbzBhMnVqTG9ZNHBoVkdrd2I1RFVtcS1WZTU5TlREaHpCel9pUGlJYjVUcV9SWFJn?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 36,
+     "title": "Shipowners favor simpler enforcement under IMO Net-Zero Framework - safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNVGdnYWRkc1cxXzBfVXJxelRsM0VUTlpDdEMxUk92cFBVUXd1QjdMejNocUk3NE9TRjJTT1ZkRUJYSGQ5N0tHQlZTY1pyV2lnNlNjN1MwZTI2SEhkUUFEOG1MNEhkOE5HVWFCRTUwWnZONXo1TjBUSi13azRyc2wyT19Ob1A3OXplLW5LVkJ3N0J3Vmc?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 37,
+     "title": "IMarEST Members Identify Key Barriers to Shipping's Net-Zero Transition - Ship & Bunker",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOOGI3ZUdsS09tQVdRZTE3d1RzYndzdTZMTXh3U2gweWxmLWkzb240dkRaUGJUOW5aeDBVaC04ek9zUnlra0VmVGdpeS1XU09xSlZsQ2UzaVlNNjUzQ01lV2tFZ1lCVVZLeVMzWHY1VFFWemhwR2hoTmJTbk5QcjlOV2QwYUhvU0Y4ZEROQ2Z6RjdCZDdyNXp5ZlZ4U2dGc3JiTDMyaHhrV2JYV1lEM1BkYnE4cng?oc=5",
+     "src": "GN · IMO决议与生效",
+     "stage": "other"
+    },
+    {
+     "cite": 38,
+     "title": "Guidance: Declaration of maritime labour compliance part II and guidance",
+     "url": "https://www.gov.uk/government/publications/declaration-of-maritime-labour-compliance-part-ii-and-guidance",
+     "src": "英国MCA · 全部发布",
+     "stage": "other"
+    },
+    {
+     "cite": 39,
+     "title": "Carrier choice drives shipping emissions",
+     "url": "https://www.motorship.com/news/emission-control-technology-and-equipment/carrier-choice-drives-shipping-emissions/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 40,
+     "title": "Silverstream joins zero-carbon shipping centre",
+     "url": "https://www.motorship.com/news/energy-saving-devices/silverstream-joins-zero-carbon-shipping-centre/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 41,
+     "title": "DNV report: Singapore tops maritime hub ranking as Asia takes three of top five",
+     "url": "https://www.manifoldtimes.com/news/dnv-report-singapore-tops-maritime-hub-ranking-as-asia-takes-three-of-top-five/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 42,
+     "title": "China: Headway advances rotor sail system towards commercial deployment with CCS AiP",
+     "url": "https://www.manifoldtimes.com/news/china-headway-advances-rotor-sail-system-towards-commercial-deployment-with-ccs-aip/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 43,
+     "title": "Lloyd’s Register expands AI readiness benchmarking",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/lloyds-register-expands-ai-readiness-benchmarking/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 44,
+     "title": "CMA CGM Demonstrates Relative Resilience in a Volatile Q3",
+     "url": "https://www.marinelink.com/news/cma-cgm-demonstrates-relative-resilience-544352",
+     "src": "MarineLink",
+     "stage": "testing"
+    },
+    {
+     "cite": 45,
+     "title": "Maersk hit by ransomware cyber-attack",
+     "url": "https://www.seatrade-maritime.com/containers/maersk-hit-by-ransomware-cyber-attack",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 46,
+     "title": "VLCC Deliveries Rise Fivefold as the Orderbook Builds",
+     "url": "https://www.hellenicshippingnews.com/vlcc-deliveries-rise-fivefold-as-the-orderbook-builds/",
+     "src": "Hellenic Shipping News",
+     "stage": "operating"
+    }
+   ],
+   "summary": {
+    "done": 0,
+    "policy": 0,
+    "progress": 4,
+    "watching": 12,
+    "new": 3,
+    "pool": 13,
+    "closed": 3
    }
   }
  ]
