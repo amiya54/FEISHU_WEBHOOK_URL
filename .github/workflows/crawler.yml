@@ -416,6 +416,8 @@ jobs:
           rm -rf pages_dist
           mkdir -p pages_dist
           cp index.html pages_dist/index.html
+          # 可视化配置编辑器（TrendRadar 上游自带，发布到 /editor/ 路径）
+          cp -r docs pages_dist/editor
           # 过刊库：archive/issues/*.html + archive/index.html
           if [ -d archive ]; then
             cp -r archive pages_dist/archive
