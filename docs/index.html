@@ -261,10 +261,10 @@
   });
 
   // ---------- 状态 ----------
-  var state = { freq:{orig:'',loaded:false}, config:{orig:'',loaded:false}, timeline:{orig:'',loaded:false} };
+  var state = { freq:{orig:'',sha:null,loaded:false}, config:{orig:'',sha:null,loaded:false}, timeline:{orig:'',sha:null,loaded:false} };
 
   function resetAll(){
-    state = { freq:{orig:'',loaded:false}, config:{orig:'',loaded:false}, timeline:{orig:'',loaded:false} };
+    state = { freq:{orig:'',sha:null,loaded:false}, config:{orig:'',sha:null,loaded:false}, timeline:{orig:'',sha:null,loaded:false} };
     $('freqGroups').innerHTML = ''; $('freqRaw').style.display='none'; $('freqRaw').value='';
     $('configText').value=''; $('timelineText').value='';
     ['freq','config','timeline'].forEach(function(k){ $('freqStat')&&0; });
@@ -412,16 +412,37 @@
   function collectFreqFromUI(){ /* UI 改动已即时写回 state.freq.doc */ }
 
   // ---------- 加载 ----------
+  // 有令牌走 contents API：读到的是最新内容（raw 有 CDN 缓存，写回后立刻加载会看到旧的），
+  // 并顺带缓存 sha 供写回复用；无令牌退回 raw（只读，够用）。
+  function fetchConfig(file){
+    var token = $('pat').value.trim();
+    if (!token) return fetch(rawURL(file), {cache:'no-store'}).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status); return r.text().then(function(t){ return {text:t, sha:null}; });
+    });
+    var api = apiURL(file) + '?ref=' + encodeURIComponent(proj().branch);
+    return fetch(api, {
+      headers:{ 'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json',
+        'X-GitHub-Api-Version':'2022-11-28', 'Cache-Control':'no-cache' }
+    }).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status+'（令牌权限或仓库不对？）');
+      return r.json();
+    }).then(function(d){
+      var bin = atob(d.content.replace(/\s/g,''));
+      var bytes = Uint8Array.from(bin, function(c){ return c.charCodeAt(0); });
+      return { text:new TextDecoder().decode(bytes), sha:d.sha };
+    });
+  }
   function load(kind){
     var file = kind==='freq'?'frequency_words.txt':kind==='config'?'config.yaml':'timeline.yaml';
     var btn = $('load'+kind.charAt(0).toUpperCase()+kind.slice(1));
     if (btn){ btn.disabled=true; btn.textContent='加载中…'; }
-    fetch(rawURL(file), {cache:'no-store'})
-      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
-      .then(function(text){
+    fetchConfig(file)
+      .then(function(res){
+        var text = res.text;
         // 词表以序列化后的文本为基准：解析会规范化组间多余空行，
         // 若拿原文当基准，用户什么都没改也会看到几处空行 diff。
         state[kind].orig = kind==='freq' ? serializeFreq(parseFreq(text)) : text;
+        state[kind].sha = res.sha;
         state[kind].loaded = true;
         if (kind==='freq'){
           state.freq.doc = parseFreq(text);
@@ -437,7 +458,7 @@
         msg('已加载 ' + proj().repo + ' 的 ' + file + '。','ok');
         refreshWriteBtn();
       })
-      .catch(function(e){ msg('加载失败：'+e.message+'（raw.githubusercontent.com 直连不通？检查网络）。','err'); })
+      .catch(function(e){ msg('加载失败：'+e.message+'（检查网络或令牌权限）。','err'); })
       .finally(function(){ if(btn){ btn.disabled=false; btn.textContent='从仓库加载'; } });
   }
   $('loadFreq').addEventListener('click', function(){ load('freq'); });
@@ -515,12 +536,7 @@
     if (!pending) return;
     var btn = $('diffConfirm'); btn.disabled=true; btn.textContent='提交中…';
     var p = pending;
-    fetch(apiURL(p.file), {
-      headers:{ 'Authorization':'Bearer '+$('pat').value.trim(), 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' }
-    })
-    .then(function(r){ if(!r.ok) throw new Error('读取 sha 失败 HTTP '+r.status+'（令牌权限或仓库不对？）'); return r.json(); })
-    .then(function(data){
-      var sha = data.sha;
+    function doPut(sha){
       var bytes = new TextEncoder().encode(p.text);
       var bin=''; for(var i=0;i<bytes.length;i+=0x8000){ bin += String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000)); }
       var content = btoa(bin);
@@ -531,15 +547,26 @@
           'Content-Type':'application/json', 'X-GitHub-Api-Version':'2022-11-28' },
         body: JSON.stringify({ message:cm, content:content, sha:sha, branch:proj().branch })
       });
-    })
+    }
+    var cachedSha = state[p.kind].sha;
+    var chain = cachedSha ? Promise.resolve({ r:null, sha:cachedSha })
+      : fetch(apiURL(p.file)+'?ref='+encodeURIComponent(proj().branch), {
+          headers:{ 'Authorization':'Bearer '+$('pat').value.trim(), 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' }
+        }).then(function(r){ if(!r.ok) throw new Error('读取 sha 失败 HTTP '+r.status); return r.json().then(function(d){ return {r:r, sha:d.sha}; }); });
+    chain.then(function(x){ return doPut(x.sha); })
     .then(function(r){ if(!r.ok) return r.text().then(function(t){ throw new Error('写回失败 HTTP '+r.status+' '+t.slice(0,200)); }); return r.json(); })
     .then(function(){
       state[p.kind].orig = current(p.kind);
+      state[p.kind].sha = null; // 文件 sha 已变，下次加载重新取，避免用过期 sha 提交冲突
       markDirty(p.kind);
       $('diffOverlay').classList.remove('on'); pending=null;
       msg('已写回 '+proj().repo+' 的 config/'+p.file+'。仓库提交记录已更新，下次抓取生效。','ok');
     })
-    .catch(function(e){ msg(e.message,'err'); })
+    .catch(function(e){
+      var m = e.message;
+      if (m.indexOf('409')>=0) m = '文件在别处被改过（sha 冲突），请关闭弹窗重新点「从仓库加载」再改一次。';
+      msg(m,'err');
+    })
     .finally(function(){ btn.disabled=false; btn.textContent='确认提交'; });
   });
 })();
