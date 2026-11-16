@@ -1486,10 +1486,22 @@ K_META_ANCHOR = (
     '                if is_new:\n'
     '                    rss_html += \'<span class="rss-author" style="color: #dc2626;">NEW</span>\'\n'
 )
-K_META_NEW = K_META_ANCHOR + (
+K_META_NEW = (
+    '                # ★补丁M：NEW 仅对 72 小时内发布的新闻生效\n'
+    '                _show_new = is_new\n'
+    '                try://n'
+    '                    if time_display://n'
+    '                        _pub_dt = datetime.strptime(\n'
+    '                            str(datetime.now().year) + "-" + time_display.strip(), "%Y-%m-%d %H:%M")\n'
+    '                        if (datetime.now() - _pub_dt).total_seconds() > 72 * 3600:\n'
+    '                            _show_new = False\n'
+    '                except Exception://n'
+    '                    pass\n'
+    '                if _show_new://n'
+    '                    rss_html += \'<span class="rss-author" style="color: #dc2626;">NEW</span>\'\n'
     '\n'
     '                # ★补丁K：显示条目编号（与 AI 正文里的引用徽标对应）\n'
-    '                if id_prefix:\n'
+    '                if id_prefix://n'
     '                    rss_html += (\'<span class="rss-no" title="AI 正文可引用此编号">#%d</span>\'\n'
     '                                 % _cite_no)\n'
 )
