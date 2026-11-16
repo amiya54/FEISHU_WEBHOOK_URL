@@ -412,25 +412,48 @@
   function collectFreqFromUI(){ /* UI 改动已即时写回 state.freq.doc */ }
 
   // ---------- 加载 ----------
-  // 有令牌走 contents API：读到的是最新内容（raw 有 CDN 缓存，写回后立刻加载会看到旧的），
-  // 并顺带缓存 sha 供写回复用；无令牌退回 raw（只读，够用）。
+  // 国内网络下 raw.githubusercontent.com 常直接 Failed to fetch，故多源依次回退：
+  // 有令牌：API 优先（内容最新且顺带缓存 sha）→ jsDelivr → raw；
+  // 无令牌：raw → jsDelivr（国内 CDN 更稳）→ API 匿名（有 60 次/时限流）。
+  function txtFetch(url){
+    return fetch(url, {cache:'no-store'}).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.text().then(function(t){ return {text:t, sha:null}; });
+    });
+  }
+  function apiFetch(file, token){
+    var headers = { 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28', 'Cache-Control':'no-cache' };
+    if (token) headers['Authorization'] = 'Bearer '+token;
+    return fetch(apiURL(file)+'?ref='+encodeURIComponent(proj().branch), {headers:headers})
+      .then(function(r){
+        if(!r.ok) throw new Error('HTTP '+r.status+(r.status===403?'（匿名限流，稍后再试）':r.status===401?'（令牌无效）':''));
+        return r.json();
+      }).then(function(d){
+        var bin = atob(d.content.replace(/\s/g,''));
+        var bytes = Uint8Array.from(bin, function(c){ return c.charCodeAt(0); });
+        return { text:new TextDecoder().decode(bytes), sha:d.sha };
+      });
+  }
+  function jsdURL(file){
+    var p = proj();
+    return 'https://cdn.jsdelivr.net/gh/amiya54/'+p.repo+'@'+p.branch+'/config/'+file;
+  }
   function fetchConfig(file){
     var token = $('pat').value.trim();
-    if (!token) return fetch(rawURL(file), {cache:'no-store'}).then(function(r){
-      if(!r.ok) throw new Error('HTTP '+r.status); return r.text().then(function(t){ return {text:t, sha:null}; });
-    });
-    var api = apiURL(file) + '?ref=' + encodeURIComponent(proj().branch);
-    return fetch(api, {
-      headers:{ 'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json',
-        'X-GitHub-Api-Version':'2022-11-28', 'Cache-Control':'no-cache' }
-    }).then(function(r){
-      if(!r.ok) throw new Error('HTTP '+r.status+'（令牌权限或仓库不对？）');
-      return r.json();
-    }).then(function(d){
-      var bin = atob(d.content.replace(/\s/g,''));
-      var bytes = Uint8Array.from(bin, function(c){ return c.charCodeAt(0); });
-      return { text:new TextDecoder().decode(bytes), sha:d.sha };
-    });
+    var chain = token
+      ? [ ['GitHub API', function(){ return apiFetch(file, token); }],
+          ['jsDelivr',  function(){ return txtFetch(jsdURL(file)); }],
+          ['raw',       function(){ return txtFetch(rawURL(file)); }] ]
+      : [ ['raw',       function(){ return txtFetch(rawURL(file)); }],
+          ['jsDelivr',  function(){ return txtFetch(jsdURL(file)); }],
+          ['GitHub API',function(){ return apiFetch(file, null); }] ];
+    var i = 0, fails = [];
+    function next(){
+      if (i >= chain.length) throw new Error('三处数据源都连不上：'+fails.join('；')+'。多为网络限制，换网络或开代理后重试。');
+      var cur = chain[i++];
+      return cur[1]().catch(function(e){ fails.push(cur[0]+'('+e.message+')'); return next(); });
+    }
+    return next();
   }
   function load(kind){
     var file = kind==='freq'?'frequency_words.txt':kind==='config'?'config.yaml':'timeline.yaml';
@@ -458,7 +481,7 @@
         msg('已加载 ' + proj().repo + ' 的 ' + file + '。','ok');
         refreshWriteBtn();
       })
-      .catch(function(e){ msg('加载失败：'+e.message+'（检查网络或令牌权限）。','err'); })
+      .catch(function(e){ msg('加载失败：'+e.message,'err'); })
       .finally(function(){ if(btn){ btn.disabled=false; btn.textContent='从仓库加载'; } });
   }
   $('loadFreq').addEventListener('click', function(){ load('freq'); });
