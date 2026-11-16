@@ -85,7 +85,6 @@
 征求意见
 /EEDI|CII|EEXI/
 
-
 [法规规范]
 # ── 机构与公约专名 ──
 IMO
@@ -183,7 +182,6 @@ penalty
 碳达峰
 碳中和
 
-
 [船级社规范]
 # ── 入级规范 · 技术通函 · 型式认可（设计合规依据）──
 中国船级社
@@ -219,7 +217,6 @@ class rules
 class notation
 green ship notation
 船级符号
-
 
 [替代燃料]
 # ── 燃料本体（本组实测命中最多，保持并补少数缺口）──
@@ -278,7 +275,6 @@ bunkering
 加注
 nuclear
 
-
 [低碳技术前沿]
 # ── 动力系统 · 排放控制 · 数字化能效 ──
 燃料电池
@@ -310,7 +306,6 @@ technical route
 pilot project
 联合研发
 
-
 [节能减排]
 # ── 能效与减排装置 ──
 碳捕集
@@ -338,7 +333,6 @@ energy efficiency
 船体优化
 energy saving device
 
-
 [绿色船舶与市场]
 # ── 市场与技术选型的交叉区 ──
 绿色船舶
@@ -360,7 +354,8 @@ Poseidon Principles
 甲醇双燃料
 订单
 orderbook
-
+氨燃料
+乙醇燃料
 
 [企业动态]
 @25
