@@ -144,7 +144,7 @@
         <li>生成后复制，粘到上面，点「记住本机」。令牌只存在这台浏览器，不随页面上传。</li>
       </ol>
       <p style="margin:6px 0 0">看不到 Fine-grained tokens 入口？用 classic token 也行，只需勾 <code>repo</code> 一项，但权限更大，建议优先细粒度令牌。</p>
-      <p style="margin:6px 0 0">想用「新建情报台」一键克隆新仓库？还需要 <b>Administration、Actions、Pages</b> 三项 Read and write（fork、改名、启用 Actions、开 Pages 都是管理操作）。建议单独开一个建台用令牌，建完可删。</p>
+      <p style="margin:6px 0 0">用「新建情报台」一键克隆？令牌需要 <b>Administration、Contents、Actions、Pages</b> 四项 Read and write（设模板/生成仓库/开 Actions/开 Pages 都是管理操作）。要删除误建的仓库还得加 <b>delete_repo</b>（classic 令牌勾 <code>delete_repo</code>，细粒度令牌在「允许的操作」里选 Delete repositories）。建议单独开一个建台用令牌。</p>
     </details>
   </div>
 
@@ -193,7 +193,7 @@
   <div class="panel" id="panel-wizard">
     <div class="card">
       <h3>克隆一个新情报台</h3>
-      <p class="hint">选一块现成底板（低碳 / 涂装），fork 成新仓库并改名，自动启用 Actions、定时 workflow 和 Pages；新仓库会自动出现在顶部项目下拉框。和当年「低碳改涂装」同一套路，只是这次点几下就完成。需要带 Administration / Actions / Pages 权限的令牌（见上方令牌说明）。</p>
+      <p class="hint">选一块现成底板（低碳 / 涂装），用 GitHub 官方「从模板生成」接口完整复制全部文件，自动启用 Actions、定时 workflow 和 Pages；新仓库会自动出现在顶部项目下拉框。和当年「低碳改涂装」同一套路，只是这次点几下就完成。需要带 Administration / Contents / Actions / Pages 写权限的令牌（见上方令牌说明）。</p>
       <div class="wizform">
         <div><label>底板</label><select id="wizTpl"></select></div>
         <div><label>新仓库名（英文）</label><input type="text" id="wizRepo" placeholder="例：green-fuel-radar" style="width:210px"></div>
@@ -797,31 +797,31 @@
     var btn = $('wizCreate'); btn.disabled=true; btn.textContent='创建中…';
     $('wizLog').textContent='';
     (async function(){
-      wlog('① Fork ' + tpl.repo + ' …');
-      var fork = await ghReq('POST', '/repos/amiya54/' + tpl.repo + '/forks', {});
-      var forkName = fork.name;
-      // 保险①：GitHub 不允许 fork 自己账号下的仓库，此时接口会把源仓库原样返回。
-      // 绝不能拿它去改名，否则会把底板仓库本身改掉（2026-11-17 事故）。
-      if ((fork.full_name || '').toLowerCase() === ('amiya54/'+tpl.repo).toLowerCase()
-          || forkName.toLowerCase() === tpl.repo.toLowerCase()){
-        throw new Error('底板就在你自己账号下，GitHub 不允许 fork 自己的仓库（接口把源仓库原样返回了）。为保护底板已中止，未改动任何仓库。请在 GitHub 网页上新建一个空仓库，再用下方「添加已有仓库」接入。');
+      // 用 GitHub 官方「从模板生成仓库」接口：完整复制文件、非 fork 关系，
+      // 绕开「不能 fork 自己账号仓库」的限制（2026-11-17 事故后的可靠方案）。
+      var finalBranch = tpl.branch;
+      wlog('① 把底板 ' + tpl.repo + ' 临时设为模板 …');
+      await ghReq('PATCH', '/repos/amiya54/' + tpl.repo, { is_template:true });
+      var created = false;
+      try {
+        wlog('② 从模板生成新仓库 ' + newRepo + ' …');
+        var gen = await ghReq('POST', '/repos/amiya54/' + tpl.repo + '/generate',
+          { owner:'amiya54', name:newRepo, description: desc || ('基于 ' + tpl.label + ' 的情报台') });
+        created = true;
+        finalBranch = gen.default_branch || tpl.branch;
+        wlog('✓ 新仓库已生成（默认分支 ' + finalBranch + '，完整复制全部文件）');
+      } finally {
+        // 无论成功失败，都把底板恢复成非模板，不留副作用。
+        try { await ghReq('PATCH', '/repos/amiya54/' + tpl.repo, { is_template:false }); wlog('✓ 底板已恢复为非模板'); }
+        catch(e){ wlog('⚠ 底板模板状态恢复失败，请到 ' + tpl.repo + ' 的 Settings 手动关掉 Template repository。'); }
       }
+      // 等新仓库文件就绪（generate 是异步的）
       var repo = null;
       for (var i=0; i<20; i++){
-        try { repo = await ghReq('GET', '/repos/amiya54/' + forkName); if (repo && repo.default_branch) break; } catch(e){}
-        await sleep(2500);
+        try { repo = await ghReq('GET', '/repos/amiya54/' + newRepo); if (repo && repo.default_branch) break; } catch(e){}
+        await sleep(2000);
       }
-      if (!repo) throw new Error('Fork 已发起但一直没就绪。稍后到 GitHub 确认，存在的话直接用下方「添加已有仓库」接入。');
-      var finalBranch = repo.default_branch;
-      wlog('✓ Fork 就绪：' + forkName + '（默认分支 ' + finalBranch + '）');
-      // 保险②：改名只允许作用在新 fork 出来的仓库上，且目标名不能撞任何已有仓库。
-      if (repo.full_name && repo.full_name.toLowerCase() === ('amiya54/'+tpl.repo).toLowerCase()){
-        throw new Error('目标仓库就是底板本身，为保护底板已中止改名。');
-      }
-      if (forkName !== newRepo){
-        await ghReq('PATCH', '/repos/amiya54/' + forkName, { name:newRepo, description: desc||undefined });
-        wlog('✓ 已改名：' + forkName + ' → ' + newRepo);
-      }
+      if (!repo) throw new Error('仓库已生成但读取未就绪，稍后刷新页面用「添加已有仓库」接入即可。');
       try {
         await ghReq('PUT', '/repos/amiya54/' + newRepo + '/actions/permissions', { enabled:true, allowed_actions:'all' });
         wlog('✓ Actions 已启用');
@@ -845,8 +845,8 @@
       registry.push(item); saveReg(registry);
       PROJECTS[newRepo] = item;
       rebuildProjSelect(newRepo); renderProjList(); renderWizTpl(); renderChecklist(newRepo);
-      wlog('✓ 完成！顶部项目已切到「' + label + '」，按上面定制清单开工。');
-      msg('新情报台 <b>'+newRepo+'</b> 建好了：仓库已克隆、Actions/Pages 已配置。注意 fork 不带 Secrets，按清单第 7 步补 AI_API_KEY 和 webhook。','ok');
+      wlog('✓ 完成！顶部项目已切到「' + label + '」，按下面定制清单开工。');
+      msg('新情报台 <b>'+newRepo+'</b> 建好了：全部文件已从底板复制、Actions/Pages 已配置。注意新仓库不带 Secrets，按清单第 7 步补 AI_API_KEY 和 webhook。','ok');
     })().catch(function(e){
       wlog('✗ ' + e.message);
       msg('创建中断：' + e.message + '。已完成的步骤不重做——若仓库已在 GitHub 上存在，改用「添加已有仓库」接入。','err');
