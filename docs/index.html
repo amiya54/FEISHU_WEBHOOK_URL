@@ -844,7 +844,8 @@
         for (var k=0; k<(wfs.workflows||[]).length; k++){
           try { await ghReq('PUT', '/repos/amiya54/' + newRepo + '/actions/workflows/' + wfs.workflows[k].id + '/enable'); n++; } catch(e){}
         }
-        wlog('✓ 已启用定时 workflow ' + n + ' 个');
+        if (n>0) wlog('✓ 已启用定时 workflow ' + n + ' 个');
+        else wlog('· workflow 列表暂空（新仓库 GitHub 要几分钟才索引到，文件已复制齐全）。首次打开新仓库 Actions 页会自动识别；若一直没出现，点进去手动 Enable 一次即可。');
       } catch(e){ wlog('⚠ 定时 workflow 启用失败，去 Actions 页逐个 Enable。'); }
       try {
         await ghReq('POST', '/repos/amiya54/' + newRepo + '/pages', { build_type:'workflow' });
