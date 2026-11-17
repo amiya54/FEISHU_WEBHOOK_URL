@@ -576,7 +576,7 @@ ai_analysis:
   include_rank_timeline: false
 
 ai_translation:
-  enabled: false              # 打开后英文源标题会译成中文
+  enabled: true              # 打开后英文源标题会译成中文
   language: "中文"
   prompt_file: "ai_translation_prompt.txt"
   batch_size: 100
