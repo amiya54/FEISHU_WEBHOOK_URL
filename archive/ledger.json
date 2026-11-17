@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-16",
+ "updated": "2026-11-17",
  "issues": [
   {
    "date": "2026-10-21",
@@ -3840,6 +3840,315 @@
     "new": 3,
     "pool": 13,
     "closed": 3
+   }
+  },
+  {
+   "date": "2026-11-17",
+   "items": 42,
+   "events": [
+    {
+     "cite": 1,
+     "title": "非洲国家联手对航运征收碳费",
+     "url": "https://splash247.com/african-nations-join-forces-to-impose-carbon-charges-on-shipping/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 2,
+     "title": "CIMAC 倡导建立“技术中立”的全球净零航运框架——《里维埃拉海事媒体》",
+     "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNaFQ3aF9HSTVnb1RJRU16YWxfZGJadktZVFBBTlNDZlR5REVxOEV6TURSQUFJbldGRGEwZmRPdTF1cVdiQ01LREc3WnNwZUN3SU83aFZyTjVOa1hFYVhMeUFIbWJiOVg3Q1c4Y3NPeDJKNWg4ZlhWcURRU0QyRndaNUs0Xy13NWxFWHF1WUVJbDA1WEJDUEhhOGVjWjNRM255WE9lY254TV96Sm9fR3U0c00zWTktS1psVG9N?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 3,
+     "title": "船载碳捕集：航运的可行路径？",
+     "url": "https://www.hellenicshippingnews.com/onboard-carbon-capture-a-practical-pathway-for-shipping/",
+     "src": "Hellenic Shipping News",
+     "stage": "other"
+    },
+    {
+     "cite": 4,
+     "title": "货物系固合规始于甲板，而非手册",
+     "url": "https://www.hellenicshippingnews.com/cargo-securing-compliance-starts-on-deck-not-in-the-manual/",
+     "src": "Hellenic Shipping News",
+     "stage": "other"
+    },
+    {
+     "cite": 5,
+     "title": "OceanScore 与 RightShip 就 MEP 客户组合达成协议，推进其港口排放情报布局",
+     "url": "https://www.hellenicshippingnews.com/oceanscore-advances-port-emissions-intelligence-ambitions-through-agreement-with-rightship-on-mep-customer-portfolio/",
+     "src": "Hellenic Shipping News",
+     "stage": "planned"
+    },
+    {
+     "cite": 6,
+     "title": "希腊船东就国际海事组织僵局向布鲁塞尔发难",
+     "url": "https://splash247.com/greek-shipowners-put-brussels-on-the-spot-over-imo-deadlock/",
+     "src": "Splash 247",
+     "stage": "other"
+    },
+    {
+     "cite": 7,
+     "title": "每日观点：国际海事组织的净零妥协可能沦为瘫痪的配方——《劳氏日报》",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOQlJkTXVNVnBETlVoVmF3TW9zS3UxclpqN1pUTjhtMzU3cnhndU55RlJlMVZiT1pVYkhCUS0xYUtySTVDRGJUbjhLNGhDekVJeTVSdmlaQ2JmT3R2bzlBSXVIQ1hpQm1JZVZSWWN6aVZpNV9aNE5wSlo2R0lKazlTal9hRVFodThrd0lRVEFTZmFqRkxJTlRURzg3akl5cWx4T2RMWWFPWi1KVjFBQUJfbTQ3ajQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 8,
+     "title": "英国政府就国家海事燃料法规启动磋商",
+     "url": "https://ship.energy/information/uk-government-launches-consultation-on-a-national-maritime-fuel-regulation/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 9,
+     "title": "加拿大政府向不列颠哥伦比亚省净零液化天然气出口设施投资2亿加元",
+     "url": "https://ship.energy/energy/canadian-government-investing-cad-200-million-in-bc-net-zero-lng-export-facility/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 10,
+     "title": "航运联盟敦促通过净零框架",
+     "url": "https://www.motorship.com/news/regulation/shipping-coalition-urges-net-zero-framework-adoption/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 11,
+     "title": "船东在峰会上就国际海事组织净零规则产生分歧——《贸易风》新闻",
+     "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNN2lYbl9nMEh4eS0weWVXbk9lYXVHQ3FtMVdqR0tpZjJwMTFWVmxPX2pmR00ySWRVckUtN0w2V0VhMTZaQ0g1bUJXcHU1VlhZWTVoVFBoQmh0VkpYYzZpYjdUU0ZzWC00M0J0S3V3Wm1oSkJkWHl1d05qSGxRMlV2eWgxaDZUM0tTeU41aDJPcVBRdV9YMVZZRUYwRkxLeGZ6SWtDMTY5QQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "policy"
+    },
+    {
+     "cite": 12,
+     "title": "OceanScore 接手 RightShip 排放门户客户组合",
+     "url": "https://ship.energy/information/oceanscore-takes-on-responsibility-for-rightships-emissions-portal-customer-portfolio/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 13,
+     "title": "Moeve 加入西班牙净零海事联盟",
+     "url": "https://ship.energy/policy/moeve-joins-spains-net-zero-mar-alliance/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 14,
+     "title": "航运业支持国际海事组织气候协议，但并非支持所有细节——https://megaproject.com/",
+     "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxQN09ISmVvUVBUUjFXa1ZOVGtxbU80X2F6OHQyRmhaYVAxOTZ5aWVmQjRPU215UWc1VVhKMU82OEVhakc2UzhUeUw1U04wc1lhRDliREFtV0didk1vdHdlQ2JXVEZuMVRXdXJ2VVpoVEl5Vjkzb0NOYVlaaGhaN29QSVBET2VmN2x5Yy1BLVpjMk44cEpwOE9YNzNzSmJ0d0M0elcyb1JEOXhkRDZsZUNSVDB6RjJiMElDSGkxQl9xa2lmSkxxUkdJLWdBWW9LOE5ia0ZlS3dzYTI?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 15,
+     "title": "访谈：若不设排放成本，国际海事组织净零合规将面临挑战——标普全球",
+     "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxQc1VYalBNS1llN01MMWg3TVplLS1Od29XSkNoLW9IQkJkM01MTVhtUmVaN3VGYktHOWZpZV9TUkdkenJKN21TWXdkVXpxdHI0TmtLaUQzYmlhaDUwajhGNE80MEF4WVc3S1d4Nm9yT21sbGVyYXB1aWRqTmZxdTZtM3FTTmtBaU1ZejY2Z21fOGFaeFM0WkVDYm5uQl9SMlVraFhvSnI0UEdHV1FPTzdaQ3BENlVhMGxIQTZCWHVseHB4Tm9yb0V1ekhDS19CdjJzZzZ6bF9vV3BjZzRrRlo4ay1KWlgtYk1pd0ZNcWJTdWoteWRVS2c?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 16,
+     "title": "新门户简化船舶废弃物报告",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/new-portal-simplifies-vessel-waste-reporting/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 17,
+     "title": "航运业支持国际海事组织气候协议，呼吁澄清关键细节——《欧洲利益》",
+     "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOOTc2anhsYkFmSldNRUExN2hhX1JvLVgzeHk2NXNidFVhWkpWM2RUUHAwdXR3cm56WDhyMnZ3djZUNUxJMVVNNUZmeGE3M3ViVnNuaHcyTktPZ3o1ODRPd1FYSzI1RjM4Mk5ZMmdLYlg2NFNULU4wQ2k1a25qeGRDNVd2eG9YQ3dUb1MwcTI2TEtFTGdiN0lBVTExNHd4MFBTODBNblZ6eE41S05rMnM4ZDh3Sk9WNmRCUFBScQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "planned"
+    },
+    {
+     "cite": 18,
+     "title": "报告发现航运业广泛支持国际海事组织净零框架——《船舶与燃料》",
+     "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPckZ5N0hlSlBIa3pMbTdMUXpjVzNZYjBmeFA2VVJGazB5bm8xRHRKR3YtVnZqMzA5aDBDbmk4MGs3ZXlRWnJ0V1k1QlhxcUlSUXZqd1ZPZDVmTHRqSGN0eGNmcEV5aWkwVG5PNndlNXRuOUlmRDMxdWhQUGw1SE02aVlhTU5IZENsdW4xbm1CdDloM3ladXVUdXlyUk5lTk50aDBrRktSSXVoa0huSER4MEpiRXo?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 19,
+     "title": "韩国推进全球船载碳捕集",
+     "url": "https://www.motorship.com/news/carbon-capture/korea-advances-global-onboard-carbon-capture/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 20,
+     "title": "IBIA 2026：美国称国际海事组织净零框架“无法获得通过，也永远不会被执行”——《船舶与燃料》",
+     "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPODJVVEY3SEVGZVBaVmhwX2gyd1ZZYXF4eVhkVVNDOHBhY3F1QVI4THpHT2s4azZZVkxraTBEZDJnRHhITC1nQ0tXbC1kT2U3TVctQVJIUHhXSUcyRmlVVWZPbXlXWmpPM1IydV9qT2E3Nm93OXhFck1EVGpCbzFHOUo5eFQ2WFNaR3FCZmlFVDZOZ3dndV9wdEcyN0luTEFqNDByRkI3WVJPVVpKcmZ3YXlEbzlfZjRlZEJiVDdsWQ?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 21,
+     "title": "航运与港口团体寻求修改欧盟排放交易体系转运规则——safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxORDlKSy1QMlZSVUlmQlNVRzh5WF9BMG1sNXFid0ZrU0s5OVR6cHlYRnAyWFUzSUQ5VTlXbm9DVUZJRTBsZ2dCbm51NkxOZHpRbEVQUGFJSlFhM1R5WS1vQlhwYklDSTVvN19aMWNzclZrd25RN29oN0NPbExBNEp1bU5RUXh6S3F4bXoxdVZRWE5yTmZVWlE?oc=5",
+     "src": "GN · FuelEU与EU ETS",
+     "stage": "policy"
+    },
+    {
+     "cite": 22,
+     "title": "十五家航运公司对国际海事组织净零框架表示担忧——《航运电讯》",
+     "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPRDJrVXE0UllpVURyTFJsWVJpSFh6a3pTTmF2a25ZbEYzdnctLUJydkNoR0F4eTBoOUU3SmhIcDVyVmxEVnVhQ0FpcFdXZm4tQThtQzU2clVKdnAyLUUyYzNTd0VlR09GZFowMmo2N3N3Mk04Zi1ZeXJxVHJRQ1BmUzNSS1JTanlaWXYybDVRRGpzOUd6R3Jhd29WOVExbmRuamkzWU9ldUZmN1U1YXZIVy0wVnFpM0xla3c?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 23,
+     "title": "船东倾向于在国际海事组织净零框架下实行更简单的执法——safety4sea",
+     "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNVGdnYWRkc1cxXzBfVXJxelRsM0VUTlpDdEMxUk92cFBVUXd1QjdMejNocUk3NE9TRjJTT1ZkRUJYSGQ5N0tHQlZTY1pyV2lnNlNjN1MwZTI2SEhkUUFEOG1MNEhkOE5HVWFCRTUwWnZONXo1TjBUSi13azRyc2wyT19Ob1A3OXplLW5LVkJ3N0J3Vmc?oc=5",
+     "src": "GN · IMO与净零框架",
+     "stage": "other"
+    },
+    {
+     "cite": 24,
+     "title": "指南：《海事劳工符合声明》第二部分及指南",
+     "url": "https://www.gov.uk/government/publications/declaration-of-maritime-labour-compliance-part-ii-and-guidance",
+     "src": "英国MCA · 全部发布",
+     "stage": "policy"
+    },
+    {
+     "cite": 25,
+     "title": "承运人选择推动航运排放",
+     "url": "https://www.motorship.com/news/emission-control-technology-and-equipment/carrier-choice-drives-shipping-emissions/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 26,
+     "title": "中国：上海港完成首次三船同步液化天然气加注作业",
+     "url": "https://www.manifoldtimes.com/news/china-shanghai-port-completes-first-triple-lng-bunkering-operation/",
+     "src": "Manifold Times",
+     "stage": "operating"
+    },
+    {
+     "cite": 27,
+     "title": "申能集团完成上海首次液化生物甲烷交付与加注",
+     "url": "https://www.manifoldtimes.com/news/shenergy-group-completes-shanghais-first-liquefied-biomethane-delivery-and-bunkering/",
+     "src": "Manifold Times",
+     "stage": "operating"
+    },
+    {
+     "cite": 28,
+     "title": "ENGINE 燃料转换快照：对于柴油低速发动机，低硫船用轻柴油价格低于液化天然气和液化生物甲烷",
+     "url": "https://www.manifoldtimes.com/news/engine-on-fuel-switch-snapshot-lsmgo-undercuts-lng-and-lbm-for-diesel-ss-engines/",
+     "src": "Manifold Times",
+     "stage": "other"
+    },
+    {
+     "cite": 29,
+     "title": "霍尔木兹袭击后，液化石油气运输船机舱起火",
+     "url": "https://www.seatrade-maritime.com/security/lpg-tanker-suffers-engine-room-fire-following-hormuz-attack",
+     "src": "Seatrade Maritime",
+     "stage": "other"
+    },
+    {
+     "cite": 30,
+     "title": "2027年哥德堡港将可实现大规模液化生物气加注",
+     "url": "https://maritime-executive.com/article/large-scale-lbg-bunkering-to-become-possible-at-port-of-gothenburg-in-2027",
+     "src": "The Maritime Executive",
+     "stage": "operating"
+    },
+    {
+     "cite": 31,
+     "title": "液化天然气加注快照：日韩基准转向1月，新加坡价格下跌",
+     "url": "https://www.hellenicshippingnews.com/lng-bunker-snapshot-singapore-price-drops-as-jkm-moves-to-january/",
+     "src": "Hellenic Shipping News",
+     "stage": "operating"
+    },
+    {
+     "cite": 32,
+     "title": "Acta Marine 完成四艘甲醇预留调试服务运营船——《海事杂志》",
+     "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQY0VDWWlvclE0R3RrV0FHTkxBV3RaT1dMOWZxTjBUQTl3Q0lUSjFkMFI4bkxMMFlKOTZXU1RhZnllMTVuazVzWXlySV9MdmcwVmN1T0FNNEZuNkdEdzhBdFFzM1hzVTJRcjJpRnFvTDNaRTFFbVAySk1ERjIyVUx3S3JnT2xCaUVtbXpKYmhLRVBTYkpjc25VSTI1UVBvaDA?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "operating"
+    },
+    {
+     "cite": 33,
+     "title": "桑普拉出售其液化天然气和能源基础设施业务多数股权",
+     "url": "https://www.offshore-energy.biz/2026/11/16/sempra-divest-majority-stake-in-its-lng-and-energy-infrastructure-business",
+     "src": "Offshore Energy",
+     "stage": "other"
+    },
+    {
+     "cite": 34,
+     "title": "GTT 的 Janine Fonseca 被任命为“液化天然气作为燃料”业务板块总监",
+     "url": "https://ship.energy/energy/gtts-janine-fonseca-appointed-segment-director-lng-as-fuel/",
+     "src": "Bunkerspot",
+     "stage": "other"
+    },
+    {
+     "cite": 35,
+     "title": "GCGF-NTU 联合研究发现，乙醇混合燃料在船用发动机试点测试中运行成功",
+     "url": "https://www.manifoldtimes.com/news/ethanol-blends-run-successfully-in-pilot-marine-engine-tests-finds-gcgf-ntu-joint-study/",
+     "src": "Manifold Times",
+     "stage": "planned"
+    },
+    {
+     "cite": 36,
+     "title": "研究发现，美国乙醇可随时用于为全球具备甲醇能力的船队提供燃料——《乙醇生产商杂志》",
+     "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNSXNKb3dSQjdkZGtjVWl4WXZKU2lYUUhFdThReTQ2S3ZYY3I2Q19Jcy1mZ2hQSEpyZUNYUlhSMXlBQm9leHYxcVBLbkNSR2R2Y2lrei1PaldlaGJJamFJdEUzUUt3YVNxWldyX2REeHZhc2E0SVc4Q2JreXBoNnpzMUM0bFJ0WnNUckt3eDE0VktZTFdBNG9GS082RDY1eU1XaFJVNkhSVjJDbDlxUkFaUFdXZDhHbWdPNGRn?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 37,
+     "title": "乙醇作为船用燃料：研究支持美国加注机会——新闻与统计——IndexBox",
+     "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOMGlqUm5FLVg5R1VPUnNrZXVLaGVkcGFaT1hZSE5mbkdCWHQ0UndreGZQZ3A4emxBU3hBUjdHNkxUVUVCZzZnVTZrWDZrUnlDN2J2QlNSVExnUTgtSGZWZEJ6NWxZSEMyR3A5cWN5WkZLemVkU25VWXBDTEJ3aEFnem5KSzJmV2dVd0JacFhsTFNBWUVtREZUaUdiOVpUS2QxR2Fr?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "operating"
+    },
+    {
+     "cite": 38,
+     "title": "研究发现，美国乙醇可为甲醇预留船舶提供燃料——《海事新闻杂志》",
+     "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOWUlzRFEySXJNbmZTYnJtS3NQWVN2VkJhR3JoXzV3NmNmQklMeFVYb2hld3J6VTJwWlhqWlRsemJCMkxtbWJ2QzkyV0RmT1RjaVpIV0dmazJVOTBkNXlBY3RaMjVrdDBZZEZMQy0tY2dpN3NCRnh2MklsYTJPQVFfTENfcjA4T1k?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 39,
+     "title": "乙醇作为船用燃料：研究认为美国可为300多艘具备甲醇能力的船舶发挥供应作用——新闻与统计——IndexBox",
+     "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPWGtnVGx5RWJKSkh2b1BUeEktMWZzenBLOE9GcXJYbnBWRGxtVEQ3VElYWEZ3ZFh5MV9ZT09NTWJ5VHA2clZ1UGFBV2FYQU9FempwbDk3Y191eUdwWTZIcnhrS1hVaVVMTW9FV01lVERoMXlaMHkza0FuWWJWX3ZKc3ZBV05pcHpDcWItRkFxZjU5U184SWd2Y1d1c2RnUVpvcWwtRWF5bVdSQmFmeENkckhzZw?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "planned"
+    },
+    {
+     "cite": 40,
+     "title": "美国乙醇产业瞄准日益增长的船用燃料市场——Splash247",
+     "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5VZ1dvamhDQ21ieWc1b1pWN1dReEc3V294WG0tVzl1cDhRTnZxeWp4M2gwVEM3M21qbjRkRGoybjdTdl9VT0hVbUt4SklNalVJTmVBWHp4dmoyMENkQTZiSmpWcGlEQkJwZFR0aGxSRUxQbTN0bC15RUo4TkhaSTA?oc=5",
+     "src": "GN · 替代燃料技术",
+     "stage": "other"
+    },
+    {
+     "cite": 41,
+     "title": "劳氏船级社扩展人工智能准备度基准评估",
+     "url": "https://www.motorship.com/news/monitoring-control-digitalisation/lloyds-register-expands-ai-readiness-benchmarking/",
+     "src": "The Motorship",
+     "stage": "other"
+    },
+    {
+     "cite": 42,
+     "title": "马士基与赫伯罗特新增三条“双子座”联合服务，扩大重返苏伊士运河",
+     "url": "https://gcaptain.com/maersk-hapag-lloyd-expand-suez-canal-return-with-three-more-gemini-services/",
+     "src": "gCaptain",
+     "stage": "other"
+    }
+   ],
+   "summary": {
+    "done": 1,
+    "policy": 0,
+    "progress": 5,
+    "watching": 15,
+    "new": 1,
+    "pool": 7,
+    "closed": 5
    }
   }
  ]
