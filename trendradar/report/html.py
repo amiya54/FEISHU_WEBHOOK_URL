@@ -729,6 +729,13 @@ def render_html_content(
                 margin-bottom: 6px;
             }
 
+            .rss-title-zh {
+                font-size: 12px;
+                color: #6b7280;
+                line-height: 1.5;
+                margin: 0 0 6px 0;
+            }
+
             .rss-link {
                 color: #1f2937;
                 text-decoration: none;
@@ -1288,6 +1295,10 @@ def render_html_content(
                 border-left-color: #059669;
             }
 
+            body.dark-mode .rss-title-zh {
+                color: #9ca3af;
+            }
+
             /* AI 分析区 */
             body.dark-mode .ai-section {
                 background: linear-gradient(135deg, #1e1b4b 0%, #1e293b 100%);
@@ -1835,6 +1846,12 @@ def render_html_content(
 
             for title_data in titles:
                 item_title = title_data.get("title", "")
+                # ★双语标题：翻译开启时 title=中文、original_title=英文原题；主行显示英文原题
+                _orig = title_data.get("original_title", "").strip()
+                sub_title = ""
+                if _orig and item_title != _orig:
+                    sub_title = item_title
+                    item_title = _orig
                 url = title_data.get("url", "")
                 time_display = title_data.get("time_display", "")
                 source_name = title_data.get("source_name", "")
@@ -1865,7 +1882,11 @@ def render_html_content(
                     rss_html += escaped_title
 
                 rss_html += """
-                            </div>
+                            </div>"""
+                if sub_title:
+                    # ★双语标题：中文译文小字副行
+                    rss_html += f'\n                            <div class="rss-title-zh">{html_escape(sub_title)}</div>'
+                rss_html += """
                         </div>"""
 
             rss_html += """
