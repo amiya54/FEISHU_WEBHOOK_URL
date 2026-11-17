@@ -800,6 +800,15 @@
       // 用 GitHub 官方「从模板生成仓库」接口：完整复制文件、非 fork 关系，
       // 绕开「不能 fork 自己账号仓库」的限制（2026-11-17 事故后的可靠方案）。
       var finalBranch = tpl.branch;
+      // 预检①：目标名若已存在，generate 只会甩一句 "unable to clone ... delete this
+      // repository"，用户看不懂。提前拦下来，给明确指引（2026-11-17 实测坑）。
+      try {
+        var existRepo = await ghReq('GET', '/repos/amiya54/' + newRepo);
+        if (existRepo && existRepo.full_name)
+          throw new Error('仓库名 ' + newRepo + ' 在 GitHub 上已经存在（'+(existRepo.size||0)+'KB）。换一个新名字；如果那是个不用的空壳，先到 GitHub → 该仓库 Settings → 最底部 Danger Zone → Delete this repository 删掉再建。主仓库没坏，不用动。');
+      } catch(err){
+        if (String(err.message).indexOf('已经存在') >= 0) throw err; // 404=名字空闲，继续
+      }
       wlog('① 把底板 ' + tpl.repo + ' 临时设为模板 …');
       await ghReq('PATCH', '/repos/amiya54/' + tpl.repo, { is_template:true });
       var created = false;
@@ -808,8 +817,9 @@
         var gen = await ghReq('POST', '/repos/amiya54/' + tpl.repo + '/generate',
           { owner:'amiya54', name:newRepo, description: desc || ('基于 ' + tpl.label + ' 的情报台') });
         created = true;
-        finalBranch = gen.default_branch || tpl.branch;
-        wlog('✓ 新仓库已生成（默认分支 ' + finalBranch + '，完整复制全部文件）');
+        // 注意：generate 返回的 default_branch 不可靠（实测返回 main、真实是 master），
+        // 分支名一律以随后 GET 到的仓库真实值为准，见下方 repo.default_branch。
+        wlog('✓ 新仓库已生成，完整复制全部文件 …');
       } finally {
         // 无论成功失败，都把底板恢复成非模板，不留副作用。
         try { await ghReq('PATCH', '/repos/amiya54/' + tpl.repo, { is_template:false }); wlog('✓ 底板已恢复为非模板'); }
@@ -822,6 +832,8 @@
         await sleep(2000);
       }
       if (!repo) throw new Error('仓库已生成但读取未就绪，稍后刷新页面用「添加已有仓库」接入即可。');
+      finalBranch = repo.default_branch || finalBranch; // 以真实仓库为准，不用 generate 的返回值
+      wlog('✓ 默认分支确认为 ' + finalBranch);
       try {
         await ghReq('PUT', '/repos/amiya54/' + newRepo + '/actions/permissions', { enabled:true, allowed_actions:'all' });
         wlog('✓ Actions 已启用');
