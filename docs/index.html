@@ -92,13 +92,30 @@
   .modal .foot{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
   code{font-family:var(--mono);font-size:12px;background:var(--chip);padding:1px 5px;border-radius:3px}
   footer{margin-top:30px;color:var(--muted);font-size:12px;text-align:center}
+  .wizform{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+  .wizform label{font-size:12px;color:var(--muted);display:block;margin-bottom:3px}
+  .wizform input,.wizform select{font-family:var(--sans);font-size:13px;padding:6px 9px;border:1px solid var(--line);
+    border-radius:5px;background:var(--bg);color:var(--ink)}
+  #wizLog{font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:6px;
+    padding:10px;white-space:pre-wrap;max-height:240px;overflow:auto;margin-top:10px;display:none;color:var(--body)}
+  .ck{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .ck:last-child{border-bottom:none}
+  .ck .num{flex:0 0 22px;height:22px;border-radius:50%;background:var(--chip);color:var(--ink);font-size:11px;
+    display:flex;align-items:center;justify-content:center;font-weight:600;margin-top:2px}
+  .ck .body{flex:1;font-size:12.5px}
+  .ck .body b{color:var(--ink);font-family:var(--mono);font-size:12px}
+  .ck .body .why{color:var(--muted);font-size:11.5px;margin-top:2px}
+  .ck button,.ck a{font-size:12px;padding:3px 10px;white-space:nowrap;align-self:center;cursor:pointer}
+  .projrow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+  .projrow:last-child{border-bottom:none}
+  .projrow .repo{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>情报配置台</h1>
-    <span class="sub">改词表和配置，直接写回仓库</span>
+    <span class="sub">改词表和配置，直接写回仓库 · 也能一键克隆新情报台</span>
   </header>
 
   <div class="projbar">
@@ -127,6 +144,7 @@
         <li>生成后复制，粘到上面，点「记住本机」。令牌只存在这台浏览器，不随页面上传。</li>
       </ol>
       <p style="margin:6px 0 0">看不到 Fine-grained tokens 入口？用 classic token 也行，只需勾 <code>repo</code> 一项，但权限更大，建议优先细粒度令牌。</p>
+      <p style="margin:6px 0 0">想用「新建情报台」一键克隆新仓库？还需要 <b>Administration、Actions、Pages</b> 三项 Read and write（fork、改名、启用 Actions、开 Pages 都是管理操作）。建议单独开一个建台用令牌，建完可删。</p>
     </details>
   </div>
 
@@ -134,6 +152,7 @@
     <div class="tab on" data-tab="freq">词表</div>
     <div class="tab" data-tab="config">config.yaml</div>
     <div class="tab" data-tab="timeline">timeline.yaml</div>
+    <div class="tab" data-tab="wizard">新建情报台</div>
   </div>
 
   <div class="panel on" id="panel-freq">
@@ -171,6 +190,40 @@
     <textarea id="timelineText" spellcheck="false" placeholder="点「从仓库加载」拉取真实 timeline.yaml"></textarea>
   </div>
 
+  <div class="panel" id="panel-wizard">
+    <div class="card">
+      <h3>克隆一个新情报台</h3>
+      <p class="hint">选一块现成底板（低碳 / 涂装），fork 成新仓库并改名，自动启用 Actions、定时 workflow 和 Pages；新仓库会自动出现在顶部项目下拉框。和当年「低碳改涂装」同一套路，只是这次点几下就完成。需要带 Administration / Actions / Pages 权限的令牌（见上方令牌说明）。</p>
+      <div class="wizform">
+        <div><label>底板</label><select id="wizTpl"></select></div>
+        <div><label>新仓库名（英文）</label><input type="text" id="wizRepo" placeholder="例：green-fuel-radar" style="width:210px"></div>
+        <div><label>显示名（中文）</label><input type="text" id="wizLabel" placeholder="例：绿色燃料雷达" style="width:170px"></div>
+        <div style="flex-basis:100%"><label>一句话描述（可选）</label><input type="text" id="wizDesc" style="width:100%" placeholder="显示在仓库页，可留空"></div>
+      </div>
+      <button class="btn primary" id="wizCreate">创建新情报台</button>
+      <pre id="wizLog" spellcheck="false"></pre>
+    </div>
+
+    <div class="card">
+      <h3>定制清单</h3>
+      <p class="hint" id="ckHint">创建完成后，按这份清单把底板改成你自己的领域。</p>
+      <div id="wizChecklist"></div>
+    </div>
+
+    <div class="card">
+      <h3>项目列表</h3>
+      <p class="hint">配置台顶部下拉框里能管理的所有仓库。移除只影响下拉框，不动仓库本身。</p>
+      <div id="projList"></div>
+      <div class="wizform" style="margin-top:12px;align-items:flex-end">
+        <div><label>显示名</label><input type="text" id="addLabel" style="width:140px" placeholder="例：某雷达"></div>
+        <div><label>仓库名</label><input type="text" id="addRepo" style="width:200px" placeholder="例：xxx-radar"></div>
+        <div><label>分支</label><input type="text" id="addBranch" style="width:90px" placeholder="留空自动识别"></div>
+        <div><button class="btn" id="addProj">添加已有仓库</button></div>
+        <div><button class="btn" id="projPages">为当前项目开启 Pages</button></div>
+      </div>
+    </div>
+  </div>
+
   <div class="card" style="margin-top:20px">
     <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
       <button class="btn primary" id="writeBack" disabled>写回 GitHub</button>
@@ -200,21 +253,48 @@
 (function(){
   'use strict';
 
-  // ---------- 项目识别：按当前 Pages 路径推断，避免拉错上游模板 ----------
-  var PROJECTS = {
-    lowc:{ label:'船舶低碳双周报', repo:'FEISHU_WEBHOOK_URL', branch:'master' },
-    coat:{ label:'船舶涂装雷达',   repo:'ship-coating-radar',  branch:'main' }
-  };
-  var host = location.hostname || '';
-  var path = location.pathname || '';
-  var detected = null;
-  if (host.indexOf('ship-coating-radar') >= 0 || path.indexOf('ship-coating-radar') >= 0) detected = 'coat';
-  else if (host.indexOf('FEISHU_WEBHOOK_URL') >= 0 || path.indexOf('FEISHU_WEBHOOK_URL') >= 0) detected = 'lowc';
+  // ---------- 项目注册表：内置底板 + 本机保存的自建/外接仓库 ----------
+  var DEFAULT_PROJECTS = [
+    { id:'lowc', label:'船舶低碳双周报', repo:'FEISHU_WEBHOOK_URL', branch:'master', builtin:true },
+    { id:'coat', label:'船舶涂装雷达',   repo:'ship-coating-radar', branch:'main',   builtin:true }
+  ];
+  var REG_KEY = 'cfgdesk_projects_v1';
+  function loadReg(){ try { return JSON.parse(localStorage.getItem(REG_KEY)||'[]'); } catch(e){ return []; } }
+  function saveReg(list){ try { localStorage.setItem(REG_KEY, JSON.stringify(list)); } catch(e){} }
+  var registry = loadReg();
+  var PROJECTS = {};
+  DEFAULT_PROJECTS.concat(registry).forEach(function(p){ PROJECTS[p.id] = p; });
 
   var $ = function(id){ return document.getElementById(id); };
   var projSel = $('proj');
-  if (detected) projSel.value = detected;
+  var detected = null;
+  (function(){
+    var host = location.hostname || '', path = location.pathname || '';
+    DEFAULT_PROJECTS.concat(registry).forEach(function(p){
+      if (!detected && (host.indexOf(p.repo) >= 0 || path.indexOf(p.repo) >= 0)) detected = p.id;
+    });
+    if (!detected) detected = 'lowc';
+  })();
+
+  function rebuildProjSelect(keepId){
+    var cur = keepId || projSel.value || detected;
+    projSel.innerHTML = '';
+    DEFAULT_PROJECTS.concat(registry).forEach(function(p){
+      var o = document.createElement('option');
+      o.value = p.id; o.textContent = p.label;
+      projSel.appendChild(o);
+    });
+    projSel.value = PROJECTS[cur] ? cur : DEFAULT_PROJECTS[0].id;
+    updateMeta();
+  }
   function proj(){ return PROJECTS[projSel.value]; }
+  function switchProject(id, tab){
+    if (!PROJECTS[id]) return;
+    projSel.value = id; updateMeta();
+    if (tab){ var t = document.querySelector('.tab[data-tab="'+tab+'"]'); if (t) t.click(); }
+  }
+  projSel.addEventListener('change', updateMeta);
+  rebuildProjSelect(detected);
   function rawURL(file){
     var p = proj();
     return 'https://raw.githubusercontent.com/amiya54/' + p.repo + '/' + p.branch + '/config/' + file;
@@ -228,8 +308,6 @@
     $('repoMeta').innerHTML = '仓库 <span class="badge">' + p.repo + '</span> · 分支 <span class="badge">' + p.branch + '</span>';
     resetAll();
   }
-  projSel.addEventListener('change', updateMeta);
-  updateMeta();
 
   // ---------- 消息条 ----------
   function msg(text, kind){
@@ -592,6 +670,205 @@
     })
     .finally(function(){ btn.disabled=false; btn.textContent='确认提交'; });
   });
+
+  // ---------- 新建情报台 ----------
+  function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+  function ghReq(method, path, body){
+    var token = $('pat').value.trim();
+    if (!token) return Promise.reject(new Error('缺少 GitHub 令牌'));
+    return fetch('https://api.github.com' + path, {
+      method: method,
+      headers: { 'Authorization':'Bearer '+token, 'Accept':'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28' },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function(r){
+      if (!r.ok) return r.text().then(function(t){
+        throw new Error('HTTP ' + r.status + ' ' + String(t||'').replace(/\s+/g,' ').slice(0,160));
+      });
+      return r.status === 204 ? null : r.json();
+    });
+  }
+  function wlog(s){
+    var box = $('wizLog'); box.style.display='block';
+    box.textContent += s + '\n'; box.scrollTop = box.scrollHeight;
+  }
+  function renderWizTpl(){
+    var sel = $('wizTpl'); sel.innerHTML='';
+    DEFAULT_PROJECTS.concat(registry).forEach(function(p){
+      var o = document.createElement('option');
+      o.value = p.id; o.textContent = p.label + '（' + p.repo + '）';
+      sel.appendChild(o);
+    });
+  }
+  function renderProjList(){
+    var host = $('projList'); host.innerHTML='';
+    DEFAULT_PROJECTS.concat(registry).forEach(function(p){
+      var row = document.createElement('div'); row.className='projrow';
+      var name = document.createElement('span'); name.textContent = p.label;
+      var repo = document.createElement('span'); repo.className='repo'; repo.textContent = p.repo + ' @ ' + p.branch;
+      row.appendChild(name); row.appendChild(repo);
+      if (p.builtin){
+        var tag = document.createElement('span'); tag.className='badge'; tag.textContent='底板';
+        row.appendChild(tag);
+      } else {
+        var del = document.createElement('button'); del.className='del'; del.textContent='×';
+        del.title='从下拉框移除（不动仓库本身）';
+        del.addEventListener('click', function(){
+          registry = registry.filter(function(x){ return x.id !== p.id; });
+          saveReg(registry);
+          rebuildProjSelect(DEFAULT_PROJECTS[0].id);
+          renderProjList(); renderWizTpl(); renderChecklist();
+        });
+        row.appendChild(del);
+      }
+      host.appendChild(row);
+    });
+  }
+  var CK_ITEMS = [
+    { kind:'edit', tab:'freq', file:'config/frequency_words.txt',
+      why:'把词表换成新领域：分组、词条、排除词。正则记得卡词边界（教训：methanol 里含 ethanol，必须 \\b(..)?ethanol\\b）。' },
+    { kind:'edit', tab:'config', file:'config/config.yaml',
+      why:'报告标题、webhook 环境变量名、AI 分析 prompt（板块口径换成新领域）、告警阈值。' },
+    { kind:'edit', tab:'timeline', file:'config/timeline.yaml',
+      why:'发布节奏：双周门控、签到 cron。想改每周/每日在这里调。' },
+    { kind:'web', file:'scripts/apply_patches.py',
+      why:'HEAD_TITLE 报告大标题、同义词簇、领域专项补丁都在这个文件里。' },
+    { kind:'web', file:'scripts/fetch_regulations.py',
+      why:'法规白名单正则（底板里叫 COATING_RE），按新领域换关键词。' },
+    { kind:'web', file:'README.md 与 docs 标题',
+      why:'门户展示文案，别让人点进新雷达还看到旧领域的介绍。' },
+    { kind:'secret', file:'仓库 Secrets（必须手动）',
+      why:'Fork 不带 Secrets！AI_API_KEY、webhook 地址都要在新仓库 Settings → Secrets and variables → Actions 重新加。' },
+    { kind:'run', file:'手动跑一次 workflow',
+      why:'到新仓库 Actions 页选抓取 workflow 点 Run workflow，确认抓取 → AI → 推送全链路通。' }
+  ];
+  function renderChecklist(pid){
+    var host = $('wizChecklist'); host.innerHTML='';
+    var id = pid || projSel.value;
+    var p = PROJECTS[id];
+    $('ckHint').textContent = p
+      ? '目标仓库：' + p.repo + '（' + p.branch + ' 分支）。前三项在配置台里直接改，其余去 GitHub 网页编辑器。'
+      : '创建完成后，按这份清单把底板改成你自己的领域。';
+    CK_ITEMS.forEach(function(it, i){
+      var row = document.createElement('div'); row.className='ck';
+      var num = document.createElement('span'); num.className='num'; num.textContent = i+1;
+      var body = document.createElement('div'); body.className='body';
+      var t = document.createElement('b'); t.textContent = it.file; body.appendChild(t);
+      var why = document.createElement('div'); why.className='why'; why.textContent = it.why; body.appendChild(why);
+      row.appendChild(num); row.appendChild(body);
+      if (!p){ host.appendChild(row); return; }
+      if (it.kind === 'edit'){
+        var b = document.createElement('button'); b.className='btn'; b.textContent='去配置台改';
+        b.addEventListener('click', function(){ switchProject(id, it.tab); load(it.tab); });
+        row.appendChild(b);
+      } else if (it.kind === 'web'){
+        var a = document.createElement('a'); a.textContent='去 GitHub 编辑';
+        a.target='_blank'; a.rel='noopener';
+        a.href = 'https://github.com/amiya54/' + p.repo + '/edit/' + p.branch + '/' + (it.file.indexOf(' ')<0 ? it.file : '');
+        row.appendChild(a);
+      } else if (it.kind === 'secret'){
+        var a2 = document.createElement('a'); a2.textContent='去加 Secrets';
+        a2.target='_blank'; a2.rel='noopener';
+        a2.href = 'https://github.com/amiya54/' + p.repo + '/settings/secrets/actions';
+        row.appendChild(a2);
+      } else if (it.kind === 'run'){
+        var a3 = document.createElement('a'); a3.textContent='去 Actions';
+        a3.target='_blank'; a3.rel='noopener';
+        a3.href = 'https://github.com/amiya54/' + p.repo + '/actions';
+        row.appendChild(a3);
+      }
+      host.appendChild(row);
+    });
+  }
+  var wizBusy = false;
+  $('wizCreate').addEventListener('click', function(){
+    if (wizBusy) return;
+    var token = $('pat').value.trim();
+    if (!token){ msg('先在上面填 GitHub 令牌。克隆仓库需要 Administration / Actions / Pages 权限，见令牌栏说明。','warn'); return; }
+    var tpl = PROJECTS[$('wizTpl').value];
+    var newRepo = $('wizRepo').value.trim();
+    var label = $('wizLabel').value.trim() || newRepo;
+    var desc = $('wizDesc').value.trim();
+    if (!tpl){ msg('选一块底板。','warn'); return; }
+    if (!/^[A-Za-z0-9_.-]{1,90}$/.test(newRepo)){ msg('仓库名只能用英文、数字、点、横线、下划线。','warn'); return; }
+    var dup = registry.some(function(x){ return x.repo.toLowerCase()===newRepo.toLowerCase(); })
+      || DEFAULT_PROJECTS.some(function(x){ return x.repo.toLowerCase()===newRepo.toLowerCase(); });
+    if (dup){ msg('配置台里已经有这个仓库了，顶部下拉框切换即可。','warn'); return; }
+    wizBusy = true;
+    var btn = $('wizCreate'); btn.disabled=true; btn.textContent='创建中…';
+    $('wizLog').textContent='';
+    (async function(){
+      wlog('① Fork ' + tpl.repo + ' …');
+      var fork = await ghReq('POST', '/repos/amiya54/' + tpl.repo + '/forks', {});
+      var forkName = fork.name;
+      var repo = null;
+      for (var i=0; i<20; i++){
+        try { repo = await ghReq('GET', '/repos/amiya54/' + forkName); if (repo && repo.default_branch) break; } catch(e){}
+        await sleep(2500);
+      }
+      if (!repo) throw new Error('Fork 已发起但一直没就绪。稍后到 GitHub 确认，存在的话直接用下方「添加已有仓库」接入。');
+      var finalBranch = repo.default_branch;
+      wlog('✓ Fork 就绪：' + forkName + '（默认分支 ' + finalBranch + '）');
+      if (forkName !== newRepo){
+        await ghReq('PATCH', '/repos/amiya54/' + forkName, { name:newRepo, description: desc||undefined });
+        wlog('✓ 已改名：' + forkName + ' → ' + newRepo);
+      }
+      try {
+        await ghReq('PUT', '/repos/amiya54/' + newRepo + '/actions/permissions', { enabled:true, allowed_actions:'all' });
+        wlog('✓ Actions 已启用');
+      } catch(e){ wlog('⚠ Actions 未能自动启用（' + e.message + '），去新仓库 Settings → Actions 手动允许一次。'); }
+      try {
+        var wfs = await ghReq('GET', '/repos/amiya54/' + newRepo + '/actions/workflows');
+        var n = 0;
+        for (var k=0; k<(wfs.workflows||[]).length; k++){
+          try { await ghReq('PUT', '/repos/amiya54/' + newRepo + '/actions/workflows/' + wfs.workflows[k].id + '/enable'); n++; } catch(e){}
+        }
+        wlog('✓ 已启用定时 workflow ' + n + ' 个');
+      } catch(e){ wlog('⚠ 定时 workflow 启用失败，去 Actions 页逐个 Enable。'); }
+      try {
+        await ghReq('POST', '/repos/amiya54/' + newRepo + '/pages', { build_type:'workflow' });
+        wlog('✓ Pages 已开启（workflow 构建）');
+      } catch(e){
+        if (String(e.message).indexOf('409')>=0) wlog('✓ Pages 已存在，跳过');
+        else wlog('⚠ Pages 开启失败（' + e.message + '），可稍后用「为当前项目开启 Pages」单独开。');
+      }
+      var item = { id:newRepo, label:label, repo:newRepo, branch:finalBranch };
+      registry.push(item); saveReg(registry);
+      PROJECTS[newRepo] = item;
+      rebuildProjSelect(newRepo); renderProjList(); renderWizTpl(); renderChecklist(newRepo);
+      wlog('✓ 完成！顶部项目已切到「' + label + '」，按上面定制清单开工。');
+      msg('新情报台 <b>'+newRepo+'</b> 建好了：仓库已克隆、Actions/Pages 已配置。注意 fork 不带 Secrets，按清单第 7 步补 AI_API_KEY 和 webhook。','ok');
+    })().catch(function(e){
+      wlog('✗ ' + e.message);
+      msg('创建中断：' + e.message + '。已完成的步骤不重做——若仓库已在 GitHub 上存在，改用「添加已有仓库」接入。','err');
+    }).finally(function(){ wizBusy=false; btn.disabled=false; btn.textContent='创建新情报台'; });
+  });
+  $('projPages').addEventListener('click', function(){
+    var p = proj(); if (!p) return;
+    if (!$('pat').value.trim()){ msg('先填 GitHub 令牌。','warn'); return; }
+    ghReq('POST', '/repos/amiya54/' + p.repo + '/pages', { build_type:'workflow' })
+      .then(function(){ msg('已为 ' + p.repo + ' 开启 Pages（workflow 构建），首次部署随下一次抓取 workflow 完成。','ok'); })
+      .catch(function(e){
+        if (String(e.message).indexOf('409')>=0) msg(p.repo + ' 的 Pages 已存在。','ok');
+        else msg('Pages 开启失败：' + e.message + '（需要 Administration 权限令牌）','err');
+      });
+  });
+  $('addProj').addEventListener('click', function(){
+    if (!$('pat').value.trim()){ msg('先填 GitHub 令牌。','warn'); return; }
+    var repo = $('addRepo').value.trim().replace(/^amiya54\//i,'').replace(/\/+$/,'');
+    var branch = $('addBranch').value.trim();
+    var label = $('addLabel').value.trim() || repo;
+    if (!/^[A-Za-z0-9_.-]{1,90}$/.test(repo)){ msg('仓库名格式不对。','warn'); return; }
+    if (PROJECTS[repo]){ msg('配置台里已经有这个仓库。','warn'); return; }
+    ghReq('GET', '/repos/amiya54/' + repo).then(function(r){
+      var item = { id:repo, label:label, repo:repo, branch:(r && r.default_branch) || branch || 'main' };
+      registry.push(item); saveReg(registry);
+      PROJECTS[repo] = item;
+      rebuildProjSelect(repo); renderProjList(); renderWizTpl(); renderChecklist(repo);
+      msg('已把 ' + repo + ' 加入配置台（分支 ' + item.branch + '）。','ok');
+      ['addLabel','addRepo','addBranch'].forEach(function(x){ $(x).value=''; });
+    }).catch(function(e){ msg('仓库访问失败：' + e.message,'err'); });
+  });
+  renderWizTpl(); renderProjList(); renderChecklist();
 })();
 </script>
 </body>
