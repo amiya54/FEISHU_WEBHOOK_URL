@@ -235,9 +235,16 @@ class NotificationDispatcher:
                 elif loc_type == "new_titles":
                     report_data["new_titles"][idx1]["titles"][idx2]["title"] = translated
                 elif loc_type == "rss_items" and rss_items:
-                    rss_items[idx1]["titles"][idx2]["title"] = translated
+                    # ★双语标题：英文原题保留到 original_title，网页版主行显英文、副行显中文
+                    _td = rss_items[idx1]["titles"][idx2]
+                    if _td.get("title", "").strip() != translated.strip():
+                        _td["original_title"] = _td.get("title", "")
+                    _td["title"] = translated
                 elif loc_type == "rss_new_items" and rss_new_items:
-                    rss_new_items[idx1]["titles"][idx2]["title"] = translated
+                    _td = rss_new_items[idx1]["titles"][idx2]
+                    if _td.get("title", "").strip() != translated.strip():
+                        _td["original_title"] = _td.get("title", "")
+                    _td["title"] = translated
                 elif loc_type == "standalone_platforms" and standalone_data:
                     standalone_data["platforms"][idx1]["items"][idx2]["title"] = translated
                 elif loc_type == "standalone_rss" and standalone_data:
