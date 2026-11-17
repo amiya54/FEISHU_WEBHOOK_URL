@@ -800,6 +800,12 @@
       wlog('① Fork ' + tpl.repo + ' …');
       var fork = await ghReq('POST', '/repos/amiya54/' + tpl.repo + '/forks', {});
       var forkName = fork.name;
+      // 保险①：GitHub 不允许 fork 自己账号下的仓库，此时接口会把源仓库原样返回。
+      // 绝不能拿它去改名，否则会把底板仓库本身改掉（2026-11-17 事故）。
+      if ((fork.full_name || '').toLowerCase() === ('amiya54/'+tpl.repo).toLowerCase()
+          || forkName.toLowerCase() === tpl.repo.toLowerCase()){
+        throw new Error('底板就在你自己账号下，GitHub 不允许 fork 自己的仓库（接口把源仓库原样返回了）。为保护底板已中止，未改动任何仓库。请在 GitHub 网页上新建一个空仓库，再用下方「添加已有仓库」接入。');
+      }
       var repo = null;
       for (var i=0; i<20; i++){
         try { repo = await ghReq('GET', '/repos/amiya54/' + forkName); if (repo && repo.default_branch) break; } catch(e){}
@@ -808,6 +814,10 @@
       if (!repo) throw new Error('Fork 已发起但一直没就绪。稍后到 GitHub 确认，存在的话直接用下方「添加已有仓库」接入。');
       var finalBranch = repo.default_branch;
       wlog('✓ Fork 就绪：' + forkName + '（默认分支 ' + finalBranch + '）');
+      // 保险②：改名只允许作用在新 fork 出来的仓库上，且目标名不能撞任何已有仓库。
+      if (repo.full_name && repo.full_name.toLowerCase() === ('amiya54/'+tpl.repo).toLowerCase()){
+        throw new Error('目标仓库就是底板本身，为保护底板已中止改名。');
+      }
       if (forkName !== newRepo){
         await ghReq('PATCH', '/repos/amiya54/' + forkName, { name:newRepo, description: desc||undefined });
         wlog('✓ 已改名：' + forkName + ' → ' + newRepo);
