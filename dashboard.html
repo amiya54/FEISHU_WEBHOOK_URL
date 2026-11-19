@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>船舶低碳情报双周报 · 动态看板</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+  :root { --bg:#FAF9F6; --ink:#16181A; --muted:#8A8781; --line:#E5E1D8; --amber:#C05621; --card:#FFF; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--ink); font-family:-apple-system,'Segoe UI','Microsoft YaHei','PingFang SC',sans-serif; line-height:1.6; padding:40px 24px 60px; }
+  .wrap { max-width:1040px; margin:0 auto; }
+  h1 { font-family:Georgia,'Noto Serif SC','STSong',serif; font-size:30px; font-weight:700; }
+  .kicker { font-size:12px; letter-spacing:4px; color:var(--amber); margin-bottom:10px; }
+  .sub { color:var(--muted); font-size:14px; margin-top:8px; }
+  .rule { height:1px; background:var(--line); margin:20px 0 0; }
+  .stats { display:flex; gap:44px; padding:20px 2px; flex-wrap:wrap; }
+  .stat b { font-family:Georgia,'Noto Serif SC',serif; font-size:26px; font-variant-numeric:tabular-nums; display:block; }
+  .stat span { font-size:12px; color:var(--muted); letter-spacing:1px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:20px 20px 8px; margin-top:20px; }
+  .card h2 { font-size:15px; font-weight:600; margin-bottom:4px; }
+  .card p { font-size:12px; color:var(--muted); margin-bottom:8px; }
+  .chart { width:100%; height:340px; }
+  .status { font-size:12px; color:var(--muted); margin-top:14px; }
+  .status b { color:var(--amber); font-weight:600; }
+  button { font-size:13px; color:var(--amber); background:none; border:1px solid var(--line); border-radius:6px; padding:6px 14px; cursor:pointer; margin-top:12px; }
+  button:hover { border-color:var(--amber); }
+  button:disabled { opacity:.5; cursor:wait; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">低碳双周报 · 跨期台账</div>
+  <h1>船舶低碳情报双周报 · 动态看板</h1>
+  <div class="sub">数据每次打开时实时拉取跨期台账，图表为浏览器实时渲染，不是截图。</div>
+  <div class="rule"></div>
+  <div class="stats">
+    <div class="stat"><b id="st-issues">—</b><span>累计期数</span></div>
+    <div class="stat"><b id="st-latest">—</b><span>最新一期条目数</span></div>
+    <div class="stat"><b id="st-events">—</b><span>累计事件条目</span></div>
+  </div>
+  <div class="card">
+    <h2>每期命中条目数</h2>
+    <p>按发布日期统计每期报告命中的新闻条数，悬停看具体日期</p>
+    <div class="chart" id="c-issue"></div>
+  </div>
+  <div class="card">
+    <h2>事件阶段构成</h2>
+    <p>每期条目按所处阶段分类：政策法规 / 规划中 / 测试试点 / 已投运 / 其他</p>
+    <div class="chart" id="c-stage"></div>
+  </div>
+  <div class="status" id="status">正在加载数据…</div>
+  <button id="reload">重新拉取最新数据</button>
+  <p style="font-size:12px;color:var(--muted);margin-top:18px">数据来源：本仓库 archive/ledger.json（跨期跟踪台账，每次运行自动更新）。返回报告页请用浏览器后退。</p>
+</div>
+<script>
+const LEDGER_URLS = [
+  'https://cdn.jsdelivr.net/gh/amiya54/FEISHU_WEBHOOK_URL@master/archive/ledger.json',
+  'https://raw.githubusercontent.com/amiya54/FEISHU_WEBHOOK_URL/master/archive/ledger.json',
+  'archive/ledger.json'
+];
+async function fetchData(){
+  for (const url of LEDGER_URLS) {
+    try {
+      const r = await fetch(url, { cache:'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      return await r.json();
+    } catch(e) {}
+  }
+  throw new Error('所有数据源均不可达');
+}
+
+const STAGES = [
+  ['policy',   '政策法规', '#534AB7'],
+  ['planned',  '规划中',   '#BA7517'],
+  ['testing',  '测试试点', '#378ADD'],
+  ['operating','已投运',   '#0F6E56'],
+  ['other',    '其他',     '#B4B2A9']
+];
+function setStatus(html){ document.getElementById('status').innerHTML = html; }
+
+function renderCharts(issues){
+  const iss = issues.slice().sort((a,b)=>a.date<b.date?-1:1);
+  document.getElementById('st-issues').textContent = iss.length;
+  document.getElementById('st-latest').textContent = iss.length ? iss[iss.length-1].items : '—';
+  document.getElementById('st-events').textContent = iss.reduce((s,x)=>s+(x.events||[]).length, 0);
+
+  echarts.init(document.getElementById('c-issue')).setOption({
+    animationDuration:1200, animationEasing:'cubicOut',
+    grid:{ left:44, right:16, top:24, bottom:56 },
+    tooltip:{ trigger:'axis' },
+    xAxis:{ type:'category', data: iss.map(x=>x.date.slice(5)),
+            axisLabel:{ fontSize:11, color:'#8A8781', rotate:45 } },
+    yAxis:{ type:'value', minInterval:1, axisLabel:{ fontSize:11, color:'#8A8781' } },
+    series:[{ type:'bar', data: iss.map(x=>x.items), barMaxWidth:26,
+              itemStyle:{ color:'#C05621', borderRadius:[4,4,0,0] } }]
+  });
+
+  echarts.init(document.getElementById('c-stage')).setOption({
+    animationDuration:1300, animationEasing:'cubicOut',
+    grid:{ left:44, right:16, top:40, bottom:40 },
+    tooltip:{ trigger:'axis' },
+    legend:{ top:0, textStyle:{ fontSize:11, color:'#8A8781' } },
+    xAxis:{ type:'category', data: iss.map(x=>x.date.slice(5)),
+            axisLabel:{ fontSize:11, color:'#8A8781', rotate:45 } },
+    yAxis:{ type:'value', minInterval:1, axisLabel:{ fontSize:11, color:'#8A8781' } },
+    series: STAGES.map(([key,label,color]) => ({
+      name: label, type:'bar', stack:'total', barMaxWidth:30,
+      itemStyle:{ color },
+      data: iss.map(x => (x.events||[]).filter(e=>(e.stage||'other')===key).length)
+    }))
+  });
+}
+
+async function load(){
+  const btn = document.getElementById('reload');
+  btn.disabled = true;
+  setStatus('正在拉取数据…');
+  try {
+    const data = await fetchData();
+    renderCharts(data.issues || []);
+    setStatus('加载成功：<b>'+(data.issues||[]).length+'</b> 期 · '+new Date().toLocaleTimeString('zh-CN'));
+  } catch(e) {
+    setStatus('加载失败：'+e.message+'（已尝试多个数据源，请检查网络）');
+  }
+  btn.disabled = false;
+}
+document.getElementById('reload').addEventListener('click', load);
+load();
+</script>
+</body>
+</html>
